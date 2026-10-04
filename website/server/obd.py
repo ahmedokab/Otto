@@ -162,6 +162,36 @@ def parse_mode01(data):
     return key, round(fn(payload), 2)
 
 
+# Inverse of PIDS, for the bench ECU (sources/bench_ecu.py): value -> data bytes.
+ENCODERS = {
+    0x05: lambda v: [v + 40],
+    0x06: lambda v: [(v + 100) * 128 / 100],
+    0x07: lambda v: [(v + 100) * 128 / 100],
+    0x0C: lambda v: _u16(v * 4),
+    0x0D: lambda v: [v],
+    0x0F: lambda v: [v + 40],
+    0x10: lambda v: _u16(v * 100),
+    0x11: lambda v: [v * 255 / 100],
+    0x42: lambda v: _u16(v * 1000),
+}
+
+
+def _u16(x):
+    x = max(0, min(0xFFFF, round(x)))
+    return [x >> 8, x & 0xFF]
+
+
+def encode_pid(pid, value):
+    """Mode 01 payload for one reading, e.g. encode_pid(0x0C, 1726) -> 41 0C 1A F8"""
+    return bytes([0x41, pid] + [max(0, min(0xFF, round(b))) for b in ENCODERS[pid](value)])
+
+
+def encode_dtc(code):
+    """'P0171' -> (0x01, 0x71). Inverse of decode_dtc."""
+    n = int(code[1:], 16)
+    return ("PCBU".index(code[0]) << 6) | ((n >> 8) & 0x3F), n & 0xFF
+
+
 def decode_dtc(b1, b2):
     """Two raw bytes -> 'P0171' style code."""
     letter = "PCBU"[b1 >> 6]

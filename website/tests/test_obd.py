@@ -132,3 +132,64 @@ def test_live_loop_polls_car_and_reassembles_codes():
     f = src.poll(time.time())
     assert f["readings"]["rpm"] == 1726
     assert f["trouble_codes"] == ["P0171", "P0300", "P0420"] and f["mil"] is True
+
+
+# ---- bench ECU (fake car on Neptune channel B) ------------------------------
+from server.sources.bench_ecu import BenchEcu
+
+@pytest.mark.parametrize("pid,value", [(0x0C, 1726), (0x05, 89), (0x42, 13.8), (0x07, 17.19), (0x10, 11.4), (0x0D, 38)])
+def test_encode_decode_roundtrip(pid, value):
+    payload = obd.encode_pid(pid, value)
+    key, decoded = obd.parse_mode01(bytes([len(payload)]) + payload)
+    assert key == obd.PIDS[pid][0] and decoded == pytest.approx(value, abs=0.5)
+
+@pytest.mark.parametrize("code", ["P0171", "P0300", "P0420", "U0100", "P2187", "C1234"])
+def test_dtc_roundtrip(code):
+    assert obd.decode_dtc(*obd.encode_dtc(code)) == code
+
+FIXED = {"readings": {"rpm": 1726, "coolant_c": 89, "maf_gs": None}, "trouble_codes": ["P0171", "P0300", "P0420"]}
+
+def test_bench_ecu_answers_like_a_car():
+    ecu = BenchEcu("lean")
+    ecu._state = lambda now: FIXED
+    [(cid, rpm)] = ecu.handle(0x7DF, obd.build_request(0x01, 0x0C), 0)
+    assert cid == 0x7E8 and obd.parse_mode01(rpm) == ("rpm", 1726)
+    assert ecu.handle(0x7DF, obd.build_request(0x01, 0x10), 0) == []        # unsupported -> silence
+    [(_, first)] = ecu.handle(0x7DF, obd.build_request(0x03), 0)             # 3 codes: multi-frame
+    a = obd.IsoTpAssembler()
+    assert a.feed(0x7E8, first) == (None, True)
+    [(_, cf)] = ecu.handle(0x7E0, obd.FLOW_CONTROL, 0)
+    payload, _ = a.feed(0x7E8, cf)
+    assert obd.parse_mode03(payload) == ["P0171", "P0300", "P0420"]
+
+
+class LoopbackFreeWili(FakeFreeWili):
+    """Neptune channel A wired to channel B: a frame sent on one arrives on the other."""
+    def can_transmit(self, channel, can_id, data, is_extended, is_fd):
+        self.sent.append((channel, can_id, bytes(data)))
+        self.events.append((f"CANRX{1 - channel}", SimpleNamespace(arb_id=can_id, is_extended=False, data=bytes(data))))
+        return Ok("Ok")
+
+    def process_events(self):
+        while self.events:
+            name, data = self.events.pop(0)
+            self.cb(SimpleNamespace(name=name), None, data)
+        time.sleep(0.001)
+
+def test_bench_loop_end_to_end():
+    src, fake = FreeWiliSource(), LoopbackFreeWili()
+    src.bench = BenchEcu("lean")
+    src.bench._state = lambda now: FIXED
+    fake.cb, src._fw = src._on_event, fake
+    t = threading.Thread(target=src._poll_loop, daemon=True)
+    t.start()
+    time.sleep(0.5)
+    src._stop.set()
+    t.join(1)
+    car_side = [(i, d) for ch, i, d in fake.sent if ch == 0]
+    assert car_side and all(obd.check_tx(i, d) for i, d in car_side)   # Otto's side stayed read-only
+    assert all(i == 0x7E8 for ch, i, d in fake.sent if ch == 1)          # fake car only answered
+    f = src.poll(time.time())
+    assert f["readings"] == {"rpm": 1726, "coolant_c": 89}
+    assert f["trouble_codes"] == ["P0171", "P0300", "P0420"]
+    assert src.status(time.time())[1].startswith("BENCH")

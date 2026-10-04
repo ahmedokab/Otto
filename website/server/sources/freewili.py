@@ -21,7 +21,10 @@ Env:
   FREEWILI_CAN_CHANNEL  Neptune channel wired to the car (default 0 = channel A,
                         DB15 pins 6/14, GND 8)
   FREEWILI_PORT         serial number to pick when several FREE-WILis are plugged in
+  FREEWILI_BENCH_ECU    simulator scenario (e.g. lean) to answer as a fake car on the
+                        other Neptune channel; bench only, see sources/bench_ecu.py
 """
+import collections
 import itertools
 import os
 import queue
@@ -29,6 +32,7 @@ import threading
 import time
 
 from .base import Source
+from .bench_ecu import BenchEcu
 from .. import obd
 
 NO_DATA_AFTER_S = 2.0
@@ -36,6 +40,8 @@ CAN_CHANNEL = int(os.getenv("FREEWILI_CAN_CHANNEL", "0"))
 REPLY_TIMEOUT_S = 0.1      # move on if no ECU answers a request
 DTC_EVERY_S = 5.0          # trouble codes change rarely
 RETRY_AFTER_S = 2.0        # reopen the device after unplug / error
+BENCH_SCENARIO = os.getenv("FREEWILI_BENCH_ECU")
+BENCH_CHANNEL = 1 - CAN_CHANNEL
 
 
 class FreeWiliSource(Source):
@@ -53,6 +59,8 @@ class FreeWiliSource(Source):
         self._awaiting = False
         self._pending_fc = None
         self._stop = threading.Event()
+        self.bench = BenchEcu(BENCH_SCENARIO) if BENCH_SCENARIO else None
+        self._bench_tx = collections.deque()
 
     def start(self):
         self._stop.clear()
@@ -104,6 +112,8 @@ class FreeWiliSource(Source):
         result = fw.can_enable_streaming(CAN_CHANNEL, True)
         if result.is_err():
             raise RuntimeError(f"CAN streaming refused (needs SpartaHack firmware V92): {result.unwrap_err()}")
+        if self.bench:
+            fw.can_enable_streaming(BENCH_CHANNEL, True)
         self.error = None
 
     def _close(self):
@@ -112,6 +122,8 @@ class FreeWiliSource(Source):
             return
         try:
             fw.can_enable_streaming(CAN_CHANNEL, False)
+            if self.bench:
+                fw.can_enable_streaming(BENCH_CHANNEL, False)
             fw.close()
         except Exception:
             pass
@@ -121,6 +133,9 @@ class FreeWiliSource(Source):
         sent_at = 0.0
         while not self._stop.is_set():
             self._fw.process_events()          # runs _on_event for each received frame
+            while self._bench_tx:              # fake car's replies, bench channel only
+                can_id, data = self._bench_tx.popleft()
+                self._fw.can_transmit(BENCH_CHANNEL, can_id, data, False, False)
             if self._pending_fc is not None:   # ECU is mid-reply and waiting for us
                 fc_id, self._pending_fc = self._pending_fc, None
                 self.send_can(fc_id, obd.FLOW_CONTROL)
@@ -152,6 +167,9 @@ class FreeWiliSource(Source):
 
     def _on_event(self, event_type, frame, data):
         if getattr(event_type, "name", "") not in ("CANRX0", "CANRX1") or data.is_extended:
+            return
+        if self.bench and data.arb_id not in obd.ECU_RESPONSE_IDS:   # our own request, seen by the fake car
+            self._bench_tx.extend(self.bench.handle(data.arb_id, data.data, time.time()))
             return
         if data.arb_id in obd.ECU_RESPONSE_IDS:
             self._awaiting = False
@@ -197,6 +215,8 @@ class FreeWiliSource(Source):
             return "waiting", "Plug in the FREE-WILi to start"
         if now - self.last_rx > NO_DATA_AFTER_S:
             return "disconnected", "Lost the car — check the plug and that the key is ON"
+        if self.bench:
+            return "connected", f"BENCH: fake car on Neptune channel B ({self.bench.scenario}), not a real vehicle"
         return "connected", "Reading your car"
 
     def poll(self, now):

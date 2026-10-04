@@ -50,3 +50,20 @@ Rollback to stock: install the OG bootloader and v024 with
 In the device's Neptune Settings menu: CAN1 rate 500 kbit/s (most cars after
 2008), **termination off** (the car's bus is already terminated). If channel A
 turns out to be API channel 1, set `FREEWILI_CAN_CHANNEL=1`.
+
+## 4. Bench test without a car (fake car on channel B)
+
+1. Unplug the OBD cable. Wire Neptune channel A to channel B on the DB15:
+   pin 6 <-> pin 4 (CAN High), pin 14 <-> pin 12 (CAN Low). Two wires.
+2. Neptune Settings: termination **ON** for CAN1 and CAN2, both at 500 kbit/s.
+3. Start the server with a scenario for the fake car:
+   ```powershell
+   cd website
+   $env:FREEWILI_BENCH_ECU = "lean"   # healthy, lean, misfire, overheat, low_voltage, thermostat
+   .\.venv\Scripts\python -m uvicorn server.app:app --port 8000
+   ```
+4. Dashboard: Live car -> Start capture. The status reads "BENCH: fake car on
+   Neptune channel B". Readings fill in; codes appear as the scenario develops.
+
+Before plugging into a real car: close that terminal (or `Remove-Item Env:FREEWILI_BENCH_ECU`),
+remove the A-B wires, and turn termination back OFF.
