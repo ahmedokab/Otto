@@ -1,0 +1,1252 @@
+{"_meta": {"vehicle": "Volkswagen Beetle 2013", "mode": "live", "scenario": null, "started": "2026-10-04T07:17:56.600Z"}}
+{"readings": {}, "supported": ["ambient_c", "baro_kpa", "clear_dist_km", "coolant_c", "ecu_voltage_v", "intake_c", "load_pct", "ltft_pct", "map_kpa", "mil_dist_km", "rpm", "runtime_min", "speed_kph", "stft_pct", "throttle_pct", "timing_deg"], "t": 1791098278.5654068}
+{"readings": {}, "connection": "connected", "vin": "3VWFP7AT5DM688634", "vehicle": "Volkswagen Beetle 2013", "t": 1791098278.837308, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098278.9648674}
+{"readings": {"rpm": 685.5, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.39}, "connection": "connected", "t": 1791098279.3549876, "vin": "3VWFP7AT5DM688634", "vehicle": "Volkswagen Beetle 2013"}
+{"readings": {"coolant_c": 86, "rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.94}, "connection": "connected", "t": 1791098279.6142726}
+{"readings": {"load_pct": 20.78, "ecu_voltage_v": 13.95, "rpm": 686.5}, "connection": "connected", "t": 1791098279.8236833}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.39, "stft_pct": 2.34}, "connection": "connected", "t": 1791098280.0627844}
+{"readings": {"rpm": 688.0, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.78}, "connection": "connected", "t": 1791098280.29823}
+{"readings": {"ltft_pct": 2.34, "rpm": 690.0, "speed_kph": 0}, "connection": "connected", "t": 1791098280.4499269}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.78, "intake_c": 56}, "connection": "connected", "t": 1791098280.655859}
+{"readings": {"rpm": 699.5, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.78}, "connection": "connected", "t": 1791098281.021454}
+{"readings": {"map_kpa": 30, "rpm": 695.0, "speed_kph": 0, "throttle_pct": 12.94}, "connection": "connected", "t": 1791098281.2546856}
+{"readings": {"load_pct": 20.78, "timing_deg": 2.0, "rpm": 686.0}, "connection": "connected", "t": 1791098281.481377}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.78}, "connection": "connected", "t": 1791098281.70733}
+{"readings": {"ambient_c": 15, "rpm": 686.5, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.78}, "connection": "connected", "t": 1791098281.9823797}
+{"readings": {"baro_kpa": 98, "rpm": 687.5}, "connection": "connected", "t": 1791098282.1374602}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.78, "runtime_min": 3.55}, "connection": "connected", "t": 1791098282.3843977}
+{"readings": {"rpm": 689.5, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.78}, "connection": "connected", "t": 1791098282.6627448}
+{"readings": {"mil_dist_km": 0, "rpm": 688.5, "speed_kph": 0, "throttle_pct": 12.94}, "connection": "connected", "t": 1791098282.9178164}
+{"readings": {"load_pct": 20.78, "clear_dist_km": 665, "rpm": 689.0}, "connection": "connected", "t": 1791098283.17947}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.78, "rpm": 682.5}, "connection": "connected", "t": 1791098283.4805667, "mil": false}
+{"readings": {"speed_kph": 0}, "connection": "connected", "t": 1791098283.543396}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.39, "coolant_c": 87}, "connection": "connected", "t": 1791098283.949116}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098284.1974747}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.94}, "connection": "connected", "t": 1791098284.6178188}
+{"readings": {"load_pct": 20.39, "ecu_voltage_v": 13.9, "rpm": 682.5}, "connection": "connected", "t": 1791098284.8997426}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.39}, "connection": "connected", "t": 1791098285.082378}
+{"readings": {"stft_pct": 2.34, "rpm": 678.5, "speed_kph": 0}, "connection": "connected", "t": 1791098285.297541}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.39, "ltft_pct": 2.34, "rpm": 687.5, "speed_kph": 0}, "connection": "connected", "t": 1791098285.6616862}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0}, "connection": "connected", "t": 1791098285.8131962}
+{"readings": {"intake_c": 57, "rpm": 688.5, "speed_kph": 0}, "connection": "connected", "t": 1791098286.0034418}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0, "map_kpa": 29}, "connection": "connected", "t": 1791098286.2954886}
+{"readings": {"rpm": 693.5, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.0, "timing_deg": 4.5}, "connection": "connected", "t": 1791098286.570284}
+{"readings": {"rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098286.8582377}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0, "ambient_c": 15}, "connection": "connected", "t": 1791098287.211316}
+{"readings": {"rpm": 690.5, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.0}, "connection": "connected", "t": 1791098287.4693813}
+{"readings": {"baro_kpa": 98, "rpm": 676.5, "speed_kph": 0}, "connection": "connected", "t": 1791098287.7217846}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0}, "connection": "connected", "t": 1791098287.935864}
+{"readings": {"runtime_min": 3.65, "rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098288.11635}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0, "mil_dist_km": 0, "rpm": 682.0, "speed_kph": 0}, "connection": "connected", "t": 1791098288.43648}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0, "clear_dist_km": 665}, "connection": "connected", "t": 1791098288.6034932}
+{"readings": {"rpm": 681.0, "speed_kph": 0, "throttle_pct": 12.94}, "connection": "connected", "t": 1791098288.8030896}
+{"readings": {"load_pct": 19.61, "rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098289.0651827, "mil": false}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0, "coolant_c": 87}, "connection": "connected", "t": 1791098289.3030987, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098289.3375854}
+{"readings": {"rpm": 681.5, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.0, "ecu_voltage_v": 13.88}, "connection": "connected", "t": 1791098289.770762}
+{"readings": {"rpm": 681.0}, "connection": "connected", "t": 1791098289.8650382}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 19.61, "stft_pct": 2.34}, "connection": "connected", "t": 1791098290.1643894}
+{"readings": {"rpm": 680.5, "speed_kph": 0}, "connection": "connected", "t": 1791098290.3628335}
+{"readings": {"throttle_pct": 12.94, "load_pct": 19.61, "ltft_pct": 2.34, "rpm": 679.0}, "connection": "connected", "t": 1791098290.6041932}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 19.61, "intake_c": 57, "rpm": 676.0}, "connection": "connected", "t": 1791098290.8816936}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.0}, "connection": "connected", "t": 1791098291.04803}
+{"readings": {"map_kpa": 29, "rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.0}, "connection": "connected", "t": 1791098291.485863}
+{"readings": {"timing_deg": 6.0, "rpm": 671.5, "speed_kph": 0}, "connection": "connected", "t": 1791098291.6480193}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0, "ambient_c": 15, "rpm": 683.0}, "connection": "connected", "t": 1791098291.9287252}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94}, "connection": "connected", "t": 1791098292.1958468}
+{"readings": {"load_pct": 20.0, "baro_kpa": 98, "rpm": 686.5}, "connection": "connected", "t": 1791098292.4502094}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.0}, "connection": "connected", "t": 1791098292.6068199}
+{"readings": {"runtime_min": 3.73, "rpm": 686.5, "speed_kph": 0}, "connection": "connected", "t": 1791098292.795616}
+{"readings": {"throttle_pct": 12.94, "load_pct": 20.0, "mil_dist_km": 0, "rpm": 687.5, "speed_kph": 0}, "connection": "connected", "t": 1791098293.0765357}
+{"readings": {"load_pct": 20.0, "clear_dist_km": 665, "rpm": 684.0}, "connection": "connected", "t": 1791098293.250659}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.0}, "connection": "connected", "t": 1791098293.5009084}
+{"readings": {"rpm": 687.5, "speed_kph": 0, "throttle_pct": 12.94}, "mil": false, "connection": "connected", "t": 1791098293.8112378}
+{"readings": {"load_pct": 20.0, "coolant_c": 87, "rpm": 688.0}, "connection": "connected", "t": 1791098293.9918358}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94, "load_pct": 20.0, "ecu_voltage_v": 13.92}, "connection": "connected", "t": 1791098294.256651}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098294.4114926}
+{"readings": {"rpm": 674.0}, "connection": "connected", "t": 1791098294.723048}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098294.9464815}
+{"readings": {"stft_pct": 2.34, "rpm": 673.0, "speed_kph": 0}, "connection": "connected", "t": 1791098295.1141434}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34, "rpm": 677.0}, "connection": "connected", "t": 1791098295.3563213}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57, "rpm": 675.5}, "connection": "connected", "t": 1791098295.6469338}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098295.8500292}
+{"readings": {"rpm": 670.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098296.0324526}
+{"readings": {"timing_deg": 7.5, "rpm": 661.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098296.2745547}
+{"readings": {"load_pct": 19.61, "ambient_c": 15, "rpm": 669.0}, "connection": "connected", "t": 1791098296.5115786}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098296.7258286}
+{"readings": {"load_pct": 20.0, "baro_kpa": 98, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098296.983854}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 3.8}, "connection": "connected", "t": 1791098297.1730485}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "mil_dist_km": 0}, "connection": "connected", "t": 1791098297.4569561}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098297.6051996}
+{"readings": {"load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098297.7644289}
+{"readings": {"rpm": 677.5}, "connection": "connected", "t": 1791098297.9935713}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098298.2798412}
+{"readings": {"rpm": 681.5, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098298.4803789}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 87}, "connection": "connected", "t": 1791098298.7578993}
+{"readings": {"rpm": 667.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098299.0033128}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.83}, "connection": "connected", "t": 1791098299.2883778}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098299.4661994}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098299.737941}
+{"readings": {"rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": 2.34}, "connection": "connected", "t": 1791098300.1616168}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098300.2854068}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34, "rpm": 682.0}, "connection": "connected", "t": 1791098300.5656762}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098300.755589}
+{"readings": {"intake_c": 57, "rpm": 672.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098301.0994744}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098301.1617558}
+{"readings": {"map_kpa": 28, "rpm": 676.5}, "connection": "connected", "t": 1791098301.4260726}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098301.686843}
+{"readings": {"timing_deg": 8.0, "rpm": 665.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098301.9239705}
+{"readings": {"load_pct": 19.61, "ambient_c": 15}, "connection": "connected", "t": 1791098302.0375452}
+{"readings": {"rpm": 687.0, "speed_kph": 0}, "connection": "connected", "t": 1791098302.314345}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 682.5}, "connection": "connected", "t": 1791098302.609761}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098302.8552036}
+{"readings": {"runtime_min": 3.9, "rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098303.05336}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 690.5}, "connection": "connected", "t": 1791098303.228106}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098303.496351}
+{"readings": {"clear_dist_km": 665, "rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098303.7339299}
+{"readings": {"load_pct": 19.61, "rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098304.0129342, "mil": false}
+{"readings": {"load_pct": 19.61, "coolant_c": 87}, "connection": "connected", "t": 1791098304.1538754}
+{"readings": {"rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098304.3347354}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.88}, "connection": "connected", "t": 1791098304.579102, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098304.8312435}
+{"readings": {"rpm": 685.0}, "connection": "connected", "t": 1791098305.0653281}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098305.2978103}
+{"readings": {"load_pct": 19.22, "stft_pct": 1.56}, "connection": "connected", "t": 1791098305.5156186}
+{"readings": {"rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098305.7983685}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098305.943288}
+{"readings": {"rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098306.2195194}
+{"readings": {"load_pct": 19.61, "intake_c": 57, "rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098306.5174885}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098306.6204298}
+{"readings": {"map_kpa": 29, "rpm": 676.0, "speed_kph": 0}, "connection": "connected", "t": 1791098306.9007936}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 5.0}, "connection": "connected", "t": 1791098307.193855}
+{"readings": {"rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098307.4569516}
+{"readings": {"ambient_c": 15, "rpm": 686.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098307.6193018}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098307.9209936}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098308.2067487}
+{"readings": {"load_pct": 19.61, "runtime_min": 3.98, "rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098308.5280516}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098308.7256439}
+{"readings": {"rpm": 685.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098308.9445627}
+{"readings": {"clear_dist_km": 665, "rpm": 685.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098309.2324831}
+{"readings": {"load_pct": 20.0, "rpm": 687.0}, "connection": "connected", "t": 1791098309.5325835, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098309.9487486}
+{"readings": {"load_pct": 19.61, "coolant_c": 87}, "connection": "connected", "t": 1791098310.2776468, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098310.4029062}
+{"readings": {"rpm": 680.5, "speed_kph": 0}, "connection": "connected", "t": 1791098310.748039}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098310.8264854}
+{"readings": {"load_pct": 20.0, "ecu_voltage_v": 13.88}, "connection": "connected", "t": 1791098311.04172}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098311.4875348}
+{"readings": {"load_pct": 20.0, "stft_pct": 0.78}, "connection": "connected", "t": 1791098311.7185917}
+{"readings": {"rpm": 687.5}, "connection": "connected", "t": 1791098311.8746262}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098312.2410908}
+{"readings": {"load_pct": 20.0, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098312.360827}
+{"readings": {"rpm": 689.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098312.7537074}
+{"readings": {"rpm": 689.0, "speed_kph": 0}, "connection": "connected", "t": 1791098312.9595838}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29}, "connection": "connected", "t": 1791098313.2517838}
+{"readings": {"rpm": 687.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098313.5133576}
+{"readings": {"load_pct": 20.0, "timing_deg": 3.5, "rpm": 693.0}, "connection": "connected", "t": 1791098313.842595}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098314.1445312}
+{"readings": {"ambient_c": 15, "rpm": 682.0, "speed_kph": 0}, "connection": "connected", "t": 1791098314.3290644}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098314.6209369}
+{"readings": {"rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098314.9273016}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "runtime_min": 4.1}, "connection": "connected", "t": 1791098315.2301335}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098315.495717}
+{"readings": {"rpm": 686.5, "speed_kph": 0}, "connection": "connected", "t": 1791098315.8294523}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098315.8916934}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098316.276122}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665, "rpm": 675.0}, "connection": "connected", "t": 1791098316.4926171}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098316.5830102}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098316.8257554}
+{"readings": {"rpm": 665.0, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098317.1911225}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 87, "rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098317.4723754}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098317.5761433}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.8, "rpm": 682.0}, "connection": "connected", "t": 1791098317.8761954}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -2.34}, "connection": "connected", "t": 1791098318.1408675}
+{"readings": {"rpm": 672.0, "speed_kph": 0}, "connection": "connected", "t": 1791098318.3378012}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098318.5924435}
+{"readings": {"rpm": 671.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098318.8227177}
+{"readings": {"intake_c": 57, "rpm": 673.5, "speed_kph": 0}, "connection": "connected", "t": 1791098319.0797596}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29}, "connection": "connected", "t": 1791098319.3933268}
+{"readings": {"rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098319.68703}
+{"readings": {"timing_deg": 5.0, "rpm": 685.5, "speed_kph": 0}, "connection": "connected", "t": 1791098319.979809}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 15, "rpm": 685.5}, "connection": "connected", "t": 1791098320.210596}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098320.447113}
+{"readings": {"load_pct": 20.0, "baro_kpa": 98}, "connection": "connected", "t": 1791098320.589986}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098320.9566202}
+{"readings": {"rpm": 683.5}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098321.3622308}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098321.5420804}
+{"readings": {"load_pct": 20.0, "runtime_min": 4.22, "rpm": 679.5}, "connection": "connected", "t": 1791098321.8063884}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098321.9862933}
+{"readings": {"mil_dist_km": 0, "rpm": 679.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098322.279916}
+{"readings": {"load_pct": 20.0, "clear_dist_km": 665, "rpm": 680.0}, "connection": "connected", "t": 1791098322.5097182}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098322.709274}
+{"readings": {"load_pct": 20.0, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098322.98449, "mil": false}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 87, "rpm": 685.0}, "connection": "connected", "t": 1791098323.2090895}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.88}, "connection": "connected", "t": 1791098323.4781003}
+{"readings": {"rpm": 669.5, "speed_kph": 0}, "connection": "connected", "t": 1791098323.6073308}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -4.69}, "connection": "connected", "t": 1791098323.918441}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098324.1852696}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34, "rpm": 677.5}, "connection": "connected", "t": 1791098324.4231799}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098324.6450727}
+{"readings": {"rpm": 662.0, "speed_kph": 0}, "connection": "connected", "t": 1791098324.8330126}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28, "rpm": 674.0}, "connection": "connected", "t": 1791098325.07285}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.0}, "connection": "connected", "t": 1791098325.3069253}
+{"readings": {"rpm": 678.5, "speed_kph": 0}, "connection": "connected", "t": 1791098325.4614809}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 15}, "connection": "connected", "t": 1791098325.824476, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098326.0729883}
+{"readings": {"rpm": 674.0}, "connection": "connected", "t": 1791098326.4323053}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 665.0}, "connection": "connected", "t": 1791098326.6805432}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098326.885783}
+{"readings": {"runtime_min": 4.3, "rpm": 671.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098327.104522}
+{"readings": {"load_pct": 20.0, "mil_dist_km": 0, "rpm": 674.5}, "connection": "connected", "t": 1791098327.3380618}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098327.6096585}
+{"readings": {"clear_dist_km": 665, "rpm": 678.0}, "connection": "connected", "t": 1791098327.7530053}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098328.093257}
+{"readings": {"rpm": 681.0, "speed_kph": 0, "throttle_pct": 12.55}, "mil": false, "connection": "connected", "t": 1791098328.304184}
+{"readings": {"load_pct": 19.61, "coolant_c": 88, "rpm": 679.0}, "connection": "connected", "t": 1791098328.5910087}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.88}, "connection": "connected", "t": 1791098328.821149}
+{"readings": {"rpm": 678.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098329.0775564}
+{"readings": {"stft_pct": -4.69}, "connection": "connected", "t": 1791098329.224171}
+{"readings": {"rpm": 671.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098329.5357249}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098329.7531612}
+{"readings": {"load_pct": 19.61, "intake_c": 57, "rpm": 679.0, "speed_kph": 0}, "connection": "connected", "t": 1791098330.0000136}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098330.1627026}
+{"readings": {"map_kpa": 28, "rpm": 673.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098330.4193125}
+{"readings": {"load_pct": 19.22, "timing_deg": 6.5, "rpm": 682.0}, "connection": "connected", "t": 1791098330.625518}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098330.820947}
+{"readings": {"ambient_c": 15}, "connection": "connected", "t": 1791098331.1001575, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098331.4383528}
+{"readings": {"rpm": 675.0, "speed_kph": 0}, "connection": "connected", "t": 1791098331.684073}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098331.9897091}
+{"readings": {"baro_kpa": 98, "rpm": 679.0}, "connection": "connected", "t": 1791098332.3875537}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "runtime_min": 4.4}, "connection": "connected", "t": 1791098332.5871272}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098332.8866885}
+{"readings": {"mil_dist_km": 0, "rpm": 679.0}, "connection": "connected", "t": 1791098333.0203156}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098333.2565243}
+{"readings": {"clear_dist_km": 665, "rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098333.5299878}
+{"readings": {"load_pct": 19.22, "rpm": 673.5, "speed_kph": 0}, "connection": "connected", "t": 1791098333.837109, "mil": false}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 88, "rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098334.1458068}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098334.2373908}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.85, "rpm": 683.5}, "connection": "connected", "t": 1791098334.5987134}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098334.779657}
+{"readings": {"load_pct": 19.22, "stft_pct": -3.12, "rpm": 677.5}, "connection": "connected", "t": 1791098335.039866}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098335.372632}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098335.540875}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098335.8692577}
+{"readings": {"load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098336.2173684}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098336.3028388}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098336.6113133}
+{"readings": {"rpm": 677.0}, "connection": "connected", "t": 1791098337.0242293}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098337.2560248}
+{"readings": {"load_pct": 19.22}, "connection": "connected", "t": 1791098337.3536758}
+{"readings": {"map_kpa": 28, "rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098337.7366338}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 7.5}, "connection": "connected", "t": 1791098338.0185866}
+{"readings": {"rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098338.5205538}
+{"readings": {"ambient_c": 15, "rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098338.7175953}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098338.8800476}
+{"readings": {"baro_kpa": 98, "rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098339.2332327}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098339.4703605}
+{"readings": {"runtime_min": 4.52, "rpm": 676.5}, "connection": "connected", "t": 1791098339.6722596}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098340.0045817}
+{"readings": {"mil_dist_km": 0, "rpm": 685.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098340.3351424}
+{"readings": {"clear_dist_km": 665, "rpm": 677.5, "speed_kph": 0}, "connection": "connected", "t": 1791098340.5096083}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098340.6676743}
+{"readings": {"rpm": 685.0, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098341.0235415}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "coolant_c": 88}, "connection": "connected", "t": 1791098341.2566674}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098341.4354506}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098341.5976887}
+{"readings": {"rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098341.935265}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.85}, "connection": "connected", "t": 1791098342.1835556}
+{"readings": {"rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098342.4347763}
+{"readings": {"load_pct": 19.61, "stft_pct": -2.34}, "connection": "connected", "t": 1791098342.634321}
+{"readings": {"rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.39}, "connection": "connected", "t": 1791098342.8845298}
+{"readings": {"ltft_pct": 2.34, "rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098343.1462274}
+{"readings": {"load_pct": 20.0, "intake_c": 57}, "connection": "connected", "t": 1791098343.2918806}
+{"readings": {"rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098343.7215402}
+{"readings": {"map_kpa": 29, "rpm": 693.5, "speed_kph": 0}, "connection": "connected", "t": 1791098343.9104414}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098344.18368}
+{"readings": {"load_pct": 19.61, "timing_deg": 5.0, "rpm": 685.0}, "connection": "connected", "t": 1791098344.4371924}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098344.6945636}
+{"readings": {"ambient_c": 15, "rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098344.9830136}
+{"readings": {"baro_kpa": 98}, "connection": "connected", "t": 1791098345.0611398}
+{"readings": {"rpm": 672.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098345.4687307}
+{"readings": {"runtime_min": 4.62, "rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098345.7064435}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 677.0}, "connection": "connected", "t": 1791098345.967746}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098346.136911}
+{"readings": {"clear_dist_km": 665, "rpm": 705.5, "speed_kph": 0}, "connection": "connected", "t": 1791098346.3907428}
+{"readings": {"throttle_pct": 12.94}, "connection": "connected", "t": 1791098346.5205607}
+{"readings": {"load_pct": 20.0}, "connection": "connected", "t": 1791098346.8028352, "mil": false, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"]}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098346.8484557}
+{"readings": {"rpm": 670.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098347.3182087}
+{"readings": {"load_pct": 20.0, "coolant_c": 88, "rpm": 681.5}, "connection": "connected", "t": 1791098347.524646}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.83, "rpm": 692.5}, "connection": "connected", "t": 1791098347.9428833}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098348.1617706}
+{"readings": {"stft_pct": -1.56, "rpm": 740.0}, "connection": "connected", "t": 1791098348.3366776}
+{"readings": {"speed_kph": 0, "throttle_pct": 14.51, "load_pct": 32.94, "ltft_pct": 4.69}, "connection": "connected", "t": 1791098348.6128585}
+{"readings": {"rpm": 934.0, "speed_kph": 0, "throttle_pct": 13.73, "load_pct": 23.92}, "connection": "connected", "t": 1791098348.8979897}
+{"readings": {"intake_c": 57, "rpm": 1062.5, "speed_kph": 0, "throttle_pct": 13.33}, "connection": "connected", "t": 1791098349.0932672}
+{"readings": {"load_pct": 21.57, "map_kpa": 29, "rpm": 968.5, "speed_kph": 0}, "connection": "connected", "t": 1791098349.3704}
+{"readings": {"throttle_pct": 12.94, "load_pct": 19.61, "timing_deg": 34.5}, "connection": "connected", "t": 1791098349.634307}
+{"readings": {"rpm": 805.0, "speed_kph": 0, "throttle_pct": 13.73, "load_pct": 26.67}, "connection": "connected", "t": 1791098349.9598145}
+{"readings": {"ambient_c": 15, "rpm": 876.0, "speed_kph": 0, "throttle_pct": 13.33}, "connection": "connected", "t": 1791098350.173853}
+{"readings": {"load_pct": 22.75, "baro_kpa": 98, "rpm": 860.5, "speed_kph": 0, "throttle_pct": 13.33}, "connection": "connected", "t": 1791098350.465742}
+{"readings": {"load_pct": 21.57}, "connection": "connected", "t": 1791098350.6490817}
+{"readings": {"runtime_min": 4.7, "rpm": 817.0}, "connection": "connected", "t": 1791098350.8606765}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.94}, "connection": "connected", "t": 1791098351.0163634}
+{"readings": {"load_pct": 20.0, "mil_dist_km": 0, "rpm": 740.0, "speed_kph": 0}, "connection": "connected", "t": 1791098351.367737}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "clear_dist_km": 665}, "connection": "connected", "t": 1791098351.5979319}
+{"readings": {"rpm": 715.0, "speed_kph": 0}, "connection": "connected", "t": 1791098351.7703793}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098352.0351927, "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098352.2548738}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098352.59973}
+{"readings": {"load_pct": 20.0}, "connection": "connected", "t": 1791098352.7196474}
+{"readings": {"coolant_c": 89, "rpm": 686.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098353.0129666}
+{"readings": {"load_pct": 20.0, "ecu_voltage_v": 13.85, "rpm": 680.5}, "connection": "connected", "t": 1791098353.2058597}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098353.4433448}
+{"readings": {"stft_pct": -1.56, "rpm": 683.0}, "connection": "connected", "t": 1791098353.6770492}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.39}, "connection": "connected", "t": 1791098353.8989277}
+{"readings": {"ltft_pct": 2.34, "rpm": 678.0}, "connection": "connected", "t": 1791098354.0317903}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "intake_c": 57}, "connection": "connected", "t": 1791098354.3966374}
+{"readings": {"rpm": 688.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "map_kpa": 29}, "connection": "connected", "t": 1791098354.6114874}
+{"readings": {"rpm": 686.0, "speed_kph": 0}, "connection": "connected", "t": 1791098354.7749574}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.39, "timing_deg": 4.5, "rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098355.108541}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098355.166479}
+{"readings": {"load_pct": 20.0, "ambient_c": 15, "rpm": 673.5, "speed_kph": 0}, "connection": "connected", "t": 1791098355.5154915}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "baro_kpa": 98}, "connection": "connected", "t": 1791098355.673734}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "runtime_min": 4.78}, "connection": "connected", "t": 1791098356.0030339}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098356.1337612}
+{"readings": {"load_pct": 20.0, "mil_dist_km": 0, "rpm": 677.0, "speed_kph": 0}, "connection": "connected", "t": 1791098356.4419408}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098356.6089025}
+{"readings": {"clear_dist_km": 665, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098356.8778236}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098357.1780229, "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098357.338209}
+{"readings": {"rpm": 677.0, "speed_kph": 0}, "connection": "connected", "t": 1791098357.676905}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 89}, "connection": "connected", "t": 1791098357.9010677}
+{"readings": {"rpm": 652.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098358.1480715}
+{"readings": {"ecu_voltage_v": 13.88, "rpm": 663.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098358.3633685}
+{"readings": {"load_pct": 20.0, "stft_pct": -1.56, "rpm": 679.5}, "connection": "connected", "t": 1791098358.6273637}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098358.870853}
+{"readings": {"rpm": 672.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098359.0936623}
+{"readings": {"intake_c": 57, "rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098359.325699}
+{"readings": {"load_pct": 19.61, "map_kpa": 28, "rpm": 667.5}, "connection": "connected", "t": 1791098359.5249488}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.0, "rpm": 672.0}, "connection": "connected", "t": 1791098359.7869391}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098359.9154582}
+{"readings": {"load_pct": 20.0, "ambient_c": 15, "rpm": 681.5}, "connection": "connected", "t": 1791098360.1350849}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098360.4155223}
+{"readings": {"rpm": 672.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098360.6627932}
+{"readings": {"load_pct": 19.61, "runtime_min": 4.87, "rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098360.8824742}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098361.113303}
+{"readings": {"rpm": 674.0}, "connection": "connected", "t": 1791098361.2602227}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098361.579214}
+{"readings": {"rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098361.8499439}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098362.0667214, "mil": false}
+{"readings": {"rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098362.3381262}
+{"readings": {"coolant_c": 89}, "connection": "connected", "t": 1791098362.5984588, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 675.5}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098362.8879254}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098363.1198428}
+{"readings": {"ecu_voltage_v": 13.9, "rpm": 681.5}, "connection": "connected", "t": 1791098363.4010687}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098363.6156857}
+{"readings": {"stft_pct": -0.78}, "connection": "connected", "t": 1791098363.751089}
+{"readings": {"rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098364.0287397}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098364.2642524}
+{"readings": {"ltft_pct": 2.34, "rpm": 671.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098364.5236738}
+{"readings": {"load_pct": 19.61, "intake_c": 57, "rpm": 683.5}, "connection": "connected", "t": 1791098364.7344346}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "map_kpa": 28, "rpm": 683.5}, "connection": "connected", "t": 1791098364.958555}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098365.1145627}
+{"readings": {"load_pct": 19.61, "timing_deg": 7.5, "rpm": 685.5}, "connection": "connected", "t": 1791098365.408507}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098365.6735592}
+{"readings": {"ambient_c": 15, "rpm": 681.5, "speed_kph": 0}, "connection": "connected", "t": 1791098365.866902}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 682.5}, "connection": "connected", "t": 1791098366.0897124}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 4.95}, "connection": "connected", "t": 1791098366.3298898}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098366.555478}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098366.833343}
+{"readings": {"load_pct": 19.61, "clear_dist_km": 665, "rpm": 681.5, "speed_kph": 0}, "connection": "connected", "t": 1791098367.1078475}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "rpm": 672.5}, "connection": "connected", "t": 1791098367.3088148, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098367.501645}
+{"readings": {"coolant_c": 89}, "connection": "connected", "t": 1791098367.7285702, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098367.7932854}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098368.1899261}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.97, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098368.4306366}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78, "rpm": 682.5}, "connection": "connected", "t": 1791098368.6219177}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34, "rpm": 674.5}, "connection": "connected", "t": 1791098368.9051766}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098369.0855927}
+{"readings": {"load_pct": 19.22, "intake_c": 57, "rpm": 679.5}, "connection": "connected", "t": 1791098369.3624065}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098369.5890343}
+{"readings": {"map_kpa": 28, "rpm": 682.5, "speed_kph": 0}, "connection": "connected", "t": 1791098369.909224}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.5, "rpm": 679.5}, "connection": "connected", "t": 1791098370.1807358}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098370.2982092}
+{"readings": {"load_pct": 19.61, "ambient_c": 15, "rpm": 674.0, "speed_kph": 0}, "connection": "connected", "t": 1791098370.6246457}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098370.801835}
+{"readings": {"baro_kpa": 98, "rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098371.019055}
+{"readings": {"load_pct": 19.61, "runtime_min": 5.03, "rpm": 678.5}, "connection": "connected", "t": 1791098371.272078}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098371.4359126}
+{"readings": {"mil_dist_km": 0, "rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098371.7548883}
+{"readings": {"load_pct": 19.22, "clear_dist_km": 665, "rpm": 679.0}, "connection": "connected", "t": 1791098372.00334}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098372.1979687}
+{"readings": {"rpm": 670.0, "speed_kph": 0, "throttle_pct": 12.55}, "mil": false, "connection": "connected", "t": 1791098372.5246685}
+{"readings": {"load_pct": 19.61, "coolant_c": 90}, "connection": "connected", "t": 1791098372.7405267}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098372.9940853}
+{"readings": {"rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098373.2605495}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098373.3562765}
+{"readings": {"ecu_voltage_v": 13.85, "rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098373.7252681}
+{"readings": {"load_pct": 19.22, "stft_pct": 0.0, "rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098373.96982}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098374.1774077}
+{"readings": {"rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098374.4054697}
+{"readings": {"intake_c": 57, "rpm": 679.0, "speed_kph": 0}, "connection": "connected", "t": 1791098374.6412504}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098374.8168426}
+{"readings": {"map_kpa": 28, "rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098375.0637662}
+{"readings": {"load_pct": 19.22, "timing_deg": 7.5, "rpm": 674.0}, "connection": "connected", "t": 1791098375.265073}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 15}, "connection": "connected", "t": 1791098375.5360286}
+{"readings": {"rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098375.680863}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "baro_kpa": 98, "rpm": 684.5}, "connection": "connected", "t": 1791098375.9111023}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098376.2249727}
+{"readings": {"runtime_min": 5.12, "rpm": 673.0, "speed_kph": 0}, "connection": "connected", "t": 1791098376.416578}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0, "rpm": 676.0, "speed_kph": 0}, "connection": "connected", "t": 1791098376.6412373}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665, "rpm": 679.0}, "connection": "connected", "t": 1791098376.91488}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098377.1549788}
+{"readings": {"rpm": 689.5, "speed_kph": 0, "throttle_pct": 12.55}, "mil": false, "connection": "connected", "t": 1791098377.3954687}
+{"readings": {"load_pct": 19.22, "coolant_c": 90, "rpm": 681.5, "speed_kph": 0}, "connection": "connected", "t": 1791098377.7629879}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098377.952401}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.85}, "connection": "connected", "t": 1791098378.1811583, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 681.5}, "connection": "connected", "t": 1791098378.4244504}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098378.6798372}
+{"readings": {"stft_pct": -0.78, "rpm": 676.5, "speed_kph": 0}, "connection": "connected", "t": 1791098378.8594937}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34, "rpm": 671.5}, "connection": "connected", "t": 1791098379.1604362}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098379.3851013}
+{"readings": {"rpm": 677.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098379.5944707}
+{"readings": {"load_pct": 19.22, "map_kpa": 28, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098379.8365896}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.5, "rpm": 677.0}, "connection": "connected", "t": 1791098380.063864}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098380.2564611}
+{"readings": {"ambient_c": 15, "rpm": 679.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098380.497529}
+{"readings": {"load_pct": 19.22, "baro_kpa": 98, "rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098380.804964}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "runtime_min": 5.2, "rpm": 676.0, "speed_kph": 0}, "connection": "connected", "t": 1791098381.0394595}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "mil_dist_km": 0}, "connection": "connected", "t": 1791098381.248959}
+{"readings": {"rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "clear_dist_km": 665}, "connection": "connected", "t": 1791098381.4769106}
+{"readings": {"rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098381.7169588}
+{"readings": {"load_pct": 19.22, "rpm": 694.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098381.9913418, "mil": false}
+{"readings": {"load_pct": 19.22, "coolant_c": 90, "rpm": 680.0}, "connection": "connected", "t": 1791098382.1494048}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.83, "rpm": 685.0}, "connection": "connected", "t": 1791098382.408567}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "stft_pct": 0.0, "rpm": 681.0}, "connection": "connected", "t": 1791098382.5895882}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098382.878345}
+{"readings": {"rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098383.0426254}
+{"readings": {"load_pct": 19.22, "intake_c": 57}, "connection": "connected", "t": 1791098383.298841, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098383.503093}
+{"readings": {"rpm": 674.0, "speed_kph": 0}, "connection": "connected", "t": 1791098383.8101585}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28, "rpm": 675.5}, "connection": "connected", "t": 1791098384.1022022}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098384.2556689}
+{"readings": {"timing_deg": 7.5, "rpm": 669.5, "speed_kph": 0}, "connection": "connected", "t": 1791098384.5368521}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "ambient_c": 15}, "connection": "connected", "t": 1791098384.7628133}
+{"readings": {"rpm": 676.0, "speed_kph": 0}, "connection": "connected", "t": 1791098384.8910933}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 681.0}, "connection": "connected", "t": 1791098385.1909251}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098385.4554758}
+{"readings": {"runtime_min": 5.28, "rpm": 681.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098385.717717}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 680.0}, "connection": "connected", "t": 1791098385.912478}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098386.183319}
+{"readings": {"rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098386.4546912, "mil": false}
+{"readings": {"rpm": 690.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098386.6182249}
+{"readings": {"load_pct": 19.22, "coolant_c": 90, "rpm": 672.5}, "connection": "connected", "t": 1791098386.898556}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098386.9620557}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.88, "rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098387.3207881}
+{"readings": {"load_pct": 19.61, "stft_pct": -0.78, "rpm": 676.5, "speed_kph": 0}, "connection": "connected", "t": 1791098387.6211991}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098387.8080747}
+{"readings": {"rpm": 683.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098388.0644171}
+{"readings": {"intake_c": 57, "rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098388.283971}
+{"readings": {"load_pct": 19.22, "map_kpa": 28}, "connection": "connected", "t": 1791098388.4861474, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 673.5}, "connection": "connected", "t": 1791098388.7406425}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098388.8803794}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.5, "rpm": 678.5}, "connection": "connected", "t": 1791098389.1069646}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "ambient_c": 15, "rpm": 679.0}, "connection": "connected", "t": 1791098389.385902}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098389.6424644}
+{"readings": {"rpm": 681.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098389.850663}
+{"readings": {"runtime_min": 5.35, "rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098390.1137323}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 690.5}, "connection": "connected", "t": 1791098390.3919344}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098390.6257083}
+{"readings": {"clear_dist_km": 665, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098390.8038988}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098390.9302135, "mil": false}
+{"readings": {"rpm": 683.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098391.2427218}
+{"readings": {"load_pct": 19.22, "coolant_c": 90, "rpm": 679.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098391.5134938}
+{"readings": {"load_pct": 19.22, "ecu_voltage_v": 13.8, "rpm": 676.5}, "connection": "connected", "t": 1791098391.7786193}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098391.9554067}
+{"readings": {"stft_pct": -0.78, "rpm": 677.5, "speed_kph": 0}, "connection": "connected", "t": 1791098392.2026591}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "ltft_pct": 2.34, "rpm": 681.0}, "connection": "connected", "t": 1791098392.4417617}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "intake_c": 57, "rpm": 683.0}, "connection": "connected", "t": 1791098392.6966262}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098392.8717625}
+{"readings": {"map_kpa": 28, "rpm": 672.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098393.0830984}
+{"readings": {"load_pct": 19.22, "timing_deg": 6.5, "rpm": 674.0, "speed_kph": 0}, "connection": "connected", "t": 1791098393.3174915}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 15}, "connection": "connected", "t": 1791098393.529725, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098393.790535}
+{"readings": {"rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098394.0552306}
+{"readings": {"load_pct": 19.22, "baro_kpa": 98, "rpm": 684.0}, "connection": "connected", "t": 1791098394.342723}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098394.488676}
+{"readings": {"runtime_min": 5.43, "rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098394.7579403}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098394.8725896}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098395.1736553}
+{"readings": {"clear_dist_km": 665, "rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098395.4327931}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098395.5581234, "mil": false}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098395.81575}
+{"readings": {"coolant_c": 90, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098396.0396209}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.92, "rpm": 679.0, "speed_kph": 0}, "connection": "connected", "t": 1791098396.2445326}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098396.4805527}
+{"readings": {"stft_pct": 0.0, "rpm": 685.0}, "connection": "connected", "t": 1791098396.7504566}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.16, "load_pct": 19.22}, "connection": "connected", "t": 1791098396.9971788}
+{"readings": {"ltft_pct": 2.34, "rpm": 672.5, "speed_kph": 0}, "connection": "connected", "t": 1791098397.291438}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098397.496929}
+{"readings": {"rpm": 674.0, "speed_kph": 0}, "connection": "connected", "t": 1791098397.717939}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28, "rpm": 679.5}, "connection": "connected", "t": 1791098397.9327037}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098398.1241374}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.5, "rpm": 682.5}, "connection": "connected", "t": 1791098398.381518}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098398.5395355}
+{"readings": {"ambient_c": 15}, "connection": "connected", "t": 1791098398.8525517, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098399.3048167}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 672.0, "speed_kph": 0}, "connection": "connected", "t": 1791098399.5529678}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 5.52}, "connection": "connected", "t": 1791098399.788763}
+{"readings": {"rpm": 683.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098399.9984927}
+{"readings": {"load_pct": 19.22, "mil_dist_km": 0, "rpm": 681.5, "speed_kph": 0}, "connection": "connected", "t": 1791098400.2878475}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098400.4189131}
+{"readings": {"rpm": 672.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098400.7239397}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55}, "mil": false, "connection": "connected", "t": 1791098400.9698884}
+{"readings": {"load_pct": 19.22, "coolant_c": 90, "rpm": 678.5}, "connection": "connected", "t": 1791098401.2092998}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.92}, "connection": "connected", "t": 1791098401.4374318}
+{"readings": {"rpm": 681.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": 0.0}, "connection": "connected", "t": 1791098401.6944313}
+{"readings": {"rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098401.9304042}
+{"readings": {"load_pct": 19.22, "ltft_pct": 2.34, "rpm": 683.0, "speed_kph": 0}, "connection": "connected", "t": 1791098402.1389396}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "intake_c": 57, "rpm": 679.5}, "connection": "connected", "t": 1791098402.4083445}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "map_kpa": 28}, "connection": "connected", "t": 1791098402.649844}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098402.8250072}
+{"readings": {"load_pct": 19.22, "timing_deg": 7.5, "rpm": 678.5}, "connection": "connected", "t": 1791098403.06113}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 15}, "connection": "connected", "t": 1791098403.3134181}
+{"readings": {"rpm": 675.5, "speed_kph": 0}, "connection": "connected", "t": 1791098403.4772964}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "baro_kpa": 98}, "connection": "connected", "t": 1791098403.75115, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098403.8470104}
+{"readings": {"rpm": 679.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 5.58}, "connection": "connected", "t": 1791098404.229967}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098404.4920475}
+{"readings": {"rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "clear_dist_km": 665}, "connection": "connected", "t": 1791098404.6919107}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098404.8475142}
+{"readings": {"load_pct": 19.22, "rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098405.1505456, "mil": false}
+{"readings": {"load_pct": 19.61, "coolant_c": 90, "rpm": 669.0}, "connection": "connected", "t": 1791098405.3283231}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.9}, "connection": "connected", "t": 1791098405.5685465}
+{"readings": {"rpm": 678.5, "speed_kph": 0}, "connection": "connected", "t": 1791098405.728062}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "stft_pct": 0.0, "rpm": 677.5}, "connection": "connected", "t": 1791098405.9618742}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098406.2787085}
+{"readings": {"rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098406.4974914}
+{"readings": {"intake_c": 57, "rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098406.692634}
+{"readings": {"map_kpa": 28, "rpm": 677.5, "speed_kph": 0}, "connection": "connected", "t": 1791098406.9120955}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "timing_deg": 6.0}, "connection": "connected", "t": 1791098407.1368322}
+{"readings": {"rpm": 685.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "ambient_c": 15}, "connection": "connected", "t": 1791098407.376664}
+{"readings": {"rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098407.5849016}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 682.5}, "connection": "connected", "t": 1791098407.8107567}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098407.9697778}
+{"readings": {"runtime_min": 5.65, "rpm": 674.0}, "connection": "connected", "t": 1791098408.2124135}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "mil_dist_km": 0}, "connection": "connected", "t": 1791098408.5336058}
+{"readings": {"rpm": 675.0, "speed_kph": 0}, "connection": "connected", "t": 1791098408.7059932}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "clear_dist_km": 665}, "connection": "connected", "t": 1791098408.9224048}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098409.1195104}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098409.2886288}
+{"readings": {"rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098409.634397}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098409.7800872}
+{"readings": {"rpm": 679.0, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098410.0299299}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 90, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098410.2769408}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.83, "rpm": 674.0}, "connection": "connected", "t": 1791098410.5472004}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "stft_pct": -0.78}, "connection": "connected", "t": 1791098410.870964}
+{"readings": {"rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098411.0220892}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34, "rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098411.2612996}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "intake_c": 57, "rpm": 680.0}, "connection": "connected", "t": 1791098411.5174801}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098411.8131995}
+{"readings": {"rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098412.0161366}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.5, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098412.2799728}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "ambient_c": 15, "rpm": 669.5, "speed_kph": 0}, "connection": "connected", "t": 1791098412.5139315}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 678.0}, "connection": "connected", "t": 1791098412.7265723}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098412.8687193}
+{"readings": {"load_pct": 19.22, "runtime_min": 5.73, "rpm": 677.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098413.1657145}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 682.5, "speed_kph": 0}, "connection": "connected", "t": 1791098413.3420649}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098413.5212014}
+{"readings": {"rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098413.7847095}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098413.9616437, "mil": false, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"]}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098414.1091099}
+{"readings": {"rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098414.4604707}
+{"readings": {"load_pct": 20.0, "coolant_c": 90, "rpm": 669.0, "speed_kph": 0}, "connection": "connected", "t": 1791098414.7000346}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.78}, "connection": "connected", "t": 1791098414.9187934}
+{"readings": {"rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098415.1873617}
+{"readings": {"stft_pct": -0.78, "rpm": 688.0}, "connection": "connected", "t": 1791098415.414619}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098415.7022402}
+{"readings": {"ltft_pct": 2.34, "rpm": 686.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098415.9614666}
+{"readings": {"load_pct": 20.0, "intake_c": 57, "rpm": 691.5}, "connection": "connected", "t": 1791098416.210311}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "map_kpa": 29, "rpm": 675.5}, "connection": "connected", "t": 1791098416.465125}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "timing_deg": 6.0}, "connection": "connected", "t": 1791098416.7025793}
+{"readings": {"rpm": 692.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098416.9539008}
+{"readings": {"ambient_c": 15, "rpm": 681.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098417.1742988}
+{"readings": {"baro_kpa": 98, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098417.457286}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "runtime_min": 5.82, "rpm": 687.0, "speed_kph": 0}, "connection": "connected", "t": 1791098417.6728904}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "mil_dist_km": 0}, "connection": "connected", "t": 1791098417.8944604}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.39}, "connection": "connected", "t": 1791098418.1587029}
+{"readings": {"clear_dist_km": 665, "rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098418.3577063}
+{"readings": {"load_pct": 20.39, "rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098418.6112523, "mil": false}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.39, "coolant_c": 90, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098418.826237}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "ecu_voltage_v": 13.83}, "connection": "connected", "t": 1791098419.0450544}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098419.2745426}
+{"readings": {"rpm": 677.5}, "connection": "connected", "t": 1791098419.5262213}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.39}, "connection": "connected", "t": 1791098419.6894386}
+{"readings": {"stft_pct": -0.78, "rpm": 685.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098419.9599211}
+{"readings": {"load_pct": 20.0, "ltft_pct": 2.34, "rpm": 678.0}, "connection": "connected", "t": 1791098420.1399271}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098420.354858}
+{"readings": {"intake_c": 57, "rpm": 682.5, "speed_kph": 0}, "connection": "connected", "t": 1791098420.6378515}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "map_kpa": 29}, "connection": "connected", "t": 1791098420.8654954}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098421.0740876}
+{"readings": {"load_pct": 20.0, "timing_deg": 6.0, "rpm": 678.5, "speed_kph": 0}, "connection": "connected", "t": 1791098421.3415341}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "ambient_c": 15, "rpm": 675.0}, "connection": "connected", "t": 1791098421.5901687}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098421.7881708}
+{"readings": {"baro_kpa": 98, "rpm": 677.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098422.064727}
+{"readings": {"load_pct": 20.0, "runtime_min": 5.88, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098422.3123858}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "mil_dist_km": 0}, "connection": "connected", "t": 1791098422.5418243}
+{"readings": {"rpm": 678.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098422.7370596}
+{"readings": {"load_pct": 20.0, "clear_dist_km": 665, "rpm": 678.0}, "connection": "connected", "t": 1791098423.0045779}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098423.1901543}
+{"readings": {"rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "mil": false, "connection": "connected", "t": 1791098423.4923627}
+{"readings": {"load_pct": 20.0, "coolant_c": 91, "rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098423.7211118}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.88}, "connection": "connected", "t": 1791098423.9612792}
+{"readings": {"rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098424.1716175}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098424.3592668}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098424.458233}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098424.9123106}
+{"readings": {"load_pct": 20.0, "ltft_pct": 2.34, "rpm": 678.5}, "connection": "connected", "t": 1791098425.067777}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "intake_c": 57}, "connection": "connected", "t": 1791098425.3801699}
+{"readings": {"rpm": 681.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098425.6290755}
+{"readings": {"map_kpa": 29, "rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098425.890593}
+{"readings": {"load_pct": 19.61, "timing_deg": 5.0, "rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098426.1131544}
+{"readings": {"load_pct": 19.61, "ambient_c": 15, "rpm": 685.0, "speed_kph": 0}, "connection": "connected", "t": 1791098426.3829737}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "baro_kpa": 98, "rpm": 679.0, "speed_kph": 0}, "connection": "connected", "t": 1791098426.6770992}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "runtime_min": 5.97, "rpm": 681.0}, "connection": "connected", "t": 1791098426.871591}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098427.0681376}
+{"readings": {"mil_dist_km": 0, "rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098427.3394477}
+{"readings": {"load_pct": 19.61, "clear_dist_km": 665, "rpm": 672.5}, "connection": "connected", "t": 1791098427.552097}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098427.7774673}
+{"readings": {"load_pct": 20.0, "rpm": 684.5}, "connection": "connected", "t": 1791098428.0706325, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098428.3312283}
+{"readings": {"coolant_c": 91, "rpm": 669.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098428.5883908}
+{"readings": {"ecu_voltage_v": 13.88, "rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098428.7722857}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098429.0114174}
+{"readings": {"rpm": 681.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098429.2342644}
+{"readings": {"ltft_pct": 2.34}, "connection": "connected", "t": 1791098429.41074, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098429.6859953}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098429.8676465}
+{"readings": {"intake_c": 57, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098430.1254299}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29}, "connection": "connected", "t": 1791098430.2989285}
+{"readings": {"rpm": 691.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098430.5511432}
+{"readings": {"timing_deg": 6.0, "rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098430.7775881}
+{"readings": {"ambient_c": 15, "rpm": 672.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098431.0314252}
+{"readings": {"baro_kpa": 98, "rpm": 677.5, "speed_kph": 0}, "connection": "connected", "t": 1791098431.2599401}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "runtime_min": 6.03}, "connection": "connected", "t": 1791098431.4875224}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098431.7400694}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098431.9648051}
+{"readings": {"load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098432.092146}
+{"readings": {"rpm": 664.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098432.3586714}
+{"readings": {"rpm": 671.5, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098432.5995808}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "coolant_c": 91, "rpm": 688.5}, "connection": "connected", "t": 1791098432.859482}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.85}, "connection": "connected", "t": 1791098433.039532}
+{"readings": {"rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098433.3198388}
+{"readings": {"stft_pct": -0.78, "rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098433.624859}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34, "rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098433.8317168}
+{"readings": {"load_pct": 20.0, "intake_c": 57, "rpm": 674.0}, "connection": "connected", "t": 1791098434.0323052}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098434.2721055}
+{"readings": {"map_kpa": 29}, "connection": "connected", "t": 1791098434.4861734, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 674.5}, "connection": "connected", "t": 1791098434.7256353}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "timing_deg": 6.0, "rpm": 681.5}, "connection": "connected", "t": 1791098435.0922778}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098435.330301}
+{"readings": {"ambient_c": 15, "rpm": 679.5}, "connection": "connected", "t": 1791098435.4837017}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098435.7298164}
+{"readings": {"baro_kpa": 98, "rpm": 684.5, "speed_kph": 0}, "connection": "connected", "t": 1791098435.9607582}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 6.12, "rpm": 680.0}, "connection": "connected", "t": 1791098436.2328048}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098436.4127207}
+{"readings": {"mil_dist_km": 0, "rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098436.6946511}
+{"readings": {"load_pct": 19.61, "clear_dist_km": 665, "rpm": 674.0, "speed_kph": 0}, "connection": "connected", "t": 1791098436.9112768}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098437.1158772, "mil": false}
+{"readings": {"rpm": 667.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098437.3926046}
+{"readings": {"coolant_c": 91, "rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098437.62916}
+{"readings": {"load_pct": 20.0, "ecu_voltage_v": 13.83, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098437.8419495}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "stft_pct": 0.0}, "connection": "connected", "t": 1791098438.1561284}
+{"readings": {"rpm": 679.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098438.3785818}
+{"readings": {"ltft_pct": 2.34, "rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098438.6033974}
+{"readings": {"intake_c": 57, "rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098438.8660676}
+{"readings": {"load_pct": 20.0, "map_kpa": 29, "rpm": 683.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098439.111435}
+{"readings": {"load_pct": 20.0, "timing_deg": 6.0, "rpm": 689.5, "speed_kph": 0}, "connection": "connected", "t": 1791098439.3100326}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 14}, "connection": "connected", "t": 1791098439.6012232, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098439.708669}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098440.026858}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098440.2608857}
+{"readings": {"rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098440.5610814}
+{"readings": {"load_pct": 20.0, "runtime_min": 6.2, "rpm": 673.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098440.7910395}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098441.0035992}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "clear_dist_km": 665, "rpm": 669.0}, "connection": "connected", "t": 1791098441.2393992}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "rpm": 677.0}, "connection": "connected", "t": 1791098441.5055294, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098441.660581}
+{"readings": {"coolant_c": 90, "rpm": 673.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098441.9772744}
+{"readings": {"ecu_voltage_v": 13.85, "rpm": 686.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098442.220189}
+{"readings": {"load_pct": 20.0, "stft_pct": 0.0, "rpm": 685.5, "speed_kph": 0}, "connection": "connected", "t": 1791098442.5791256}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098442.7280014}
+{"readings": {"ltft_pct": 2.34, "rpm": 672.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098442.9935107}
+{"readings": {"load_pct": 19.61, "intake_c": 57, "rpm": 672.5, "speed_kph": 0}, "connection": "connected", "t": 1791098443.230682}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29, "rpm": 673.0}, "connection": "connected", "t": 1791098443.49063}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098443.7521715}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.5, "rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098443.9832265}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098444.2234175}
+{"readings": {"ambient_c": 14, "rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098444.4461887}
+{"readings": {"load_pct": 20.0, "baro_kpa": 98}, "connection": "connected", "t": 1791098444.6306918, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098444.7820892}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098445.1772873}
+{"readings": {"runtime_min": 6.27, "rpm": 688.0}, "connection": "connected", "t": 1791098445.34309}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098445.5871334}
+{"readings": {"mil_dist_km": 0, "rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098445.8458939}
+{"readings": {"load_pct": 19.61, "clear_dist_km": 665, "rpm": 677.0, "speed_kph": 0}, "connection": "connected", "t": 1791098446.07725}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098446.2098176, "mil": false}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098446.4653335}
+{"readings": {"coolant_c": 90, "rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098446.7368627}
+{"readings": {"load_pct": 20.0, "ecu_voltage_v": 13.8, "rpm": 685.5, "speed_kph": 0}, "connection": "connected", "t": 1791098446.949454}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "stft_pct": 0.0}, "connection": "connected", "t": 1791098447.1583772}
+{"readings": {"rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098447.4460354}
+{"readings": {"ltft_pct": 2.34, "rpm": 680.5, "speed_kph": 0}, "connection": "connected", "t": 1791098447.6320026}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57, "rpm": 673.5, "speed_kph": 0}, "connection": "connected", "t": 1791098447.879762}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28, "rpm": 685.5}, "connection": "connected", "t": 1791098448.163622}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "timing_deg": 6.5}, "connection": "connected", "t": 1791098448.355863}
+{"readings": {"rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13}, "connection": "connected", "t": 1791098448.626941}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098448.7850425}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 674.0, "speed_kph": 0}, "connection": "connected", "t": 1791098449.0290327}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "runtime_min": 6.33, "rpm": 677.5}, "connection": "connected", "t": 1791098449.2946239}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098449.4696827}
+{"readings": {"mil_dist_km": 0, "rpm": 682.5, "speed_kph": 0}, "connection": "connected", "t": 1791098449.6820164}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098449.9386404, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098450.0814111}
+{"readings": {"rpm": 683.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098450.3787913}
+{"readings": {"load_pct": 20.0, "rpm": 662.5, "speed_kph": 0}, "connection": "connected", "t": 1791098450.6169674, "mil": false}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "coolant_c": 90, "rpm": 668.0}, "connection": "connected", "t": 1791098450.8733473}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "ecu_voltage_v": 13.78, "rpm": 690.5}, "connection": "connected", "t": 1791098451.1237233}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": 0.0}, "connection": "connected", "t": 1791098451.2882361}
+{"readings": {"rpm": 686.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098451.5173016}
+{"readings": {"ltft_pct": 2.34, "rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098451.7832677}
+{"readings": {"load_pct": 20.0, "intake_c": 57, "rpm": 680.0}, "connection": "connected", "t": 1791098451.951007}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29}, "connection": "connected", "t": 1791098452.2413554}
+{"readings": {"rpm": 673.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098452.3981347}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.5, "rpm": 674.5}, "connection": "connected", "t": 1791098454.8911319}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "ambient_c": 13}, "connection": "connected", "t": 1791098455.1732016, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 673.5}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098455.4290178}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "baro_kpa": 98}, "connection": "connected", "t": 1791098455.6471248}
+{"readings": {"rpm": 683.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098455.8567152}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098455.9360368}
+{"readings": {"runtime_min": 6.45, "rpm": 694.5, "speed_kph": 0}, "connection": "connected", "t": 1791098456.2326221}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098456.4913967}
+{"readings": {"mil_dist_km": 0, "rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098456.7540705}
+{"readings": {"clear_dist_km": 665, "rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098456.9650598}
+{"readings": {"load_pct": 19.61, "rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098457.2650826, "mil": false}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098457.3397043}
+{"readings": {"coolant_c": 89, "rpm": 687.0}, "connection": "connected", "t": 1791098457.7252452}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098458.1397476}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.85, "rpm": 685.5, "speed_kph": 0}, "connection": "connected", "t": 1791098458.4669373}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "stft_pct": 0.0}, "connection": "connected", "t": 1791098458.7652423}
+{"readings": {"rpm": 686.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098459.0036004}
+{"readings": {"ltft_pct": 2.34, "rpm": 691.0, "speed_kph": 0}, "connection": "connected", "t": 1791098459.2200418}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098459.444264}
+{"readings": {"rpm": 679.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098459.6746666}
+{"readings": {"load_pct": 19.61, "map_kpa": 29, "rpm": 671.5, "speed_kph": 0}, "connection": "connected", "t": 1791098459.9078586}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098459.956875}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.0}, "connection": "connected", "t": 1791098460.416327, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098460.6287475}
+{"readings": {"rpm": 672.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098461.110528}
+{"readings": {"load_pct": 19.61, "ambient_c": 13, "rpm": 679.0, "speed_kph": 0}, "connection": "connected", "t": 1791098461.457817}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 684.5}, "connection": "connected", "t": 1791098461.6635551}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098461.8826885}
+{"readings": {"runtime_min": 6.55, "rpm": 677.0}, "connection": "connected", "t": 1791098462.0279183}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098462.2650347}
+{"readings": {"load_pct": 20.0, "mil_dist_km": 0, "rpm": 672.5}, "connection": "connected", "t": 1791098462.547917}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098462.873866}
+{"readings": {"clear_dist_km": 665, "rpm": 680.5}, "connection": "connected", "t": 1791098463.056484}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098463.393215, "mil": false}
+{"readings": {"rpm": 686.0, "speed_kph": 0}, "connection": "connected", "t": 1791098463.5548599}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 88}, "connection": "connected", "t": 1791098463.777511}
+{"readings": {"rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098463.9974587}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.85, "rpm": 674.0}, "connection": "connected", "t": 1791098464.2808855}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098464.571895}
+{"readings": {"stft_pct": -0.78}, "connection": "connected", "t": 1791098464.7431757}
+{"readings": {"rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098465.0708623}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34, "rpm": 680.0}, "connection": "connected", "t": 1791098465.2889967}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098465.563194}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098465.738296}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098465.9278655}
+{"readings": {"rpm": 676.0, "speed_kph": 0}, "connection": "connected", "t": 1791098466.2930365}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29}, "connection": "connected", "t": 1791098466.5055404}
+{"readings": {"rpm": 682.5, "speed_kph": 0}, "connection": "connected", "t": 1791098466.7187939}
+{"readings": {"throttle_pct": 12.55}, "connection": "connected", "t": 1791098466.8207734}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.0}, "connection": "connected", "t": 1791098467.01925}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098467.3035288}
+{"readings": {"load_pct": 19.61, "ambient_c": 13, "rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098467.6224158}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 669.0, "speed_kph": 0}, "connection": "connected", "t": 1791098467.7926116}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098467.9940598}
+{"readings": {"runtime_min": 6.65, "rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098468.2168407}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098468.4927764}
+{"readings": {"mil_dist_km": 0, "rpm": 682.5, "speed_kph": 0}, "connection": "connected", "t": 1791098468.717316}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "clear_dist_km": 665, "rpm": 677.5}, "connection": "connected", "t": 1791098468.8931375}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098469.1236022, "mil": false}
+{"readings": {"rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098469.4661808}
+{"readings": {"coolant_c": 87, "rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098469.684028}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.78, "rpm": 668.0}, "connection": "connected", "t": 1791098469.9129014}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098470.1752963}
+{"readings": {"stft_pct": -0.78, "rpm": 673.5, "speed_kph": 0}, "connection": "connected", "t": 1791098470.3689806}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34, "rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098470.677419}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098471.0005298}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098471.103391}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098472.0819018}
+{"readings": {"rpm": 677.0}, "connection": "connected", "t": 1791098473.0918217}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098473.3547525}
+{"readings": {"map_kpa": 29, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098473.602823}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.0}, "connection": "connected", "t": 1791098473.9359725}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098474.1539502}
+{"readings": {"load_pct": 19.61, "ambient_c": 13, "rpm": 688.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098474.39931}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 680.0}, "connection": "connected", "t": 1791098474.7033548}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098474.85061}
+{"readings": {"load_pct": 19.61, "runtime_min": 6.77, "rpm": 680.5, "speed_kph": 0}, "connection": "connected", "t": 1791098475.1329148}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "mil_dist_km": 0}, "connection": "connected", "t": 1791098475.3563616}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098475.6513808}
+{"readings": {"clear_dist_km": 665, "rpm": 677.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098475.8886654}
+{"readings": {"load_pct": 19.61, "rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098476.140119, "mil": false}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "coolant_c": 86}, "connection": "connected", "t": 1791098476.3325346}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098476.7111244}
+{"readings": {"rpm": 683.5}, "connection": "connected", "t": 1791098476.9863691}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.8}, "connection": "connected", "t": 1791098477.2148097}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098477.5280907}
+{"readings": {"stft_pct": -0.78, "rpm": 674.5}, "connection": "connected", "t": 1791098477.6908135}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098477.902634}
+{"readings": {"ltft_pct": 2.34, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098478.0814679}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098478.3994167}
+{"readings": {"intake_c": 57, "rpm": 678.5, "speed_kph": 0}, "connection": "connected", "t": 1791098478.6541748}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29, "rpm": 684.5, "speed_kph": 0}, "connection": "connected", "t": 1791098478.8998141}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 5.0}, "connection": "connected", "t": 1791098479.048658}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098479.255008}
+{"readings": {"load_pct": 19.61, "ambient_c": 13, "rpm": 677.0, "speed_kph": 0}, "connection": "connected", "t": 1791098479.55117}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 674.5}, "connection": "connected", "t": 1791098479.7587442}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098479.9697819}
+{"readings": {"runtime_min": 6.85, "rpm": 677.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098480.1861324}
+{"readings": {"load_pct": 20.0, "mil_dist_km": 0, "rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098480.453656}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665, "rpm": 667.5}, "connection": "connected", "t": 1791098480.6948547}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098480.857088}
+{"readings": {"rpm": 675.0, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098481.0764081}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 86, "rpm": 687.5}, "connection": "connected", "t": 1791098481.3357975}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098481.4191825}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.83}, "connection": "connected", "t": 1791098481.804598}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098482.0901244}
+{"readings": {"rpm": 680.0}, "connection": "connected", "t": 1791098482.359127}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098482.5589027}
+{"readings": {"stft_pct": 0.0, "rpm": 683.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098482.7876852}
+{"readings": {"ltft_pct": 2.34, "rpm": 681.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098483.0567992}
+{"readings": {"load_pct": 19.22, "intake_c": 57, "rpm": 684.0}, "connection": "connected", "t": 1791098483.242678}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28, "rpm": 679.0}, "connection": "connected", "t": 1791098483.54172}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.5}, "connection": "connected", "t": 1791098483.8049104}
+{"readings": {"rpm": 665.5, "speed_kph": 0}, "connection": "connected", "t": 1791098484.0119445}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13, "rpm": 687.5, "speed_kph": 0}, "connection": "connected", "t": 1791098484.3245356}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 677.5}, "connection": "connected", "t": 1791098484.5335622}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 6.93}, "connection": "connected", "t": 1791098484.7896452}
+{"readings": {"rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098485.0617347}
+{"readings": {"mil_dist_km": 0}, "connection": "connected", "t": 1791098485.1101944}
+{"readings": {"rpm": 670.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098485.5343606}
+{"readings": {"clear_dist_km": 665, "rpm": 682.0, "speed_kph": 0}, "connection": "connected", "t": 1791098485.7568347}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098485.960548}
+{"readings": {"rpm": 676.5, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098486.2479308}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "coolant_c": 85, "rpm": 679.0}, "connection": "connected", "t": 1791098486.4839015}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.83, "rpm": 681.5}, "connection": "connected", "t": 1791098486.726158}
+{"readings": {"speed_kph": 0}, "connection": "connected", "t": 1791098486.9785304}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098487.2657065, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098487.32954}
+{"readings": {"rpm": 679.0, "speed_kph": 0}, "connection": "connected", "t": 1791098487.6103537}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098487.882995}
+{"readings": {"rpm": 686.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "intake_c": 57}, "connection": "connected", "t": 1791098488.1582234}
+{"readings": {"rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098488.35641}
+{"readings": {"map_kpa": 28, "rpm": 673.0, "speed_kph": 0}, "connection": "connected", "t": 1791098488.5912151}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "timing_deg": 6.0}, "connection": "connected", "t": 1791098488.707446}
+{"readings": {"rpm": 681.5, "speed_kph": 0}, "connection": "connected", "t": 1791098488.867313}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13}, "connection": "connected", "t": 1791098489.1580772}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098489.4158027}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098489.616923}
+{"readings": {"load_pct": 19.61, "runtime_min": 7.02, "rpm": 672.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098489.93377}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098490.0211895}
+{"readings": {"mil_dist_km": 0, "rpm": 679.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098490.3228643}
+{"readings": {"clear_dist_km": 665, "rpm": 691.5, "speed_kph": 0}, "connection": "connected", "t": 1791098490.5649042}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "rpm": 677.5, "speed_kph": 0}, "connection": "connected", "t": 1791098490.8040638, "mil": false}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 85, "rpm": 676.5, "speed_kph": 0}, "connection": "connected", "t": 1791098491.0477884}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.8, "rpm": 673.5}, "connection": "connected", "t": 1791098491.3738558}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098491.4862168}
+{"readings": {"load_pct": 19.61, "stft_pct": -0.78, "rpm": 676.5}, "connection": "connected", "t": 1791098491.791173}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098492.0207915}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098492.3097749}
+{"readings": {"load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098492.4550154}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098492.7822957}
+{"readings": {"rpm": 670.5}, "connection": "connected", "t": 1791098493.0261424}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098493.2148075}
+{"readings": {"load_pct": 19.61, "map_kpa": 28, "rpm": 686.0, "speed_kph": 0}, "connection": "connected", "t": 1791098493.450308}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.0, "rpm": 682.5}, "connection": "connected", "t": 1791098493.712812}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098493.9365246}
+{"readings": {"ambient_c": 13, "rpm": 679.0}, "connection": "connected", "t": 1791098494.1229694}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098494.423173}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098494.6646192}
+{"readings": {"rpm": 670.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098494.8889642}
+{"readings": {"load_pct": 19.61, "runtime_min": 7.1}, "connection": "connected", "t": 1791098495.1201034}
+{"readings": {"rpm": 686.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098495.3528092}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 678.5, "speed_kph": 0}, "connection": "connected", "t": 1791098495.6012979}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665, "rpm": 676.5}, "connection": "connected", "t": 1791098495.807548}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098495.9974527, "mil": false}
+{"readings": {"rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098496.323909}
+{"readings": {"load_pct": 20.0, "coolant_c": 86, "rpm": 683.0, "speed_kph": 0}, "connection": "connected", "t": 1791098496.5689876}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098496.810969}
+{"readings": {"ecu_voltage_v": 13.8, "rpm": 683.0, "speed_kph": 0}, "connection": "connected", "t": 1791098497.0343814}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78, "rpm": 674.0}, "connection": "connected", "t": 1791098497.234749}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098497.459109}
+{"readings": {"ltft_pct": 2.34}, "connection": "connected", "t": 1791098497.7236133, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 675.5}, "connection": "connected", "t": 1791098497.935265}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 57}, "connection": "connected", "t": 1791098498.211491}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098498.4429877}
+{"readings": {"rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098498.674075}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.5, "rpm": 670.0, "speed_kph": 0}, "connection": "connected", "t": 1791098498.9330516}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13}, "connection": "connected", "t": 1791098499.083258}
+{"readings": {"rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098499.2984843}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098499.6376765}
+{"readings": {"rpm": 678.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098499.8293226}
+{"readings": {"load_pct": 19.61, "runtime_min": 7.18, "rpm": 694.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098500.0716143}
+{"readings": {"mil_dist_km": 0, "rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098500.2699504}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "clear_dist_km": 665, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098500.495266}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098500.7117567, "mil": false}
+{"readings": {"rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098500.9269354}
+{"readings": {"coolant_c": 86, "rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098501.163679}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "ecu_voltage_v": 13.78, "rpm": 679.0}, "connection": "connected", "t": 1791098501.4122198}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098501.6279383}
+{"readings": {"rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098501.8690186}
+{"readings": {"ltft_pct": 2.34, "rpm": 676.0, "speed_kph": 0}, "connection": "connected", "t": 1791098502.0768461}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "intake_c": 57}, "connection": "connected", "t": 1791098502.2954957}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098502.5780337}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098502.7976248}
+{"readings": {"rpm": 680.5}, "connection": "connected", "t": 1791098503.0597708}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.0}, "connection": "connected", "t": 1791098503.2577128}
+{"readings": {"rpm": 683.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098503.5584462}
+{"readings": {"ambient_c": 13, "rpm": 688.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098503.758528}
+{"readings": {"load_pct": 19.22, "baro_kpa": 98, "rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098504.0094156}
+{"readings": {"load_pct": 19.22, "runtime_min": 7.25, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098504.1970851}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098504.3799872}
+{"readings": {"rpm": 681.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098504.6624815}
+{"readings": {"clear_dist_km": 665, "rpm": 687.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098504.8353782}
+{"readings": {"load_pct": 19.22, "rpm": 671.5}, "connection": "connected", "t": 1791098505.0905857, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 86, "rpm": 678.0}, "connection": "connected", "t": 1791098505.370417}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.78, "rpm": 677.5}, "connection": "connected", "t": 1791098505.6232243}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098505.7877944}
+{"readings": {"stft_pct": -0.78, "rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098506.0400054}
+{"readings": {"ltft_pct": 2.34, "rpm": 679.0, "speed_kph": 0}, "connection": "connected", "t": 1791098506.2349946}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "intake_c": 57, "rpm": 680.5}, "connection": "connected", "t": 1791098506.492662}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "map_kpa": 28}, "connection": "connected", "t": 1791098506.6985302}
+{"readings": {"rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098506.9268172}
+{"readings": {"timing_deg": 6.5, "rpm": 679.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098507.1697662}
+{"readings": {"ambient_c": 13, "rpm": 679.0}, "connection": "connected", "t": 1791098507.3669927}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098507.58984}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098507.7284973}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098508.0593212}
+{"readings": {"runtime_min": 7.32, "rpm": 669.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098508.2553034}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098508.4532995}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665, "rpm": 675.0, "speed_kph": 0}, "connection": "connected", "t": 1791098508.6665437}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098508.911278, "mil": false}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098509.1029608}
+{"readings": {"load_pct": 19.61, "coolant_c": 87, "rpm": 685.0, "speed_kph": 0}, "connection": "connected", "t": 1791098509.3543031}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "ecu_voltage_v": 13.83}, "connection": "connected", "t": 1791098509.5552735}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098509.8214107}
+{"readings": {"stft_pct": -0.78, "rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098510.1157656}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34, "rpm": 686.0, "speed_kph": 0}, "connection": "connected", "t": 1791098510.3123295}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 58, "rpm": 680.0}, "connection": "connected", "t": 1791098510.553137}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098510.810602}
+{"readings": {"load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098511.0324988}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098511.2414331}
+{"readings": {"timing_deg": 6.0, "rpm": 686.0, "speed_kph": 0}, "connection": "connected", "t": 1791098511.4278324}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13}, "connection": "connected", "t": 1791098511.6984425}
+{"readings": {"rpm": 674.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098511.9225972}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 692.0, "speed_kph": 0}, "connection": "connected", "t": 1791098512.2517202}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 7.38, "rpm": 670.0, "speed_kph": 0}, "connection": "connected", "t": 1791098512.4829895}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098512.6648705, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098512.8187304}
+{"readings": {"rpm": 673.5, "speed_kph": 0}, "connection": "connected", "t": 1791098513.092492}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "clear_dist_km": 665}, "connection": "connected", "t": 1791098513.2964928}
+{"readings": {"rpm": 688.0, "speed_kph": 0}, "connection": "connected", "t": 1791098513.5248091}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098513.7891579, "mil": false}
+{"readings": {"rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098513.989829}
+{"readings": {"coolant_c": 87, "rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098514.2608047}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098514.3656232}
+{"readings": {"ecu_voltage_v": 13.78, "rpm": 679.0, "speed_kph": 0}, "connection": "connected", "t": 1791098514.6316001}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "stft_pct": -0.78, "rpm": 683.5}, "connection": "connected", "t": 1791098514.932297}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098515.2071407}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098515.4611208}
+{"readings": {"intake_c": 58}, "connection": "connected", "t": 1791098515.6329756}
+{"readings": {"rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098515.8389678}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "timing_deg": 6.0}, "connection": "connected", "t": 1791098516.1018488}
+{"readings": {"rpm": 673.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098516.332872}
+{"readings": {"load_pct": 19.61, "ambient_c": 13, "rpm": 675.0, "speed_kph": 0}, "connection": "connected", "t": 1791098516.5905635}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 677.0}, "connection": "connected", "t": 1791098516.8556037}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 7.47, "rpm": 677.0}, "connection": "connected", "t": 1791098517.1148858}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098517.4224446}
+{"readings": {"mil_dist_km": 0, "rpm": 675.0, "speed_kph": 0}, "connection": "connected", "t": 1791098517.5904229}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098517.8953545, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098518.0066118}
+{"readings": {"rpm": 681.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098518.3950412}
+{"readings": {"rpm": 677.5, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098518.592634}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 87, "rpm": 679.5}, "connection": "connected", "t": 1791098518.873535}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098519.080071}
+{"readings": {"ecu_voltage_v": 13.83, "rpm": 683.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098519.3142347}
+{"readings": {"stft_pct": -0.78, "rpm": 688.5, "speed_kph": 0}, "connection": "connected", "t": 1791098519.506253}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098519.7876728}
+{"readings": {"rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098519.928107}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 58, "rpm": 676.0}, "connection": "connected", "t": 1791098520.2847033}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098520.4706266}
+{"readings": {"map_kpa": 28, "rpm": 677.0, "speed_kph": 0}, "connection": "connected", "t": 1791098520.707191}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "timing_deg": 6.0, "rpm": 682.5}, "connection": "connected", "t": 1791098520.9995248}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098521.1514578}
+{"readings": {"ambient_c": 13, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098521.398627}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098521.5908759}
+{"readings": {"rpm": 677.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 7.55}, "connection": "connected", "t": 1791098521.8725264}
+{"readings": {"rpm": 672.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098522.1156442}
+{"readings": {"mil_dist_km": 0, "rpm": 674.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098522.3466585}
+{"readings": {"load_pct": 19.61}, "connection": "connected", "t": 1791098522.5265567}
+{"readings": {"clear_dist_km": 665, "rpm": 671.0, "speed_kph": 0}, "connection": "connected", "t": 1791098522.8196342}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098523.039333, "mil": false, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"]}
+{"readings": {"rpm": 680.0}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098523.2588115}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 87}, "connection": "connected", "t": 1791098523.5001373}
+{"readings": {"rpm": 671.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098523.7673068}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.83, "rpm": 680.0}, "connection": "connected", "t": 1791098523.9896774}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098524.2240033}
+{"readings": {"stft_pct": -0.78, "rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098524.4581048}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098524.650998}
+{"readings": {"rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098524.9060905}
+{"readings": {"intake_c": 58, "rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098525.2151842}
+{"readings": {"map_kpa": 28}, "connection": "connected", "t": 1791098525.3740752}
+{"readings": {"rpm": 686.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098525.6336977}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.5, "rpm": 674.5}, "connection": "connected", "t": 1791098525.8783896}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13}, "connection": "connected", "t": 1791098526.1403506}
+{"readings": {"rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098526.5024862}
+{"readings": {"baro_kpa": 98, "rpm": 680.0, "speed_kph": 0}, "connection": "connected", "t": 1791098526.7001414}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 7.63, "rpm": 691.0}, "connection": "connected", "t": 1791098526.9873211}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098527.2283933}
+{"readings": {"mil_dist_km": 0, "rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098527.372211}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665, "rpm": 670.5}, "connection": "connected", "t": 1791098527.7018366}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098527.9445143, "mil": false}
+{"readings": {"rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098528.1629992}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 88}, "connection": "connected", "t": 1791098528.4363685, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098528.5620265}
+{"readings": {"rpm": 680.5}, "connection": "connected", "t": 1791098528.844418}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098529.0795245}
+{"readings": {"ecu_voltage_v": 13.78, "rpm": 670.5, "speed_kph": 0}, "connection": "connected", "t": 1791098529.3411665}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098529.5508814}
+{"readings": {"rpm": 682.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098529.8212097}
+{"readings": {"ltft_pct": 2.34, "rpm": 673.5, "speed_kph": 0}, "connection": "connected", "t": 1791098530.0302396}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 58, "rpm": 684.5}, "connection": "connected", "t": 1791098530.2117007}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098530.5819147}
+{"readings": {"rpm": 682.5, "speed_kph": 0}, "connection": "connected", "t": 1791098530.7496192}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 5.0, "rpm": 687.0, "speed_kph": 0}, "connection": "connected", "t": 1791098531.0379136}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13, "rpm": 684.0}, "connection": "connected", "t": 1791098531.257066}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098531.5322857}
+{"readings": {"rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 7.72}, "connection": "connected", "t": 1791098531.8051052}
+{"readings": {"rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098532.0137057}
+{"readings": {"load_pct": 19.61, "mil_dist_km": 0, "rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098532.3187084}
+{"readings": {"load_pct": 20.0, "clear_dist_km": 665}, "connection": "connected", "t": 1791098532.4685466}
+{"readings": {"rpm": 683.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098532.7412713}
+{"readings": {"rpm": 676.0, "speed_kph": 0}, "mil": false, "connection": "connected", "t": 1791098532.8730285}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "coolant_c": 88, "rpm": 683.5}, "connection": "connected", "t": 1791098533.1926608}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098533.3637676}
+{"readings": {"ecu_voltage_v": 13.78}, "connection": "connected", "t": 1791098533.5850263, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098533.6782794}
+{"readings": {"rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098534.0577452}
+{"readings": {"load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098534.3123426}
+{"readings": {"rpm": 689.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098534.539907}
+{"readings": {"ltft_pct": 2.34, "rpm": 681.0}, "connection": "connected", "t": 1791098534.7919202}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 58}, "connection": "connected", "t": 1791098535.0848057}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098535.267624}
+{"readings": {"map_kpa": 28, "rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098535.4725006}
+{"readings": {"load_pct": 19.61, "timing_deg": 6.5, "rpm": 672.5}, "connection": "connected", "t": 1791098535.6916807}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13}, "connection": "connected", "t": 1791098535.8677807}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098536.122963}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 679.5}, "connection": "connected", "t": 1791098536.3284621}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 7.8}, "connection": "connected", "t": 1791098536.5580468}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098536.8167748}
+{"readings": {"mil_dist_km": 0, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098537.0256004}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665, "rpm": 686.0, "speed_kph": 0}, "connection": "connected", "t": 1791098537.2880387}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "rpm": 680.5}, "connection": "connected", "t": 1791098537.5502691, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "coolant_c": 88}, "connection": "connected", "t": 1791098537.8365178}
+{"readings": {"rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098538.0197785}
+{"readings": {"ecu_voltage_v": 13.8, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098538.2579045}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": 0.0}, "connection": "connected", "t": 1791098538.521939, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098538.6871564}
+{"readings": {"rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098538.965583}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34, "rpm": 681.5, "speed_kph": 0}, "connection": "connected", "t": 1791098539.2290463}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 58, "rpm": 680.0}, "connection": "connected", "t": 1791098539.421532}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098539.6346486}
+{"readings": {"load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098539.8004045}
+{"readings": {"rpm": 672.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098540.1043851}
+{"readings": {"timing_deg": 6.0, "rpm": 683.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098540.3887675}
+{"readings": {"load_pct": 19.61, "ambient_c": 13, "rpm": 683.5}, "connection": "connected", "t": 1791098540.6217992}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098540.800709}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 674.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098541.047973}
+{"readings": {"load_pct": 19.61, "runtime_min": 7.87, "rpm": 678.5}, "connection": "connected", "t": 1791098541.2312944}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098541.4757898}
+{"readings": {"mil_dist_km": 0, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098541.6950502}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098541.9171534}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098542.119387}
+{"readings": {"load_pct": 19.61, "rpm": 681.5}, "connection": "connected", "t": 1791098542.3435812, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "coolant_c": 88}, "connection": "connected", "t": 1791098542.5979555}
+{"readings": {"rpm": 673.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098542.819993}
+{"readings": {"ecu_voltage_v": 13.78, "rpm": 675.0, "speed_kph": 0}, "connection": "connected", "t": 1791098543.0647352}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098543.2532487}
+{"readings": {"rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098543.4744973}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098543.7399194, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098543.8713925}
+{"readings": {"rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098544.2025628}
+{"readings": {"intake_c": 58, "rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098544.4473636}
+{"readings": {"load_pct": 19.22, "map_kpa": 28, "rpm": 677.0, "speed_kph": 0}, "connection": "connected", "t": 1791098544.67237}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.0}, "connection": "connected", "t": 1791098544.9011705}
+{"readings": {"rpm": 686.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13}, "connection": "connected", "t": 1791098545.1779854}
+{"readings": {"rpm": 681.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098545.3538692}
+{"readings": {"baro_kpa": 98, "rpm": 682.0, "speed_kph": 0}, "connection": "connected", "t": 1791098545.5663412}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 7.95, "rpm": 674.5}, "connection": "connected", "t": 1791098545.8387825}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098546.1417906}
+{"readings": {"rpm": 684.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098546.34781}
+{"readings": {"clear_dist_km": 665, "rpm": 687.0, "speed_kph": 0}, "connection": "connected", "t": 1791098546.6439266}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "rpm": 680.0}, "connection": "connected", "t": 1791098546.8223493, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 89, "rpm": 678.5}, "connection": "connected", "t": 1791098547.0811882}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098547.2559702}
+{"readings": {"ecu_voltage_v": 13.83, "rpm": 681.5}, "connection": "connected", "t": 1791098547.414371}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78, "rpm": 676.0}, "connection": "connected", "t": 1791098547.704161}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34}, "connection": "connected", "t": 1791098548.0025163}
+{"readings": {"rpm": 668.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098548.319768}
+{"readings": {"load_pct": 19.61, "intake_c": 58, "rpm": 677.5}, "connection": "connected", "t": 1791098548.488214}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29}, "connection": "connected", "t": 1791098548.7660859, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098548.910789}
+{"readings": {"rpm": 684.5}, "connection": "connected", "t": 1791098549.1794279}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "timing_deg": 6.0}, "connection": "connected", "t": 1791098549.4211764}
+{"readings": {"rpm": 669.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "ambient_c": 13}, "connection": "connected", "t": 1791098549.6657193}
+{"readings": {"rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098549.9132764}
+{"readings": {"baro_kpa": 98, "rpm": 684.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098550.1210158}
+{"readings": {"load_pct": 19.61, "runtime_min": 8.02, "rpm": 669.5, "speed_kph": 0}, "connection": "connected", "t": 1791098550.3282754}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098550.5862226}
+{"readings": {"rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098550.7100494}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098550.9955947}
+{"readings": {"rpm": 680.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098551.323516, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "coolant_c": 89}, "connection": "connected", "t": 1791098551.4877288}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098551.7941039}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.85, "rpm": 672.5}, "connection": "connected", "t": 1791098552.0456884}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098552.2669463}
+{"readings": {"stft_pct": 0.0, "rpm": 677.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098552.5782514}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34, "rpm": 683.0}, "connection": "connected", "t": 1791098552.8097997}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098553.004137}
+{"readings": {"intake_c": 58, "rpm": 676.0, "speed_kph": 0}, "connection": "connected", "t": 1791098553.1815193}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28}, "connection": "connected", "t": 1791098553.372753}
+{"readings": {"rpm": 670.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098553.7083697}
+{"readings": {"timing_deg": 6.0}, "connection": "connected", "t": 1791098553.9494734, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 689.0, "speed_kph": 0}, "connection": "connected", "t": 1791098554.1567159}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ambient_c": 13, "rpm": 690.5}, "connection": "connected", "t": 1791098554.384417}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98}, "connection": "connected", "t": 1791098554.712181}
+{"readings": {"rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098554.8955152}
+{"readings": {"load_pct": 19.61, "runtime_min": 8.1, "rpm": 684.5}, "connection": "connected", "t": 1791098555.1981802}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098555.4316819}
+{"readings": {"mil_dist_km": 0, "rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098555.6227336}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098555.8305376}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098556.1010165}
+{"readings": {"load_pct": 19.61, "rpm": 674.0}, "connection": "connected", "t": 1791098556.30993, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098556.495207}
+{"readings": {"coolant_c": 90, "rpm": 683.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098556.7569804}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.85}, "connection": "connected", "t": 1791098556.9604087}
+{"readings": {"rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098557.2730606}
+{"readings": {"rpm": 683.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098557.4634697}
+{"readings": {"load_pct": 19.61, "ltft_pct": 2.34, "rpm": 677.5}, "connection": "connected", "t": 1791098557.6832693}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098557.9431474}
+{"readings": {"intake_c": 58, "rpm": 665.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098558.1852388}
+{"readings": {"load_pct": 19.61, "map_kpa": 28, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098558.4112425}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098558.5770717}
+{"readings": {"timing_deg": 6.0, "rpm": 686.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098558.8882246}
+{"readings": {"load_pct": 19.61, "ambient_c": 13}, "connection": "connected", "t": 1791098559.1814585, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 677.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098559.6183634}
+{"readings": {"load_pct": 19.61, "baro_kpa": 98, "rpm": 685.5, "speed_kph": 0}, "connection": "connected", "t": 1791098559.8451812}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 8.18, "rpm": 675.0}, "connection": "connected", "t": 1791098560.1268418}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098560.2595158}
+{"readings": {"mil_dist_km": 0, "rpm": 685.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098560.6251485}
+{"readings": {"clear_dist_km": 665, "rpm": 680.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098560.8111625}
+{"readings": {"load_pct": 19.61, "rpm": 680.0}, "connection": "connected", "t": 1791098561.1316833, "mil": false}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098561.2810426}
+{"readings": {"coolant_c": 90, "rpm": 685.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098561.5392933}
+{"readings": {"load_pct": 19.61, "ecu_voltage_v": 13.83, "rpm": 683.5, "speed_kph": 0}, "connection": "connected", "t": 1791098561.792097}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -1.56}, "connection": "connected", "t": 1791098562.0249503}
+{"readings": {"rpm": 673.0, "speed_kph": 0}, "connection": "connected", "t": 1791098562.1706388}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "ltft_pct": 2.34, "rpm": 673.0}, "connection": "connected", "t": 1791098562.4848926}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 58}, "connection": "connected", "t": 1791098562.7198074}
+{"readings": {"rpm": 671.5, "speed_kph": 0}, "connection": "connected", "t": 1791098562.8424683}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29, "rpm": 687.0}, "connection": "connected", "t": 1791098563.1617484}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "timing_deg": 6.0}, "connection": "connected", "t": 1791098563.397645}
+{"readings": {"rpm": 676.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098563.6859314}
+{"readings": {"ambient_c": 13, "rpm": 673.0}, "connection": "connected", "t": 1791098563.805442}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098564.1079059}
+{"readings": {"baro_kpa": 98}, "connection": "connected", "t": 1791098564.314183, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098564.6585286}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 8.27, "rpm": 684.5}, "connection": "connected", "t": 1791098564.8998578}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098565.1367145}
+{"readings": {"mil_dist_km": 0, "rpm": 674.0, "speed_kph": 0}, "connection": "connected", "t": 1791098565.3607378}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665}, "connection": "connected", "t": 1791098565.5877438}
+{"readings": {"rpm": 683.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098565.8913612, "mil": false}
+{"readings": {"rpm": 685.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098566.1727219}
+{"readings": {"coolant_c": 90, "rpm": 691.0}, "connection": "connected", "t": 1791098566.2705998}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "ecu_voltage_v": 13.8, "rpm": 691.0}, "connection": "connected", "t": 1791098566.6054282}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098566.7721431}
+{"readings": {"load_pct": 19.61, "stft_pct": -0.78, "rpm": 679.5, "speed_kph": 0}, "connection": "connected", "t": 1791098567.0568776}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22}, "connection": "connected", "t": 1791098567.2086372}
+{"readings": {"ltft_pct": 2.34, "rpm": 678.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098567.488895}
+{"readings": {"load_pct": 19.61, "intake_c": 58, "rpm": 681.0, "speed_kph": 0}, "connection": "connected", "t": 1791098567.7402964}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 28, "rpm": 686.5}, "connection": "connected", "t": 1791098567.9850848}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "timing_deg": 6.5, "rpm": 675.0}, "connection": "connected", "t": 1791098568.2500117}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098568.4490376}
+{"readings": {"ambient_c": 13, "rpm": 665.5, "speed_kph": 0}, "connection": "connected", "t": 1791098568.6644957}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "baro_kpa": 98, "rpm": 672.5}, "connection": "connected", "t": 1791098568.8712943}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098569.1172445}
+{"readings": {"runtime_min": 8.33}, "connection": "connected", "t": 1791098569.4633787, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false}
+{"readings": {"rpm": 682.0}, "connection": "connected", "t": 1791098569.6783218}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "mil_dist_km": 0}, "connection": "connected", "t": 1791098569.9704475}
+{"readings": {"rpm": 674.5, "speed_kph": 0}, "connection": "connected", "t": 1791098570.13537}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "clear_dist_km": 665, "rpm": 685.0}, "connection": "connected", "t": 1791098570.416004}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098570.5356245}
+{"readings": {"load_pct": 19.22, "rpm": 675.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098570.8647065, "mil": false}
+{"readings": {"load_pct": 19.61, "coolant_c": 90, "rpm": 682.5}, "connection": "connected", "t": 1791098571.0841537}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098571.3064995}
+{"readings": {"ecu_voltage_v": 13.88, "rpm": 682.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098571.561662}
+{"readings": {"stft_pct": -0.78, "rpm": 674.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098571.818101}
+{"readings": {"ltft_pct": 2.34, "rpm": 674.0, "speed_kph": 0}, "connection": "connected", "t": 1791098572.0287063}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 58, "rpm": 675.0}, "connection": "connected", "t": 1791098572.2827928}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "map_kpa": 29}, "connection": "connected", "t": 1791098572.5069203}
+{"readings": {"rpm": 683.5}, "connection": "connected", "t": 1791098572.5995986}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0}, "connection": "connected", "t": 1791098573.0342803}
+{"readings": {"timing_deg": 6.5, "rpm": 673.0, "speed_kph": 0}, "connection": "connected", "t": 1791098573.2577963}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098573.4311159}
+{"readings": {"ambient_c": 13, "rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098573.6946106}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "baro_kpa": 98, "rpm": 678.0, "speed_kph": 0}, "connection": "connected", "t": 1791098573.9587696}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "runtime_min": 8.42}, "connection": "connected", "t": 1791098574.1402617}
+{"readings": {"rpm": 686.0, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.22, "mil_dist_km": 0}, "connection": "connected", "t": 1791098574.3818843}
+{"readings": {}, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"], "mil": false, "connection": "connected", "t": 1791098574.549229}
+{"readings": {"rpm": 670.5}, "connection": "connected", "t": 1791098574.760973}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 20.0, "clear_dist_km": 665}, "connection": "connected", "t": 1791098575.0479612}
+{"readings": {"rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098575.2971354}
+{"readings": {"load_pct": 19.61, "rpm": 678.0, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098575.5267045, "mil": false}
+{"readings": {"load_pct": 19.61, "coolant_c": 90, "rpm": 684.5, "speed_kph": 0}, "connection": "connected", "t": 1791098575.7612448}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.22, "ecu_voltage_v": 13.78, "rpm": 678.0}, "connection": "connected", "t": 1791098575.9954095}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "stft_pct": -0.78}, "connection": "connected", "t": 1791098576.1863456}
+{"readings": {"rpm": 676.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098576.489188}
+{"readings": {"ltft_pct": 2.34, "rpm": 684.0, "speed_kph": 0}, "connection": "connected", "t": 1791098576.6362438}
+{"readings": {"throttle_pct": 12.55, "load_pct": 19.61, "intake_c": 58, "rpm": 685.5, "speed_kph": 0}, "connection": "connected", "t": 1791098576.9377017}
+{"readings": {"load_pct": 19.61, "map_kpa": 29}, "connection": "connected", "t": 1791098577.1161013}
+{"readings": {"rpm": 675.5, "speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098577.347991}
+{"readings": {"timing_deg": 6.5, "rpm": 681.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098577.5546432}
+{"readings": {"load_pct": 19.61, "ambient_c": 13, "rpm": 677.5}, "connection": "connected", "t": 1791098577.7474856}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098577.9601078}
+{"readings": {"baro_kpa": 98, "rpm": 679.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098578.2426066}
+{"readings": {"load_pct": 19.61, "runtime_min": 8.48, "rpm": 690.5}, "connection": "connected", "t": 1791098578.4270391}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098578.6712842}
+{"readings": {"mil_dist_km": 0, "rpm": 672.0, "speed_kph": 0}, "connection": "connected", "t": 1791098578.912367}
+{"readings": {"throttle_pct": 12.55, "load_pct": 20.0, "clear_dist_km": 665, "rpm": 673.5}, "connection": "connected", "t": 1791098579.1615496}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098579.3381658}
+{"readings": {}, "mil": false, "connection": "connected", "t": 1791098579.5626256, "trouble_codes": [], "code_status": {}, "code_checks": ["pending", "permanent", "stored"]}
+{"readings": {"rpm": 677.5}, "connection": "connected", "t": 1791098579.8063567}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61, "coolant_c": 90, "rpm": 687.5}, "connection": "connected", "t": 1791098580.0601764}
+{"readings": {"speed_kph": 0, "throttle_pct": 12.55, "load_pct": 19.61}, "connection": "connected", "t": 1791098580.2699971}
+{"readings": {"ecu_voltage_v": 13.88, "rpm": 674.5, "speed_kph": 0, "throttle_pct": 12.55}, "connection": "connected", "t": 1791098580.5124347}
+{"readings": {"load_pct": 19.61, "stft_pct": -0.78, "rpm": 676.5, "speed_kph": 0}, "connection": "connected", "t": 1791098580.7464426}
