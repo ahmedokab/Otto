@@ -12,6 +12,31 @@ const KEYS = {
   ltft_pct:      { label: 'Long-term fuel trim', unit: '%',    dp: 1, signed: true, icon: 'fuelclock', range: [-25, 25] },
   maf_gs:        { label: 'Mass air flow',       unit: 'g/s',  dp: 1, icon: 'airflow', range: [0, 60] },
   intake_c:      { label: 'Intake air temp',     unit: '°C',   dp: 0, temp: true, icon: 'intake', range: [-10, 70] },
+  // extra: only shown once the car actually reports it. more: in the collapsed "More readings" section
+  load_pct:      { label: 'Engine load',         unit: '%',    dp: 0, extra: true, icon: 'engine', range: [0, 100] },
+  map_kpa:       { label: 'Intake pressure',     unit: 'kPa',  dp: 0, extra: true, icon: 'gauge', range: [0, 250] },
+  pedal_d_pct:   { label: 'Gas pedal',           unit: '%',    dp: 0, extra: true, icon: 'pedal', range: [0, 100] },
+  cmd_throttle_pct: { label: 'Throttle commanded', unit: '%',  dp: 0, extra: true, icon: 'helmet', range: [0, 100] },
+  timing_deg:    { label: 'Timing advance',      unit: '°',    dp: 1, extra: true, signed: true, icon: 'spark', range: [-20, 40] },
+  oil_c:         { label: 'Oil temp',            unit: '°C',   dp: 0, extra: true, temp: true, icon: 'oil', range: [40, 140] },
+  cat_c:         { label: 'Catalyst temp',       unit: '°C',   dp: 0, extra: true, temp: true, icon: 'thermometer', range: [200, 900] },
+  lambda:        { label: 'Air-fuel ratio (λ)',  unit: 'λ',    dp: 2, extra: true, icon: 'airflow', range: [0.7, 1.3] },
+  cmd_lambda:    { label: 'Commanded λ',         unit: 'λ',    dp: 2, extra: true, icon: 'airflow', range: [0.7, 1.3] },
+  o2_up_v:       { label: 'O2 sensor (front)',   unit: 'V',    dp: 2, extra: true, icon: 'gauge', range: [0, 1.1] },
+  o2_down_v:     { label: 'O2 sensor (rear)',    unit: 'V',    dp: 2, extra: true, icon: 'gauge', range: [0, 1.1] },
+  rail_kpa:      { label: 'Fuel rail pressure',  unit: 'kPa',  dp: 0, extra: true, icon: 'pump', range: [0, 20000] },
+  fuel_pct:      { label: 'Fuel level',          unit: '%',    dp: 0, extra: true, icon: 'pump', range: [0, 100] },
+  throttle_b_pct:{ label: 'Throttle sensor B',   unit: '%',    dp: 0, extra: true, more: true, icon: 'helmet', range: [0, 100] },
+  pedal_e_pct:   { label: 'Gas pedal sensor E',  unit: '%',    dp: 0, extra: true, more: true, icon: 'pedal', range: [0, 100] },
+  fuel_rate_lph: { label: 'Fuel use',            unit: 'L/h',  dp: 1, extra: true, more: true, icon: 'pump', range: [0, 30] },
+  ambient_c:     { label: 'Outside air temp',    unit: '°C',   dp: 0, extra: true, more: true, temp: true, icon: 'thermometer', range: [-20, 45] },
+  baro_kpa:      { label: 'Barometric pressure', unit: 'kPa',  dp: 0, extra: true, more: true, icon: 'gauge', range: [70, 110] },
+  runtime_min:   { label: 'Engine run time',     unit: 'min',  dp: 1, extra: true, more: true, icon: 'clock', range: [0, 120] },
+  warmups:       { label: 'Warm-ups since codes cleared', unit: '', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 255] },
+  clear_dist_km: { label: 'Driven since codes cleared', unit: 'km', dp: 0, extra: true, more: true, dist: true, icon: 'road', range: [0, 5000] },
+  clear_time_min:{ label: 'Engine time since codes cleared', unit: 'min', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 6000] },
+  mil_dist_km:   { label: 'Driven with check-engine light on', unit: 'km', dp: 0, extra: true, more: true, dist: true, icon: 'road', range: [0, 1000] },
+  mil_time_min:  { label: 'Engine time with check-engine light on', unit: 'min', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 6000] },
 };
 
 // Line icons on a 24×24 grid, drawn in currentColor (blue via CSS).
@@ -25,6 +50,12 @@ const ICONS = {
   fuelclock: '<path d="M12 3.5s-6 6.4-6 10.8a6 6 0 0 0 12 0C18 9.9 12 3.5 12 3.5z"/><path d="M12 11v3.3l2.2 1.4"/>',
   airflow: '<path d="M3 8.5h10a2.5 2.5 0 1 0-2.5-2.5M3 12.5h15a2.5 2.5 0 1 1-2.5 2.5M3 16.5h7"/>',
   intake: '<path d="M5.4 13.6V6a1.6 1.6 0 0 1 3.2 0v7.6a3.2 3.2 0 1 1-3.2 0z"/><path d="M7 9v6.2"/><path d="M12 8h6a2 2 0 1 0-2-2M12 12h8.5M12 16h5a2 2 0 1 1-2 2"/>',
+  gauge: '<path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l3.5-4.5"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/>',
+  spark: '<path d="M13 3L6 13.5h5L10 21l7-10.5h-5z"/>',
+  oil: '<path d="M3 10h4l2-2h5l1.5 1.5L21 7.5V9l-5 6H7.5L5 12H3z"/><path d="M19.5 17c0 .9-.7 1.6-1.5 1.6s-1.5-.7-1.5-1.6c0-.9 1.5-2.6 1.5-2.6s1.5 1.7 1.5 2.6z"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.2 2"/>',
+  road: '<path d="M8.5 4L5 20M15.5 4L19 20M12 5v2.5M12 10.5v3M12 16.5V19"/>',
+  pedal: '<path d="M8 3.5l7 2.2-2.4 12.8a2 2 0 0 1-2.3 1.6l-1.6-.3a2 2 0 0 1-1.6-2.3z"/><path d="M9 20.5h6"/>',
 };
 const icon = (name) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]}</svg>`;
 
@@ -58,12 +89,12 @@ async function api(path, body) {
 function conv(key, v) {
   if (v == null) return null;
   const m = KEYS[key];
-  if (S.units === 'imperial') { if (m.temp) return v * 9 / 5 + 32; if (m.speed) return v * 0.621371; }
+  if (S.units === 'imperial') { if (m.temp) return v * 9 / 5 + 32; if (m.speed || m.dist) return v * 0.621371; }
   return v;
 }
 function unitOf(key) {
   const m = KEYS[key];
-  if (S.units === 'imperial') { if (m.temp) return '°F'; if (m.speed) return 'mph'; }
+  if (S.units === 'imperial') { if (m.temp) return '°F'; if (m.speed) return 'mph'; if (m.dist) return 'mi'; }
   return m.unit;
 }
 function fmt(key, v, stat) {
@@ -89,7 +120,7 @@ function buildGauges() {
         </div><canvas></canvas>`
       : `<div class="g-top"><span class="g-icon">${icon(m.icon)}</span><div class="label">${esc(m.label)}</div></div>
         ${value}<div class="meter${m.signed ? ' signed' : ''}"><i></i></div><div class="fresh">Not reported</div>`;
-    $(m.primary ? 'primary' : 'secondary').appendChild(el);
+    $(m.primary ? 'primary' : m.more ? 'more' : 'secondary').appendChild(el);
   }
 }
 
@@ -98,7 +129,8 @@ function flagFor(k, v, snap) {
   const running = (snap.readings.rpm ?? 0) > 500;
   if (k === 'coolant_c') return v >= 112 ? 'flag bad' : v >= 105 ? 'flag' : '';
   if (k === 'ecu_voltage_v' && running) return v < 12.0 ? 'flag bad' : v < 12.8 ? 'flag' : '';
-  if (k === 'ltft_pct' || k === 'stft_pct') return Math.abs(v) > 10 ? 'flag' : '';
+  // Short-term trim swings ±10% in normal driving, so only the long-term trim is flagged
+  if (k === 'ltft_pct') return Math.abs(v) > 20 ? 'flag bad' : Math.abs(v) > 10 ? 'flag' : '';
   return '';
 }
 
@@ -114,7 +146,9 @@ function updateReadings(snap) {
     S.buf[k] = S.buf[k].filter(([t]) => t >= now - WINDOW_S);
 
     const el = $('g-' + k);
-    const stale = snap.stale.includes(k);
+    // Only show what this car can report: hide unsupported PIDs, and extras until they arrive
+    el.hidden = (snap.supported && !snap.supported.includes(k)) || (KEYS[k].extra && !upd);
+    const stale = snap.stale.includes(k) || (snap.capturing && snap.connection === 'disconnected');
     el.querySelector('.num').textContent = fmt(k, v);
     el.querySelector('.unit').textContent = v == null ? '' : unitOf(k);
     let fresh = 'Not reported', cls = '';
@@ -127,6 +161,9 @@ function updateReadings(snap) {
     else setMeter(el.querySelector('.meter i'), k, v);
     if (KEYS[k].primary) drawSpark(el.querySelector('canvas'), k, now, snap.markers, stale);
   }
+  const shown = [...$('more').children].filter((c) => !c.hidden).length;
+  $('moreBox').hidden = !shown;
+  $('moreCount').textContent = shown;
 }
 
 // Level bar: fills from the left, or from the centre for signed values like fuel trim.
@@ -216,6 +253,8 @@ function updateChrome(snap) {
   if (snap.source === 'replay' && snap.recording) $('recordingSel').value = snap.recording;
 
   $('milBadge').hidden = !snap.mil;
+  $('vinText').hidden = !snap.vin;
+  $('vinText').textContent = snap.vin ? `Detected from car · VIN ${snap.vin}` : '';
 
   const ml = $('markerList');
   const key = snap.markers.map((m) => m.t).join();
@@ -277,8 +316,8 @@ function renderFindings(snap) {
   const ex = S.expl;
   // Re-render immediately on structural change (codes, verdicts, mode...);
   // evidence numbers alone refresh at most once a second so text doesn't flicker.
-  const structural = JSON.stringify([snap.code_details.map((d) => [d.code, d.evidence.map((e) => e.verdict)]),
-    snap.capturing, snap.session.frames > 0, snap.explanation.version, S.units, snap.source]);
+  const structural = JSON.stringify([snap.code_details.map((d) => [d.code, d.status, d.evidence.map((e) => e.verdict)]),
+    snap.capturing, snap.session.frames > 0, snap.explanation.version, S.units, snap.source, snap.code_checks]);
   const values = JSON.stringify(snap.code_details.map((d) => d.evidence.map((e) => e.value)));
   const now = performance.now();
   const key = structural + values;
@@ -304,7 +343,7 @@ function renderFindings(snap) {
   if (!snap.code_details.length) {
     const started = snap.session.frames > 0;
     box.innerHTML = started
-      ? `<div class="empty-state clear"><h3>No codes reported</h3><p>The engine computer isn't reporting any stored trouble codes right now. That's not a guarantee nothing is wrong — if you notice something, mark it.</p></div>`
+      ? `<div class="empty-state clear"><h3>No codes reported</h3><p>The engine computer isn't reporting any trouble codes right now. That's not a guarantee nothing is wrong — if you notice something, mark it.</p>${checksHtml(snap.code_checks)}</div>`
       : `<div class="empty-state"><h3>Start a capture to read your car</h3><p>Press <kbd>Space</kbd>, the button above, or the green button on the FREE-WILi. Readings and trouble codes appear here.</p></div>`;
     return;
   }
@@ -329,6 +368,7 @@ function renderFindings(snap) {
         <h3>${esc(d.title)}<span class="sys">${esc(d.system)}</span></h3>
         <span class="sev ${esc(d.severity)}">${esc(SEV_LABEL[d.severity])}</span>
       </div>
+      ${d.status?.length ? `<div class="code-tags">${d.status.map((t) => `<span class="tag ${TAG_CLASS[t] || ''}" title="${esc(TAG_HELP[t] || '')}">${esc(t)}</span>`).join('')}</div>` : ''}
       <div class="code-body">
         <p>${esc(a?.plain_meaning || d.meaning)}</p>
         ${evidence ? `<div><h4>What your data shows</h4><ul class="evidence">${evidence}</ul>${aiShows}</div>` : ''}
@@ -338,6 +378,27 @@ function renderFindings(snap) {
       </div>
     </article>`;
   }).join('');
+}
+
+const TAG_CLASS = { 'warning light': 'hot', active: 'hot', stored: 'on', pending: 'soft', permanent: 'on', intermittent: 'soft' };
+const TAG_HELP = {
+  'warning light': 'The engine computer has a dashboard warning light on for this fault',
+  active: 'Failing right now',
+  stored: 'Confirmed and saved in the engine computer',
+  pending: 'Seen once; becomes stored if it happens again',
+  permanent: 'Stays until the car confirms the repair, even if codes are cleared',
+  intermittent: 'Failed at some point since codes were last cleared, not right now',
+};
+const CHECK_LABELS = { stored: 'Stored', pending: 'Pending', permanent: 'Permanent', manufacturer: 'Manufacturer fault memory' };
+
+// Which code checks the car answered, so "no codes" is honest about what was looked at
+function checksHtml(checks) {
+  if (!checks?.length) return '';
+  const items = Object.entries(CHECK_LABELS).map(([k, label]) =>
+    `<li class="${checks.includes(k) ? 'ok' : 'na'}">${checks.includes(k) ? '✓' : '–'} ${label}</li>`).join('');
+  const note = checks.includes('manufacturer') ? ''
+    : '<p class="muted">No module answered the fault-memory request yet, so faults kept only in a module\'s own memory (for example VW\'s EPC light) may not show here.</p>';
+  return `<ul class="checks">${items}</ul>${note}`;
 }
 
 // ---------- AI ----------

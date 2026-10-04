@@ -25,7 +25,7 @@ except ImportError:
     pass
 
 from . import ai, obd, report                                    # noqa: E402
-from .dtc_db import details_for                                  # noqa: E402
+from .dtc_db import SEVERITY_ORDER, details_for                                  # noqa: E402
 from .sources.freewili import FreeWiliSource                     # noqa: E402
 from .sources.replay import Recorder, ReplaySource, list_recordings  # noqa: E402
 from .sources.simulator import SCENARIOS, SimulatorSource        # noqa: E402
@@ -93,6 +93,8 @@ class Controller:
             else:
                 raise HTTPException(400, f"unknown mode {mode}")
             self.state.vehicle = vehicle
+            if mode != "live":
+                self.state.vin = None      # a VIN belongs to the car that's plugged in
             self.explanation, self.explanation_codes = None, None
             self.explanation_version += 1
             if was:
@@ -113,11 +115,25 @@ class Controller:
                 self.state.connection_detail = detail if conn != "connected" else "Ready — press Start capture"
 
     # ---- views ---------------------------------------------------------
+    def code_details(self, stats):
+        """Offline evidence per code, plus how the car reported it (stored, pending, warning light...)."""
+        details = details_for(self.state.codes, self.state.readings, stats)
+        for d in details:
+            d["status"] = self.state.code_status.get(d["code"], [])
+            if d["status"] == ["intermittent"]:
+                # Failed at some point since the last clear but not now: worth
+                # knowing, not an alarm. Never present it as a live fault.
+                d["severity"] = "info"
+                d["driving"] = ("Not failing right now. The engine computer recorded this fault at some point "
+                                "since codes were last cleared; mention it if the symptom comes back.")
+        details.sort(key=lambda d: -SEVERITY_ORDER.get(d["severity"], 0))
+        return details
+
     def snapshot(self, now):
         with self.lock:
             snap = self.state.snapshot(now)
             stats = self.state.stats(now)
-            snap["code_details"] = details_for(self.state.codes, self.state.readings, stats)
+            snap["code_details"] = self.code_details(stats)
             snap["explanation"] = {
                 "version": self.explanation_version,
                 "available": self.explanation is not None,
@@ -135,7 +151,9 @@ class Controller:
                 "scenario": self.state.scenario,
                 "codes": list(self.state.codes),
                 "mil": self.state.mil,
-                "code_details": details_for(self.state.codes, self.state.readings, stats),
+                "code_details": self.code_details(stats),
+                "code_checks": list(self.state.code_checks),
+                "vin": self.state.vin,
                 "readings_now": {k: v for k, v in self.state.readings.items() if v is not None},
                 "stats_last_60s": stats,
                 "markers": [dict(m) for m in self.state.markers],

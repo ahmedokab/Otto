@@ -14,6 +14,17 @@ doesn't care:
        POST /api/ingest       {"readings": {"rpm": 1726}, "trouble_codes": [...]}
        POST /api/ingest/can   {"id": "0x7E8", "data": "04410C1AF8000000"}
 
+What it asks the car, in order:
+  1. Which Mode 01 PIDs it supports (bitmaps), so the dashboard only shows real readings
+  2. The VIN (Mode 09), to fill in the vehicle automatically
+  3. Every few seconds, trouble codes four ways: stored (03), pending (07),
+     permanent (0A) and the ECU's own fault memory (UDS 19 02), which is where
+     manufacturer faults like VW's EPC light live
+  4. Live readings, fast ones every round
+
+Every frame in both directions is also written to recordings/raw-*.canlog
+while capturing, so anything the decoder misses can be checked afterwards.
+
 SAFETY: this project is READ-ONLY. Every transmit goes through send_can(),
 which calls obd.check_tx(). Never add another path that writes to the bus.
 
@@ -23,9 +34,9 @@ Env:
   FREEWILI_PORT         serial number to pick when several FREE-WILis are plugged in
   FREEWILI_BENCH_ECU    simulator scenario (e.g. lean) to answer as a fake car on the
                         other Neptune channel; bench only, see sources/bench_ecu.py
+  OTTO_VIN_LOOKUP       0 = decode the VIN offline only (never send it to NHTSA)
 """
 import collections
-import itertools
 import os
 import queue
 import threading
@@ -33,15 +44,28 @@ import time
 
 from .base import Source
 from .bench_ecu import BenchEcu
-from .. import obd
+from .replay import RECORDINGS_DIR
+from .. import obd, vin as vin_decoder
 
 NO_DATA_AFTER_S = 2.0
 CAN_CHANNEL = int(os.getenv("FREEWILI_CAN_CHANNEL", "0"))
 REPLY_TIMEOUT_S = 0.1      # move on if no ECU answers a request
 DTC_EVERY_S = 5.0          # trouble codes change rarely
+VIN_RETRY_S = 10.0
+VIN_TRIES = 3
 RETRY_AFTER_S = 2.0        # reopen the device after unplug / error
 BENCH_SCENARIO = os.getenv("FREEWILI_BENCH_ECU")
 BENCH_CHANNEL = 1 - CAN_CHANNEL
+
+# Broadcast to every ECU: stored, pending, permanent codes
+DTC_REQUESTS = [obd.build_request(0x03), obd.build_request(0x07), obd.build_request(0x0A)]
+# Sent to each ECU that answered, one at a time: its own fault memory. Many
+# ECUs (e.g. VW engine computers, where EPC faults live) ignore it as a broadcast.
+UDS_FAULT_MEMORY = obd.build_request(*obd.UDS_READ_DTCS)
+# Order tags are shown in, most important first
+TAG_ORDER = ["warning light", "active", "stored", "pending", "permanent", "intermittent"]
+CHECK_NAMES = {"stored": "stored", "pending": "pending", "permanent": "permanent", "uds": "manufacturer"}
+FRAME_KEYS = ("trouble_codes", "code_status", "code_checks", "mil", "connection", "supported", "vin", "vehicle")
 
 
 class FreeWiliSource(Source):
@@ -53,7 +77,6 @@ class FreeWiliSource(Source):
         self.last_rx = None
         self.error = None
         self.isotp = obd.IsoTpAssembler()
-        self._codes = {}               # latest Mode 03 answer per ECU
         self._fw = None
         self._thread = None
         self._awaiting = False
@@ -61,27 +84,64 @@ class FreeWiliSource(Source):
         self._stop = threading.Event()
         self.bench = BenchEcu(BENCH_SCENARIO) if BENCH_SCENARIO else None
         self._bench_tx = collections.deque()
+        self._raw = None
+        self._reset_car()
+
+    def _reset_car(self):
+        """Forget everything learned about the car (new connection, maybe a new car)."""
+        self._codes = {}               # (ecu id, kind) -> [(code, tags)], latest answer
+        self._checks = set()           # which kinds of code check the car answered
+        self._mil_lamp = None          # from Mode 01 PID 01, when supported
+        self.supported_pids = None     # None = unknown yet: poll everything
+        self.vin = None
+        self._vin_tries = 0
+        self.extended = False          # 29-bit CAN IDs (found during discovery)
+        self.ecus = set()              # reply IDs of ECUs that answered
 
     def start(self):
         self._stop.clear()
         while not self.inbox.empty():      # drop anything pushed before capture started
             self.inbox.get_nowait()
+        self._open_raw_log()
         if self._thread is None or not self._thread.is_alive():
             self._thread = threading.Thread(target=self._run, name="freewili-can", daemon=True)
             self._thread.start()
 
     def stop(self):
         self._stop.set()
+        raw, self._raw = self._raw, None
+        if raw:
+            raw.close()
 
-    def send_can(self, can_id, data):
+    def send_can(self, can_id, data, extended=False):
         """The ONLY transmit path. obd.check_tx() rejects anything that isn't a
         read-only request (no clearing codes, no writes, no UDS sessions)."""
-        obd.check_tx(can_id, data)
+        obd.check_tx(can_id, data, extended)
         if self._fw is None:
             raise RuntimeError("FREE-WILi is not connected")
-        result = self._fw.can_transmit(CAN_CHANNEL, can_id, bytes(data), False, False)
+        self._log_raw("TX", can_id, data)
+        result = self._fw.can_transmit(CAN_CHANNEL, can_id, bytes(data), extended, False)
         if result.is_err():
             raise RuntimeError(f"CAN transmit failed: {result.unwrap_err()}")
+
+    # ---- raw frame log ---------------------------------------------------
+    def _open_raw_log(self):
+        try:
+            RECORDINGS_DIR.mkdir(exist_ok=True)
+            path = RECORDINGS_DIR / f"raw-{time.strftime('%Y%m%d-%H%M%S')}.canlog"
+            self._raw = path.open("w", buffering=1)
+            self._raw.write("# time  dir  id  data   (TX = Otto's request, RX = the car)\n")
+        except OSError:
+            self._raw = None
+
+    def _log_raw(self, direction, can_id, data):
+        raw = self._raw
+        if raw:
+            try:
+                cid = f"{can_id:08X}" if can_id > 0x7FF else f"{can_id:03X}"
+                raw.write(f"{time.time():.3f} {direction} {cid} {bytes(data).hex(' ').upper()}\n")
+            except ValueError:             # closed by stop() mid-write
+                pass
 
     # ---- device thread -------------------------------------------------
     def _run(self):
@@ -108,6 +168,7 @@ class FreeWiliSource(Source):
         if result.is_err():
             raise RuntimeError(f"Can't open FREE-WILi: {result.unwrap_err()}")
         self._fw = fw
+        self._reset_car()
         fw.set_event_callback(self._on_event)
         result = fw.can_enable_streaming(CAN_CHANNEL, True)
         if result.is_err():
@@ -138,13 +199,15 @@ class FreeWiliSource(Source):
                 self._fw.can_transmit(BENCH_CHANNEL, can_id, data, False, False)
             if self._pending_fc is not None:   # ECU is mid-reply and waiting for us
                 fc_id, self._pending_fc = self._pending_fc, None
-                self.send_can(fc_id, obd.FLOW_CONTROL)
+                self.send_can(fc_id, obd.FLOW_CONTROL, self.extended)
+                self._awaiting = True          # wait for the rest of the reply
                 sent_at = time.monotonic()
                 continue
             if self._awaiting and time.monotonic() - sent_at < REPLY_TIMEOUT_S:
                 continue
             try:
-                self.send_can(obd.OBD_REQUEST_ID, next(requests))
+                can_id, data = next(requests)
+                self.send_can(can_id, data, self.extended)
             except RuntimeError as e:          # e.g. no ACK: CAN wires not connected
                 self.error = str(e)
                 self._stop.wait(0.5)
@@ -152,27 +215,65 @@ class FreeWiliSource(Source):
             self._awaiting = True
             sent_at = time.monotonic()
 
-    @staticmethod
-    def _requests():
-        """Fast PIDs every round, one slow PID per round, codes every few seconds."""
-        slow = itertools.cycle(obd.SLOW_PIDS)
-        next_dtc = 0.0
+    def _supports(self, pid):
+        return self.supported_pids is None or pid in self.supported_pids
+
+    def _broadcast_id(self):
+        return obd.OBD_REQUEST_ID_29 if self.extended else obd.OBD_REQUEST_ID
+
+    def _requests(self):
+        """Yields (can_id, data) to send. Replies are handled between yields.
+
+        1. Discovery: who answers, on 11-bit or 29-bit IDs, and which PIDs they support.
+        2. Then forever: whatever is most overdue. Codes every DTC_EVERY_S, each
+           PID at its own rate (obd.PID_INTERVAL), so slow readings never go stale.
+        """
+        for extended in (False, False, True, True):        # two tries each, 11-bit first
+            self.extended = extended
+            yield self._broadcast_id(), obd.build_request(0x01, 0x00)
+            if self.ecus:
+                break
+        else:
+            self.extended = False                          # nobody answered: keep trying the usual way
+        for base in obd.SUPPORT_PIDS[1:]:
+            if not (self.supported_pids and base in self.supported_pids):
+                break                                      # each bitmap's last bit says the next exists
+            yield self._broadcast_id(), obd.build_request(0x01, base)
+        if self.supported_pids:
+            keys = sorted(obd.PIDS[p][0] for p in self.supported_pids if p in obd.PIDS)
+            self.ingest_frame({"supported": keys}, time.time())
+
+        # [due, every, can_id or None (= broadcast), data]
+        codes = [[0.0, DTC_EVERY_S, None, r] for r in DTC_REQUESTS]
+        pids = [[0.0, every, None, obd.build_request(0x01, pid)]
+                for pid, every in obd.PID_INTERVAL.items() if self._supports(pid)]
+        asked_directly = set()
+        next_vin = 0.0
         while True:
-            for pid in obd.FAST_PIDS:
-                yield obd.build_request(0x01, pid)
-            yield obd.build_request(0x01, next(slow))
-            if time.monotonic() >= next_dtc:
-                next_dtc = time.monotonic() + DTC_EVERY_S
-                yield obd.build_request(0x03)
+            now = time.monotonic()
+            for ecu in sorted(self.ecus - asked_directly):  # fault memory, one ECU at a time
+                asked_directly.add(ecu)
+                codes.append([0.0, DTC_EVERY_S, obd.physical_id(ecu, self.extended), UDS_FAULT_MEMORY])
+            if self.vin is None and self._vin_tries < VIN_TRIES and now >= next_vin:
+                self._vin_tries += 1
+                next_vin = now + VIN_RETRY_S
+                yield self._broadcast_id(), obd.build_request(0x09, 0x02)
+                continue
+            tasks = codes + pids
+            due = [t for t in tasks if t[0] <= now]
+            task = min(due or pids or tasks, key=lambda t: t[0])   # nothing due: refresh readings early
+            task[0] = now + task[1]
+            yield (task[2] or self._broadcast_id()), task[3]
 
     def _on_event(self, event_type, frame, data):
-        if getattr(event_type, "name", "") not in ("CANRX0", "CANRX1") or data.is_extended:
+        if getattr(event_type, "name", "") not in ("CANRX0", "CANRX1"):
             return
-        if self.bench and data.arb_id not in obd.ECU_RESPONSE_IDS:   # our own request, seen by the fake car
-            self._bench_tx.extend(self.bench.handle(data.arb_id, data.data, time.time()))
+        if self.bench and not data.is_extended and data.arb_id not in obd.ECU_RESPONSE_IDS:
+            self._bench_tx.extend(self.bench.handle(data.arb_id, data.data, time.time()))   # fake car sees our request
             return
-        if data.arb_id in obd.ECU_RESPONSE_IDS:
-            self._awaiting = False
+        if not obd.is_response_id(data.arb_id, bool(data.is_extended)):
+            return
+        self._log_raw("RX", data.arb_id, data.data)
         self.ingest_can(data.arb_id, data.data, time.time())
 
     # ---- shared plumbing -----------------------------------------------
@@ -185,27 +286,75 @@ class FreeWiliSource(Source):
 
     def ingest_can(self, can_id, data, now):
         """Decode one raw CAN frame. Returns what was decoded (for debugging)."""
-        if can_id not in obd.ECU_RESPONSE_IDS:
+        extended = can_id > 0x7FF
+        if not obd.is_response_id(can_id, extended):
             return None
         payload, send_fc = self.isotp.feed(can_id, data)
         if send_fc and self._fw is not None:
-            self._pending_fc = obd.flow_control_id(can_id)
+            self._pending_fc = obd.flow_control_id(can_id, extended)
         if not payload:
             return None
-        if payload[0] == 0x41:
+        self._awaiting = False                 # a complete answer: ready for the next request
+        if payload[0] != 0x7F:                 # a real answer (not "can't do that"): this ECU is here
+            self.ecus.add(can_id)
+        service = payload[0]
+        if service == 0x41:
+            supported = obd.parse_supported(payload)
+            if supported is not None:
+                self.supported_pids = (self.supported_pids or set()) | supported
+                return {"supported_pids": sorted(supported)}
+            monitor = obd.parse_monitor(payload)
+            if monitor is not None:
+                self._mil_lamp = monitor[0]
+                self.ingest_frame({"mil": monitor[0], "connection": "connected"}, now)
+                return {"mil": monitor[0], "obd_code_count": monitor[1]}
             decoded = obd.parse_mode01(data)   # every PID we poll fits in one frame
             if decoded:
                 key, value = decoded
                 self.ingest_frame({"readings": {key: value}, "connection": "connected"}, now)
                 return {key: value}
-        if payload[0] == 0x43:
-            codes = obd.parse_mode03(payload)
+        if service in obd.DTC_LIST_REPLIES:
+            kind = obd.DTC_LIST_REPLIES[service]
+            codes = obd.parse_dtc_list(payload)
             if codes is not None:
-                self._codes[can_id] = codes    # engine and transmission ECUs answer separately
-                merged = sorted({c for cs in self._codes.values() for c in cs})
-                self.ingest_frame({"trouble_codes": merged, "mil": bool(merged), "connection": "connected"}, now)
+                self._update_codes(can_id, kind, [(c, [kind]) for c in codes], now)
                 return {"trouble_codes": codes}
+        if service == 0x59:
+            found = obd.parse_uds_dtcs(payload)
+            if found is not None:
+                self._update_codes(can_id, "uds", found, now)
+                return {"fault_memory": found}
+        if service == 0x49:
+            vin = obd.parse_vin(payload)
+            if vin and vin != self.vin:
+                self.vin = vin
+                info = vin_decoder.decode_offline(vin)
+                self.ingest_frame({"vin": vin, "vehicle": vin_decoder.vehicle_name(info),
+                                   "connection": "connected"}, now)
+                if vin_decoder.LOOKUP_ONLINE:      # exact model + trim, without blocking the CAN loop
+                    threading.Thread(target=self._lookup_vin, args=(vin,), daemon=True).start()
+                return {"vin": vin}
         return None
+
+    def _lookup_vin(self, vin):
+        name = vin_decoder.vehicle_name(vin_decoder.decode(vin))
+        if name and vin == self.vin:
+            self.ingest_frame({"vin": vin, "vehicle": name}, time.time())
+
+    def _update_codes(self, can_id, kind, found, now):
+        """Engine and transmission ECUs answer separately; merge all their answers."""
+        self._codes[(can_id, kind)] = found
+        self._checks.add(CHECK_NAMES[kind])
+        tags = collections.defaultdict(set)
+        for entries in self._codes.values():
+            for code, t in entries:
+                tags[code].update(t)
+        status = {c: [t for t in TAG_ORDER if t in ts] for c, ts in sorted(tags.items())}
+        # Lamp state only from the car itself (PID 01). Codes alone don't mean the
+        # lamp is on, and guessing would be a false alert. None = not reported.
+        mil = self._mil_lamp
+        self.ingest_frame({"trouble_codes": list(status), "code_status": status,
+                           "code_checks": sorted(self._checks), "mil": mil, "connection": "connected"}, now)
 
     def status(self, now):
         if self.last_rx is None or now - self.last_rx > NO_DATA_AFTER_S:
@@ -229,7 +378,7 @@ class FreeWiliSource(Source):
             if merged is None:
                 merged = {"readings": {}}
             merged["readings"].update(f.get("readings") or {})
-            for k in ("trouble_codes", "mil", "connection"):
+            for k in FRAME_KEYS:
                 if f.get(k) is not None:
                     merged[k] = f[k]
             merged["t"] = f["t"]

@@ -33,6 +33,7 @@
       </button>
       <ul id="vehicleList" class="vs-list" role="listbox" hidden></ul>
     </div>
+    <small id="vinText" class="vin" hidden></small>
   </div>
 
   <button id="captureBtn" class="btn primary capture"><span class="rec"></span><span id="captureLabel">Start capture</span><kbd>Space</kbd></button>
@@ -63,6 +64,10 @@
     </div>
     <div id="primary" class="primary-grid"></div>
     <div id="secondary" class="secondary-grid"></div>
+    <details id="moreBox" class="more" hidden>
+      <summary>More readings <span id="moreCount" class="muted"></span></summary>
+      <div id="more" class="secondary-grid"></div>
+    </details>
 
     <div class="panel">
       <div class="panel-head">

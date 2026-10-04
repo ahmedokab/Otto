@@ -33,15 +33,25 @@ We never touch anything that could change how the car behaves. Enforced in code,
 
 | Allowed (what every scan tool does) | Blocked (raises `UnsafeRequest`) |
 |---|---|
-| `0x01` current data · `0x03` stored codes · `0x07` pending codes · `0x09` VIN | `0x04` clear codes, `0x08` component control, UDS `0x10` sessions, `0x11` reset, `0x14` clear, `0x27` unlock, `0x2E` write, `0x2F` I/O control, `0x31` routines, `0x34–0x37` reflash, `0x3D` write memory, `0x85` DTC setting |
+| Broadcast (`0x7DF` / `0x18DB33F1`): `0x01` current data · `0x03` stored codes · `0x07` pending codes · `0x0A` permanent codes · `0x09` VIN<br>Directly to one ECU (`0x7E0–0x7E7` / `0x18DAxxF1`): only UDS `0x19 01/02` / KWP `0x18` *read fault memory*, and ISO-TP flow control | `0x04` clear codes, `0x08` component control, UDS `0x10` sessions, `0x11` reset, `0x14` clear, `0x27` unlock, `0x2E` write, `0x2F` I/O control, `0x31` routines, `0x34–0x37` reflash, `0x3D` write memory, `0x85` DTC setting, and anything else sent directly to an ECU |
 
-- Only functional broadcast `0x7DF`, single-frame requests. The one physically-addressed frame is the fixed ISO-TP flow control `30 00 00` to `0x7E0–0x7E7`, which carries no service and only lets an ECU finish a long trouble-code reply.
+- Single-frame requests only. Broadcast requests are standard OBD reads. Directly-addressed frames are limited to two things: the fixed ISO-TP flow control `30 00 00` (no service; it only lets an ECU finish a long reply) and *read fault memory*. Many ECUs (e.g. VW engine computers, where EPC faults live) only answer that read when asked directly.
 - `server/obd.py:check_tx()` is the gate. `FreeWiliSource.send_can()` is the **only** transmit path and calls it.
 - The web server has **no endpoint that transmits** on the vehicle bus. `/api/ingest*` only receives.
 - Even safer option: passive listen-only (transmit nothing, decode what's already on the bus).
 - Practical: test on the simulator first, then a bench / junkyard ECU or a team member's own car, engine off → idle. Never while driving.
 
 Tell judges this explicitly. It answers "is this safe to plug into my car?" before they ask.
+
+### What Live mode reads
+- **Supported readings** first (Mode 01 bitmaps); the dashboard hides tiles the car can't report.
+- **VIN** (Mode 09) fills in the vehicle automatically. Make, year and common VW models decode offline; if online, NHTSA's free vPIC decoder adds the exact model and trim. `OTTO_VIN_LOOKUP=0` keeps the VIN on the laptop.
+- **Who answers, and how:** 11-bit IDs first, 29-bit if nothing answers (some makes use them). Works on any car with CAN OBD-II, which US law requires from model year 2008 (many earlier). Set the Neptune to the car's bus speed: 500 kbit/s for almost all cars.
+- **Trouble codes four ways**, every 5 s: stored, pending, permanent (broadcast), and each answering ECU's own fault memory (UDS `19 02`, asked directly). Each code card says how it was reported (warning light, active, stored, pending, intermittent). Faults that are only *intermittent* (not failing now) are shown as Info, never as an alarm. The check-engine badge only lights when the car itself reports its lamp on (PID 01).
+- **Readings at their own pace:** rpm/speed/throttle/load ~2×/s, temperatures, trims, pedal/throttle and lambda every ~2.5 s, slow values every 5–15 s. A tile only greys out when its reading is clearly late, or immediately for all tiles if the car stops answering.
+- **Tire pressure is not available over OBD-II.** There is no standard PID for it; it lives in a body/TPMS module with make-specific requests, and many cars use indirect TPMS (worked out from ABS wheel speeds), which has no psi value anywhere. If the car's own dash never shows per-tire pressures, the car doesn't measure them.
+- **Raw log:** every frame both ways goes to `recordings/raw-*.canlog` while capturing, so anything the decoder misses can be checked later.
+- `python -m tools.can_probe 10` runs the same checks once, without the server, and prints a summary.
 
 ---
 

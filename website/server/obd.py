@@ -1,14 +1,32 @@
-"""OBD-II over CAN (ISO 15765-4, 11-bit IDs) — request building and response decoding.
+"""OBD-II over CAN (ISO 15765-4) — request building and response decoding.
 
 These are pure functions with tests (tests/test_obd.py). The transport —
 how CAN frames get to/from the FREE-WILi — lives in sources/freewili.py.
 
-Request:  CAN ID 0x7DF (functional broadcast), data = [len, mode, pid, pad...]
-Response: CAN ID 0x7E8..0x7EF, single frame data = [len, mode+0x40, pid, A, B, ...]
+11-bit (most cars):
+  Request:  CAN ID 0x7DF (functional broadcast), data = [len, mode, pid, pad...]
+  Response: CAN ID 0x7E8..0x7EF, single frame data = [len, mode+0x40, pid, A, B, ...]
+  Direct to one ECU: reply ID - 8 (engine 0x7E8 -> 0x7E0)
+29-bit (some makes): broadcast 0x18DB33F1, replies 0x18DAF1xx, direct 0x18DAxxF1.
 """
 
 OBD_REQUEST_ID = 0x7DF
 ECU_RESPONSE_IDS = range(0x7E8, 0x7F0)
+OBD_REQUEST_ID_29 = 0x18DB33F1
+
+
+def is_response_id(can_id, extended=False):
+    """Is this frame an ECU answering a diagnostic request?"""
+    if extended:
+        return (can_id & 0xFFFFFF00) == 0x18DAF100
+    return can_id in ECU_RESPONSE_IDS
+
+
+def physical_id(response_id, extended=False):
+    """The ID to talk to one ECU directly, given the ID it answers from."""
+    if extended:
+        return 0x18DA00F1 | ((response_id & 0xFF) << 8)
+    return response_id - 8
 
 # pid: (state key, number of data bytes, formula)
 PIDS = {
@@ -21,10 +39,49 @@ PIDS = {
     0x10: ("maf_gs",        2, lambda d: (d[0] * 256 + d[1]) / 100),
     0x11: ("throttle_pct",  1, lambda d: d[0] * 100 / 255),
     0x42: ("ecu_voltage_v", 2, lambda d: (d[0] * 256 + d[1]) / 1000),
+    0x04: ("load_pct",      1, lambda d: d[0] * 100 / 255),
+    0x0B: ("map_kpa",       1, lambda d: d[0]),
+    0x0E: ("timing_deg",    1, lambda d: d[0] / 2 - 64),
+    0x2F: ("fuel_pct",      1, lambda d: d[0] * 100 / 255),
+    0x33: ("baro_kpa",      1, lambda d: d[0]),
+    0x46: ("ambient_c",     1, lambda d: d[0] - 40),
+    0x5C: ("oil_c",         1, lambda d: d[0] - 40),
+    0x1F: ("runtime_min",   2, lambda d: (d[0] * 256 + d[1]) / 60),
+    0x21: ("mil_dist_km",   2, lambda d: d[0] * 256 + d[1]),
+    0x31: ("clear_dist_km", 2, lambda d: d[0] * 256 + d[1]),
+    0x14: ("o2_up_v",       1, lambda d: d[0] / 200),
+    0x15: ("o2_down_v",     1, lambda d: d[0] / 200),
+    0x23: ("rail_kpa",      2, lambda d: (d[0] * 256 + d[1]) * 10),
+    0x30: ("warmups",       1, lambda d: d[0]),
+    0x34: ("lambda",        2, lambda d: (d[0] * 256 + d[1]) * 2 / 65536),
+    0x3C: ("cat_c",         2, lambda d: (d[0] * 256 + d[1]) / 10 - 40),
+    0x44: ("cmd_lambda",    2, lambda d: (d[0] * 256 + d[1]) * 2 / 65536),
+    0x47: ("throttle_b_pct", 1, lambda d: d[0] * 100 / 255),
+    0x49: ("pedal_d_pct",   1, lambda d: d[0] * 100 / 255),
+    0x4A: ("pedal_e_pct",   1, lambda d: d[0] * 100 / 255),
+    0x4C: ("cmd_throttle_pct", 1, lambda d: d[0] * 100 / 255),
+    0x4D: ("mil_time_min",  2, lambda d: d[0] * 256 + d[1]),
+    0x4E: ("clear_time_min", 2, lambda d: d[0] * 256 + d[1]),
+    0x5E: ("fuel_rate_lph", 2, lambda d: (d[0] * 256 + d[1]) / 20),
 }
-# Poll the important ones more often in your scheduler.
-FAST_PIDS = [0x0C, 0x0D, 0x11]
-SLOW_PIDS = [0x05, 0x42, 0x06, 0x07, 0x10, 0x0F]
+# How often to refresh each PID (seconds). The USB link manages ~14 requests/s,
+# so only the readings that change fast get a fast lane. The scheduler in
+# sources/freewili.py polls whatever is most overdue.
+FAST, MEDIUM, SLOW, RARE = 0.6, 2.5, 5.0, 15.0
+PID_INTERVAL = {
+    0x0C: FAST, 0x0D: FAST, 0x11: FAST, 0x04: FAST,
+    0x05: MEDIUM, 0x42: MEDIUM, 0x06: MEDIUM, 0x07: MEDIUM, 0x0B: MEDIUM, 0x0F: MEDIUM, 0x10: MEDIUM,
+    0x0E: MEDIUM, 0x49: MEDIUM, 0x4A: MEDIUM, 0x4C: MEDIUM, 0x47: MEDIUM, 0x44: MEDIUM, 0x34: MEDIUM,
+    0x14: MEDIUM, 0x15: MEDIUM, 0x23: MEDIUM, 0x5E: MEDIUM,
+    0x5C: SLOW, 0x3C: SLOW, 0x2F: SLOW, 0x46: SLOW, 0x1F: SLOW,
+    0x33: RARE, 0x21: RARE, 0x31: RARE, 0x30: RARE, 0x4D: RARE, 0x4E: RARE,
+}
+MONITOR_PID = 0x01         # check-engine lamp state + stored code count
+PID_INTERVAL[MONITOR_PID] = SLOW
+# Reading key -> expected refresh interval, so "stale" means "later than expected"
+KEY_INTERVAL = {PIDS[p][0]: s for p, s in PID_INTERVAL.items() if p in PIDS}
+# Mode 01 PIDs 0x00/0x20/0x40/0x60 answer with a bitmap of the PIDs the ECU supports.
+SUPPORT_PIDS = [0x00, 0x20, 0x40, 0x60]
 
 
 # ---------------------------------------------------------------------------
@@ -38,7 +95,11 @@ SAFE_SERVICES = {
     0x03: "Show stored trouble codes",
     0x07: "Show pending trouble codes",
     0x09: "Vehicle information (VIN, calibration IDs)",
+    0x0A: "Show permanent trouble codes",
+    0x19: "UDS read DTC information (manufacturer fault memory, read-only)",
 }
+# UDS 0x19 sub-functions we use: 0x01 count, 0x02 list by status mask. Both only read.
+SAFE_UDS_READ_DTC = {0x01, 0x02}
 BLOCKED_SERVICES = {
     0x04: "Clear trouble codes / reset readiness monitors",
     0x08: "Control on-board system or component",
@@ -73,8 +134,19 @@ FLOW_CONTROL = bytes([0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])  # CTS, n
 FLOW_CONTROL_IDS = range(0x7E0, 0x7E8)
 
 
-def flow_control_id(response_id):
-    return response_id - 8
+def flow_control_id(response_id, extended=False):
+    return physical_id(response_id, extended)
+
+
+def _is_physical_id(can_id, extended):
+    if extended:
+        return (can_id & 0xFFFF00FF) == 0x18DA00F1
+    return can_id in FLOW_CONTROL_IDS
+
+
+# Sent directly to one ECU: only reading its fault memory. UDS 0x19 01/02, or
+# 0x18 (KWP2000 "read DTCs by status", the older equivalent; unassigned in UDS).
+SAFE_PHYSICAL_SERVICES = {0x18, 0x19}
 
 
 class IsoTpAssembler:
@@ -115,35 +187,128 @@ class IsoTpAssembler:
         return None, False
 
 
-def check_tx(can_id, data):
+def check_tx(can_id, data, extended=False):
     """Gatekeeper for EVERY frame the hardware transmits. Raises UnsafeRequest.
 
-    Allowed: functional broadcast 0x7DF, single frame, read-only service only.
-    One exception: the fixed ISO-TP flow-control frame, which carries no
-    service byte and only tells an ECU "send the rest of your reply".
+    Allowed: functional broadcast (0x7DF / 0x18DB33F1), single frame,
+    read-only service only. Sent directly to one ECU (0x7E0-0x7E7 /
+    0x18DAxxF1), only two things: the fixed ISO-TP flow-control frame, which
+    carries no service and only lets an ECU finish a long reply, and a
+    single-frame "read fault memory" request (SAFE_PHYSICAL_SERVICES).
     """
-    if can_id in FLOW_CONTROL_IDS and bytes(data) == FLOW_CONTROL:
-        return True
-    if can_id != OBD_REQUEST_ID:
-        raise UnsafeRequest(f"TX to 0x{can_id:X} blocked: only 0x7DF read-only requests are allowed")
-    if len(data) < 2 or (data[0] >> 4) != 0:
+    if len(data) < 2 or (data[0] >> 4) != 0 and bytes(data) != FLOW_CONTROL:
         raise UnsafeRequest("TX blocked: only single-frame requests are allowed")
+    if _is_physical_id(can_id, extended):
+        if bytes(data) == FLOW_CONTROL:
+            return True
+        if data[1] not in SAFE_PHYSICAL_SERVICES:
+            raise UnsafeRequest(f"TX to 0x{can_id:X} blocked: directly to an ECU only fault-memory reads are allowed")
+    elif can_id != (OBD_REQUEST_ID_29 if extended else OBD_REQUEST_ID):
+        raise UnsafeRequest(f"TX to 0x{can_id:X} blocked: only OBD broadcast read-only requests are allowed")
     service = data[1]
+    if service == 0x18:
+        if not _is_physical_id(can_id, extended):
+            raise UnsafeRequest("TX blocked: KWP 0x18 only directly to one ECU")
+        return True
     if service not in SAFE_SERVICES:
         why = BLOCKED_SERVICES.get(service, "not on the read-only allowlist")
         raise UnsafeRequest(f"TX blocked: service 0x{service:02X} ({why})")
+    if service == 0x19 and (len(data) < 3 or data[2] not in SAFE_UDS_READ_DTC):
+        raise UnsafeRequest("TX blocked: UDS 0x19 only with read sub-functions 0x01/0x02")
     return True
 
 
-def build_request(mode, pid=None, pad=0x00):
+def build_request(mode, *params):
     """8-byte single-frame request, e.g. build_request(0x01, 0x0C) -> 02 01 0C 00 00 00 00 00
 
     Refuses anything outside SAFE_SERVICES.
     """
-    data = [mode] + ([pid] if pid is not None else [])
-    frame = bytes([len(data)] + data + [pad] * (7 - len(data)))
+    data = [mode, *params]
+    frame = bytes([len(data)] + data + [0x00] * (7 - len(data)))
     check_tx(OBD_REQUEST_ID, frame)
     return frame
+
+
+# UDS fault memory: everything the engine computer is flagging, including
+# manufacturer codes (e.g. VW EPC faults) that Mode 03 doesn't report.
+# Status mask bits: 0 failing now, 2 pending, 3 confirmed/stored, 5 failed
+# since last clear, 7 warning light requested. Skips "test not run yet" noise.
+UDS_STATUS_MASK = 0xAD
+UDS_READ_DTCS = (0x19, 0x02, UDS_STATUS_MASK)
+
+# Reply service byte -> how the code is reported
+DTC_LIST_REPLIES = {0x43: "stored", 0x47: "pending", 0x4A: "permanent"}
+
+
+def parse_dtc_list(payload):
+    """Mode 03 / 07 / 0A reply payload (starts at 0x43/0x47/0x4A) -> list of codes."""
+    if len(payload) < 2 or payload[0] not in DTC_LIST_REPLIES:
+        return None
+    codes = []
+    for i in range(payload[1]):
+        j = 2 + 2 * i
+        if j + 1 >= len(payload):
+            break
+        b1, b2 = payload[j], payload[j + 1]
+        if b1 == 0 and b2 == 0:
+            continue
+        codes.append(decode_dtc(b1, b2))
+    return codes
+
+
+def uds_status_tags(status):
+    """UDS DTC status byte -> plain-language tags, most important first."""
+    tags = []
+    if status & 0x80:
+        tags.append("warning light")
+    if status & 0x01:
+        tags.append("active")
+    if status & 0x08:
+        tags.append("stored")
+    if status & 0x04:
+        tags.append("pending")
+    if not tags and status & 0x20:
+        tags.append("intermittent")
+    return tags
+
+
+def parse_uds_dtcs(payload):
+    """UDS 0x59 0x02 reply -> list of (code, tags). Each record is 3 DTC bytes + status;
+    the first two bytes are the familiar P/C/B/U code, the third is a failure-type detail."""
+    if len(payload) < 3 or payload[0] != 0x59 or payload[1] != 0x02:
+        return None
+    out = []
+    for j in range(3, len(payload) - 3, 4):
+        b1, b2, status = payload[j], payload[j + 1], payload[j + 3]
+        tags = uds_status_tags(status)
+        if (b1 or b2) and tags:
+            out.append((decode_dtc(b1, b2), tags))
+    return out
+
+
+def parse_supported(payload):
+    """Mode 01 PID 0x00/0x20/0x40/0x60 reply payload -> set of supported PIDs."""
+    if len(payload) < 6 or payload[0] != 0x41 or payload[1] not in SUPPORT_PIDS:
+        return None
+    base = payload[1]
+    bits = int.from_bytes(payload[2:6], "big")
+    return {base + n for n in range(1, 33) if bits & (1 << (32 - n))}
+
+
+def parse_monitor(payload):
+    """Mode 01 PID 0x01 -> (check-engine lamp on, number of stored codes)."""
+    if len(payload) < 3 or payload[0] != 0x41 or payload[1] != MONITOR_PID:
+        return None
+    return bool(payload[2] & 0x80), payload[2] & 0x7F
+
+
+def parse_vin(payload):
+    """Mode 09 PID 02 reply payload (49 02 01 + 17 ASCII chars) -> VIN or None."""
+    if len(payload) < 3 or payload[0] != 0x49 or payload[1] != 0x02:
+        return None
+    text = bytes(payload[3:]).decode("ascii", "ignore").strip("\x00 ").upper()
+    vin = text[-17:]
+    return vin if len(vin) == 17 and vin.isalnum() else None
 
 
 def parse_mode01(data):
@@ -207,14 +372,4 @@ def parse_mode03(payload):
     """
     if len(payload) < 2 or payload[0] != 0x43:
         return None
-    count = payload[1]
-    codes = []
-    for i in range(count):
-        j = 2 + 2 * i
-        if j + 1 >= len(payload):
-            break
-        b1, b2 = payload[j], payload[j + 1]
-        if b1 == 0 and b2 == 0:
-            continue
-        codes.append(decode_dtc(b1, b2))
-    return codes
+    return parse_dtc_list(payload)

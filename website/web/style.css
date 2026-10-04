@@ -224,6 +224,20 @@ textarea{width:100%;resize:vertical}
 .sev.stop{background:#fdecea;color:var(--bad)}
 .sev.caution{background:#fff5e0;color:var(--warn)}
 .sev.info{background:var(--blue-soft);color:var(--blue)}
+.code-tags{display:flex;flex-wrap:wrap;gap:6px;padding:10px 18px 0}
+.tag{font:600 10.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;background:var(--panel-2);color:var(--muted);cursor:help}
+.tag.hot{background:#fdecea;color:var(--bad)}
+.tag.on{background:var(--blue-soft);color:var(--blue)}
+.tag.soft{background:var(--orange-soft);color:var(--orange-ink)}
+.checks{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;margin:14px 0 6px;padding:0;font-size:13px}
+.checks .ok{color:var(--blue)}
+.checks .na{color:var(--dim)}
+.empty-state .checks + p{font-size:13px;margin-top:6px}
+.vin{font:500 11px var(--mono);color:var(--muted)}
+.more{margin:4px 0 18px}
+.more>summary{cursor:pointer;font-weight:600;padding:8px 2px;color:var(--text);list-style-position:inside}
+.more>summary .muted{font-weight:500}
+.more[open]>summary{margin-bottom:10px}
 .code-body{padding:16px 18px;display:grid;gap:16px}
 .code-body p{margin:0}
 .code-body h4{margin:0 0 8px;font-size:12px;font-weight:600;color:var(--muted)}

@@ -16,6 +16,8 @@ import datetime as dt
 import statistics
 from collections import deque
 
+from .obd import KEY_INTERVAL
+
 READINGS = {
     "rpm":           {"label": "Engine speed",         "unit": "rpm"},
     "coolant_c":     {"label": "Coolant temp",         "unit": "°C"},
@@ -26,12 +28,42 @@ READINGS = {
     "ltft_pct":      {"label": "Long-term fuel trim",  "unit": "%"},
     "maf_gs":        {"label": "Mass air flow",        "unit": "g/s"},
     "intake_c":      {"label": "Intake air temp",      "unit": "°C"},
+    "load_pct":      {"label": "Engine load",          "unit": "%"},
+    "map_kpa":       {"label": "Intake pressure (MAP)", "unit": "kPa"},
+    "timing_deg":    {"label": "Timing advance",       "unit": "°"},
+    "fuel_pct":      {"label": "Fuel level",           "unit": "%"},
+    "oil_c":         {"label": "Oil temp",             "unit": "°C"},
+    "ambient_c":     {"label": "Outside air temp",     "unit": "°C"},
+    "baro_kpa":      {"label": "Barometric pressure",  "unit": "kPa"},
+    "runtime_min":   {"label": "Engine run time",      "unit": "min"},
+    "mil_dist_km":   {"label": "Distance with check-engine light on", "unit": "km"},
+    "clear_dist_km": {"label": "Distance since codes cleared", "unit": "km"},
+    "pedal_d_pct":   {"label": "Gas pedal",            "unit": "%"},
+    "pedal_e_pct":   {"label": "Gas pedal sensor E",   "unit": "%"},
+    "cmd_throttle_pct": {"label": "Throttle commanded", "unit": "%"},
+    "throttle_b_pct": {"label": "Throttle sensor B",   "unit": "%"},
+    "cat_c":         {"label": "Catalyst temp",        "unit": "°C"},
+    "lambda":        {"label": "Air-fuel ratio (lambda)", "unit": "λ"},
+    "cmd_lambda":    {"label": "Commanded lambda",     "unit": "λ"},
+    "o2_up_v":       {"label": "O2 sensor (front)",    "unit": "V"},
+    "o2_down_v":     {"label": "O2 sensor (rear)",     "unit": "V"},
+    "rail_kpa":      {"label": "Fuel rail pressure",   "unit": "kPa"},
+    "fuel_rate_lph": {"label": "Fuel use",             "unit": "L/h"},
+    "warmups":       {"label": "Warm-ups since codes cleared", "unit": ""},
+    "mil_time_min":  {"label": "Engine time with check-engine light on", "unit": "min"},
+    "clear_time_min": {"label": "Engine time since codes cleared", "unit": "min"},
 }
 
 # What users see for each internal mode name ("replay" stays in the API so hardware scripts keep working)
 MODE_LABELS = {"live": "LIVE", "simulator": "SIMULATOR", "replay": "HISTORY"}
 
-STALE_AFTER_S = 3.0
+STALE_AFTER_S = 3.0        # at least this long without an update before a reading counts as stale
+
+
+def stale_after(key):
+    """Slow readings (fuel level, distances) refresh every few seconds by design;
+    only call them stale when they're clearly late, so tiles don't flicker."""
+    return max(STALE_AFTER_S, 2.5 * KEY_INTERVAL.get(key, 0) + 1)
 HISTORY_S = 180
 
 
@@ -44,7 +76,8 @@ def iso(t):
 
 class State:
     def __init__(self):
-        self.vehicle = "Volkswagen Beetle 2019 SE"   # free text; the dashboard suggests "Make Model Year Trim"
+        self.vehicle = ""          # free text "Make Model Year Trim"; filled from the VIN in Live mode
+        self.vin = None                              # set when the car reports it; vehicle then follows
         self.reset("simulator", "healthy")
 
     def reset(self, mode, scenario=None, recording=None):
@@ -58,6 +91,9 @@ class State:
         self.updated = {k: None for k in READINGS}
         self.history = {k: deque() for k in READINGS}
         self.codes = []
+        self.code_status = {}      # code -> ["warning light", "stored", "pending", ...]
+        self.code_checks = []      # kinds of code check the car answered: stored, pending, ...
+        self.supported = None      # reading keys the car supports; None = unknown
         self.mil = False
         self.markers = []
         self.last_updated = None
@@ -67,6 +103,8 @@ class State:
 
     def clear_codes(self):
         self.codes = []
+        self.code_status = {}
+        self.code_checks = []
         self.mil = False
 
     def apply(self, frame, now):
@@ -85,6 +123,15 @@ class State:
                     h.popleft()
         if frame.get("trouble_codes") is not None:
             self.codes = sorted({str(c).upper().strip() for c in frame["trouble_codes"] if c})
+            self.code_status = {c: list(t) for c, t in (frame.get("code_status") or {}).items() if c in self.codes}
+        if frame.get("code_checks") is not None:
+            self.code_checks = list(frame["code_checks"])
+        if frame.get("supported") is not None:
+            self.supported = [k for k in frame["supported"] if k in READINGS]
+        if frame.get("vin"):
+            self.vin = str(frame["vin"])[:17]
+        if frame.get("vehicle"):
+            self.vehicle = str(frame["vehicle"]).strip()[:80]
         if frame.get("mil") is not None:
             self.mil = bool(frame["mil"])
         self.last_updated = t
@@ -101,7 +148,7 @@ class State:
 
     def stale_keys(self, now):
         return [k for k, t in self.updated.items()
-                if t is not None and now - t > STALE_AFTER_S]
+                if t is not None and now - t > stale_after(k)]
 
     def stats(self, now, window=60):
         out = {}
@@ -131,6 +178,9 @@ class State:
             "scenario": self.scenario,
             "recording": self.recording,
             "vehicle": self.vehicle,
+            "vin": self.vin,
+            "supported": self.supported,
+            "code_checks": list(self.code_checks),
             "connection": self.connection,
             "connection_detail": self.connection_detail,
             "capturing": self.capturing,

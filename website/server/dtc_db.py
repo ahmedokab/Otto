@@ -167,6 +167,67 @@ DTC = {
         "driving": "Usually drivable; speedometer, cruise control or shifting may misbehave.",
         "related": ["speed_kph"],
     },
+    # Throttle / pedal faults: on VW and Audi these light the EPC (Electronic
+    # Power Control) lamp, often without the check-engine light.
+    "P2101": {
+        "title": "Throttle actuator control motor circuit range/performance",
+        "system": "Electronic throttle (EPC)",
+        "severity": "caution",
+        "meaning": "The electronic throttle didn't move the way the engine computer commanded. On VW/Audi this typically turns on the EPC light and can limit engine power.",
+        "common_causes": [
+            "Dirty or sticking throttle body (carbon build-up)",
+            "Failing throttle body motor",
+            "Poor connection or damaged wiring at the throttle body",
+            "Low battery or charging voltage upsetting the throttle motor",
+        ],
+        "next_checks": [
+            "Note whether power was reduced (limp mode) when the light came on",
+            "Inspect the throttle body connector, then clean the throttle body",
+            "A shop can run a throttle-body adaptation after cleaning or replacing it",
+        ],
+        "driving": "Usually drivable, but power may be cut without warning. Avoid situations that need full acceleration until it's checked.",
+        "related": ["throttle_pct", "cmd_throttle_pct", "ecu_voltage_v"],
+    },
+    "P0638": {
+        "title": "Throttle actuator control range/performance (Bank 1)",
+        "system": "Electronic throttle (EPC)",
+        "severity": "caution",
+        "meaning": "The throttle plate's measured position didn't follow the commanded position closely enough. On VW/Audi this usually lights EPC.",
+        "common_causes": ["Dirty or sticking throttle body", "Failing throttle body", "Wiring or connector fault at the throttle body"],
+        "next_checks": ["Inspect and clean the throttle body", "Check the connector for corrosion or loose pins", "Ask for a throttle-body adaptation afterwards"],
+        "driving": "Usually drivable, but power may be limited. Get it checked soon.",
+        "related": ["throttle_pct", "cmd_throttle_pct", "rpm"],
+    },
+    "P0121": {
+        "title": "Throttle/pedal position sensor 'A' circuit range/performance",
+        "system": "Electronic throttle (EPC)",
+        "severity": "caution",
+        "meaning": "One of the throttle position signals doesn't make sense compared with what the engine is doing. On VW/Audi this usually lights EPC.",
+        "common_causes": ["Failing throttle position sensor (part of the throttle body)", "Wiring or connector fault", "Dirty throttle body"],
+        "next_checks": ["Watch the throttle reading for jumps while the engine idles", "Inspect the throttle body connector and wiring"],
+        "driving": "Usually drivable; the car may go into reduced power.",
+        "related": ["throttle_pct", "rpm", "load_pct"],
+    },
+    "P2135": {
+        "title": "Throttle position sensors 'A'/'B' voltage correlation",
+        "system": "Electronic throttle (EPC)",
+        "severity": "caution",
+        "meaning": "The throttle body has two position sensors that should always agree. They don't, so the computer can't trust the throttle position. On VW/Audi this lights EPC.",
+        "common_causes": ["Failing throttle body (the sensors are built in)", "Wiring or connector fault at the throttle body", "Water or corrosion in the connector"],
+        "next_checks": ["Inspect the throttle body connector", "A shop can compare both sensor signals live", "Replacement usually means the whole throttle body plus an adaptation"],
+        "driving": "Expect reduced power (limp mode). Drive gently and get it checked soon.",
+        "related": ["throttle_pct", "throttle_b_pct", "rpm"],
+    },
+    "P2138": {
+        "title": "Accelerator pedal position sensors 'D'/'E' voltage correlation",
+        "system": "Electronic throttle (EPC)",
+        "severity": "caution",
+        "meaning": "The gas pedal has two sensors that should agree, and they don't. The computer can't be sure how far the pedal is pressed. On VW/Audi this lights EPC.",
+        "common_causes": ["Failing accelerator pedal sensor (usually replaced as a pedal assembly)", "Wiring or connector fault at the pedal"],
+        "next_checks": ["Note whether the car responds slowly or not at all to the pedal", "Inspect the connector at the top of the gas pedal"],
+        "driving": "Expect reduced power or slow pedal response. Get it checked before relying on the car for highway driving.",
+        "related": ["pedal_d_pct", "pedal_e_pct", "throttle_pct"],
+    },
 }
 
 _SYSTEMS = {"P": "Powertrain", "C": "Chassis", "B": "Body", "U": "Network / communication"}
@@ -175,6 +236,11 @@ _P0_SUB = {
     "3": "Ignition system or misfire", "4": "Auxiliary emissions controls",
     "5": "Vehicle speed, idle control & auxiliary inputs", "6": "Computer & output circuits",
     "7": "Transmission", "8": "Transmission",
+}
+_P2_SUB = {
+    "0": "Fuel & air metering / emissions", "1": "Fuel & air metering (incl. electronic throttle and pedal)",
+    "2": "Fuel & air metering / emissions", "3": "Ignition system", "4": "Auxiliary emissions controls",
+    "5": "Auxiliary inputs", "6": "Computer & output circuits", "7": "Transmission",
 }
 
 
@@ -186,7 +252,8 @@ def describe_unknown(code):
         origin = "manufacturer-specific"
     else:
         origin = "standardized (SAE)"
-    sub = _P0_SUB.get(code[2:3], "") if code.startswith("P") else ""
+    # The third character's meaning is only standardized for P0 and P2 codes
+    sub = {"P0": _P0_SUB, "P2": _P2_SUB}.get(code[:2], {}).get(code[2:3], "")
     area = f"{system}{' — ' + sub if sub else ''}"
     return {
         "title": f"{area} code",

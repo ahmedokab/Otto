@@ -124,14 +124,15 @@ def test_live_loop_polls_car_and_reassembles_codes():
     fake.cb, src._fw = src._on_event, fake
     t = threading.Thread(target=src._poll_loop, daemon=True)
     t.start()
-    time.sleep(0.5)
+    time.sleep(1.5)            # discovery + four code checks time out first on this fake
     src._stop.set()
     t.join(1)
-    assert all(obd.check_tx(i, d) for i, d in fake.sent)          # everything sent was allowed
+    assert all(obd.check_tx(i, d, i > 0x7FF) for i, d in fake.sent)   # everything sent was allowed
     assert (0x7E0, obd.FLOW_CONTROL) in fake.sent
     f = src.poll(time.time())
     assert f["readings"]["rpm"] == 1726
-    assert f["trouble_codes"] == ["P0171", "P0300", "P0420"] and f["mil"] is True
+    assert f["trouble_codes"] == ["P0171", "P0300", "P0420"]
+    assert "mil" not in f          # this fake car never reports its lamp (PID 01): don't guess
 
 
 # ---- bench ECU (fake car on Neptune channel B) ------------------------------
@@ -183,13 +184,164 @@ def test_bench_loop_end_to_end():
     fake.cb, src._fw = src._on_event, fake
     t = threading.Thread(target=src._poll_loop, daemon=True)
     t.start()
-    time.sleep(0.5)
+    time.sleep(1.5)
     src._stop.set()
     t.join(1)
     car_side = [(i, d) for ch, i, d in fake.sent if ch == 0]
-    assert car_side and all(obd.check_tx(i, d) for i, d in car_side)   # Otto's side stayed read-only
+    assert car_side and all(obd.check_tx(i, d, i > 0x7FF) for i, d in car_side)   # Otto's side stayed read-only
     assert all(i == 0x7E8 for ch, i, d in fake.sent if ch == 1)          # fake car only answered
     f = src.poll(time.time())
     assert f["readings"] == {"rpm": 1726, "coolant_c": 89}
     assert f["trouble_codes"] == ["P0171", "P0300", "P0420"]
     assert src.status(time.time())[1].startswith("BENCH")
+
+
+# ---- more code checks, supported PIDs, VIN -------------------------------------
+from server import vin as vin_decoder
+from server.state import State
+
+def test_pending_and_permanent_lists():
+    assert obd.parse_dtc_list(bytes.fromhex("47010301")) == ["P0301"]
+    assert obd.parse_dtc_list(bytes.fromhex("4A00")) == []
+    assert obd.parse_dtc_list(bytes.fromhex("4100")) is None
+
+def test_uds_fault_memory():
+    # 59 02 mask | P2101 ftb 00 status 0x89 (warning light + stored + failing) | P0300 status 0x50 (not run: skipped)
+    payload = bytes.fromhex("5902FF" + "21010089" + "03000050" + "05630024")
+    assert obd.parse_uds_dtcs(payload) == [("P2101", ["warning light", "active", "stored"]),
+                                           ("P0563", ["pending"])]
+
+def test_uds_read_is_the_only_uds_allowed():
+    assert obd.check_tx(0x7DF, obd.build_request(*obd.UDS_READ_DTCS))
+    for sub in (0x04, 0x06, 0x14):                       # snapshot/extended reads: not on our list
+        with pytest.raises(obd.UnsafeRequest):
+            obd.build_request(0x19, sub)
+    with pytest.raises(obd.UnsafeRequest):
+        obd.build_request(0x14, 0xFF, 0xFF, 0xFF)       # clear diagnostic information
+
+def test_supported_pid_bitmap():
+    # 0xBE1FA813: the classic example bitmap for PIDs 01-20
+    assert obd.parse_supported(bytes.fromhex("4100BE1FA813")) == {
+        0x01, 0x03, 0x04, 0x05, 0x06, 0x07, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x13, 0x15, 0x1C, 0x1F, 0x20}
+    assert obd.parse_monitor(bytes.fromhex("410183076500")) == (True, 3)
+
+VIN = "3VWJ17AT9KM600001"
+
+def test_vin_parse_and_offline_decode():
+    payload = bytes.fromhex("490201") + VIN.encode()
+    assert obd.parse_vin(payload) == VIN
+    info = vin_decoder.decode_offline(VIN)
+    assert (info["make"], info["model"], info["year"]) == ("Volkswagen", "Beetle", 2019)
+    assert vin_decoder.vehicle_name(info) == "Volkswagen Beetle 2019"
+
+def test_vin_multiframe_fills_in_vehicle(monkeypatch):
+    monkeypatch.setattr(vin_decoder, "LOOKUP_ONLINE", False)
+    src = FreeWiliSource()
+    payload = bytes.fromhex("490201") + VIN.encode()           # 20 bytes -> 3 frames
+    src.ingest_can(0x7E8, bytes([0x10, len(payload)]) + payload[:6], 1.0)
+    src.ingest_can(0x7E8, bytes([0x21]) + payload[6:13], 1.1)
+    assert src.ingest_can(0x7E8, bytes([0x22]) + payload[13:20], 1.2) == {"vin": VIN}
+    state = State()
+    state.apply(src.poll(1.3), 1.3)
+    assert state.vin == VIN and state.vehicle == "Volkswagen Beetle 2019"
+
+
+class EpcCar(FakeFreeWili):
+    """Like the team's Beetle: no stored OBD code, but the fault memory has one
+    with the warning light on (what an EPC light looks like)."""
+    REPLIES = {
+        b"\x01\x00": "064100" + "98180000",            # supports 01, 04, 05, 0C, 0D only
+        b"\x01\x0C": "04410C0BB8",
+        b"\x03": "024300",
+        b"\x07": "024700",
+        b"\x0A": "024A00",
+        b"\x19\x02": "075902FF21010089",
+    }
+    def can_transmit(self, channel, can_id, data, is_extended, is_fd):
+        self.sent.append((can_id, bytes(data)))
+        n = data[0]
+        if data[1] == 0x19 and can_id != 0x7E0:
+            return Ok("Ok")            # like the real Beetle: fault memory only when asked directly
+        for req, hexreply in self.REPLIES.items():
+            if bytes(data[1:1 + n]).startswith(req):
+                self._reply(bytes.fromhex(hexreply).ljust(8, b"\x00"))
+                break
+        return Ok("Ok")
+
+def test_epc_style_fault_reaches_the_dashboard():
+    src, fake = FreeWiliSource(), EpcCar()
+    fake.cb, src._fw = src._on_event, fake
+    t = threading.Thread(target=src._poll_loop, daemon=True)
+    t.start()
+    time.sleep(1.5)
+    src._stop.set()
+    t.join(1)
+    assert all(obd.check_tx(i, d, i > 0x7FF) for i, d in fake.sent)
+    state = State()
+    state.reset("live")
+    state.apply(src.poll(time.time()), time.time())
+    assert state.codes == ["P2101"]
+    assert state.code_status == {"P2101": ["warning light", "active", "stored"]}
+    assert state.code_checks == ["manufacturer", "pending", "permanent", "stored"]
+    assert state.readings["rpm"] == 750
+    assert "maf_gs" not in state.supported and "rpm" in state.supported   # unsupported tiles get hidden
+    assert (0x7E0, obd.build_request(*obd.UDS_READ_DTCS)) in fake.sent   # asked the engine ECU directly
+
+
+def test_physical_requests_only_read_fault_memory():
+    assert obd.check_tx(0x7E0, obd.build_request(*obd.UDS_READ_DTCS))
+    assert obd.check_tx(0x7E0, bytes.fromhex("041802FF00000000"))         # KWP read DTCs by status
+    for bad in ("02010C0000000000", "0322F19000000000", "0414FFFFFF000000", "0211010000000000"):
+        with pytest.raises(obd.UnsafeRequest):
+            obd.check_tx(0x7E0, bytes.fromhex(bad))     # live data, read-by-ID, clear, reset
+    with pytest.raises(obd.UnsafeRequest):
+        obd.check_tx(0x7DF, bytes.fromhex("041802FF00000000"))         # KWP only directly
+
+def test_29_bit_ids():
+    assert obd.check_tx(obd.OBD_REQUEST_ID_29, obd.build_request(0x01, 0x0C), True)
+    assert obd.check_tx(0x18DA10F1, obd.FLOW_CONTROL, True)
+    assert obd.check_tx(0x18DA10F1, obd.build_request(*obd.UDS_READ_DTCS), True)
+    with pytest.raises(obd.UnsafeRequest):
+        obd.check_tx(0x18DA10F1, obd.build_request(0x01, 0x0C), True)
+    with pytest.raises(obd.UnsafeRequest):
+        obd.check_tx(0x18DB33F1, obd.build_request(0x01, 0x0C), False)   # 29-bit ID sent as 11-bit
+    assert obd.is_response_id(0x18DAF110, True) and not obd.is_response_id(0x18DAF110, False)
+    assert obd.physical_id(0x18DAF110, True) == 0x18DA10F1 and obd.physical_id(0x7E8) == 0x7E0
+
+
+class Car29(FakeFreeWili):
+    """A car that only answers 29-bit requests (ECU address 0x10)."""
+    def can_transmit(self, channel, can_id, data, is_extended, is_fd):
+        self.sent.append((can_id, bytes(data)))
+        if is_extended and can_id == obd.OBD_REQUEST_ID_29 and data[1:3] == b"\x01\x00":
+            self._reply29(bytes.fromhex("0641000018000000"))     # supports 0C, 0D
+        elif is_extended and data[1:3] == b"\x01\x0C":
+            self._reply29(bytes.fromhex("04410C1AF8000000"))
+        return Ok("Ok")
+
+    def _reply29(self, data):
+        self.events.append(SimpleNamespace(arb_id=0x18DAF110, is_extended=True, data=data))
+
+def test_switches_to_29_bit_when_car_needs_it():
+    src, fake = FreeWiliSource(), Car29()
+    fake.cb, src._fw = src._on_event, fake
+    t = threading.Thread(target=src._poll_loop, daemon=True)
+    t.start()
+    time.sleep(1.0)
+    src._stop.set()
+    t.join(1)
+    assert src.extended and src.ecus == {0x18DAF110}
+    f = src.poll(time.time())
+    assert f["readings"]["rpm"] == 1726 and f["supported"] == ["rpm", "speed_kph"]
+    assert (0x18DA10F1, obd.build_request(*obd.UDS_READ_DTCS)) in fake.sent
+
+
+def test_every_decoded_reading_reaches_the_dashboard():
+    import re
+    from pathlib import Path
+    from server.state import READINGS
+    js = (Path(__file__).resolve().parents[1] / "web" / "app.js").read_text(encoding="utf-8")
+    for pid, (key, _, _) in obd.PIDS.items():
+        assert key in READINGS, f"state drops {key}"
+        assert re.search(r"\n  " + key + r":", js), f"dashboard has no tile for {key}"
+        assert pid in obd.PID_INTERVAL, f"PID 0x{pid:02X} is never polled"

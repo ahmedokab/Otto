@@ -66,7 +66,7 @@ class ReplaySource(Source):
             if merged is None:
                 merged = {"readings": {}}
             merged["readings"].update(f.get("readings") or {})
-            for k in ("trouble_codes", "mil", "connection"):
+            for k in ("trouble_codes", "code_status", "code_checks", "mil", "connection", "supported", "vin", "vehicle"):
                 if f.get(k) is not None:
                     merged[k] = f[k]
             self.i += 1
