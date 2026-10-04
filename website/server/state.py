@@ -78,6 +78,7 @@ class State:
     def __init__(self):
         self.vehicle = ""          # free text "Make Model Year Trim"; filled from the VIN in Live mode
         self.vin = None                              # set when the car reports it; vehicle then follows
+        self.vehicle_changed = False                 # the controller drops the old AI analysis when set
         self.reset("simulator", "healthy")
 
     def reset(self, mode, scenario=None, recording=None):
@@ -103,6 +104,18 @@ class State:
         self.session = {}          # whole-capture stats per reading: n, sum, min, max (for saved reports)
         self.recording_file = None
 
+    def clear_vehicle_data(self, forget_vehicle=False):
+        """Start clean: no readings, charts, codes, diagnostics or markers from a previous car."""
+        self.readings = {k: None for k in READINGS}
+        self.updated = {k: None for k in READINGS}
+        self.history = {k: deque() for k in READINGS}
+        self.supported = None
+        self.session = {}
+        self.markers = []
+        self.clear_codes()
+        if forget_vehicle:
+            self.vehicle, self.vin = "", None
+
     def clear_codes(self):
         self.codes = []
         self.code_status = {}
@@ -112,6 +125,10 @@ class State:
 
     def apply(self, frame, now):
         t = frame.get("t") or now
+        vin = str(frame.get("vin") or "")[:17]
+        if vin and self.vin and vin != self.vin:      # a different car: nothing from the old one carries over
+            self.clear_vehicle_data(forget_vehicle=True)
+            self.vehicle_changed = True
         if frame.get("connection"):
             self.connection = frame["connection"]
         for k, v in (frame.get("readings") or {}).items():

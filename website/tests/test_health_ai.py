@@ -159,3 +159,32 @@ def test_reading_concern_plus_code_does_not_crash():
     h = health.assess([misfire], HEALTHY_NOW, stats, diagnostics=diag)
     assert h["score"] < 75
     assert any("Cylinder 3" in r for s in h["systems"] for r in s["reasons"])
+
+def test_switching_cars_clears_the_old_car():
+    from server.state import State
+    st = State()
+    st.reset("live")
+    st.apply({"vin": "3VWFP7AT5DM688634", "vehicle": "Volkswagen Beetle 2013", "readings": {"rpm": 700},
+              "trouble_codes": ["P0300"], "diagnostics": {"fuel_status": {"code": 2, "text": "Normal"}}}, 1.0)
+    st.add_marker(1.5, "old car shudder")
+    st.apply({"vin": "KMHLW4AK1SU000001", "vehicle": "Hyundai Elantra 2025", "readings": {"coolant_c": 85}}, 2.0)
+    assert st.vin == "KMHLW4AK1SU000001" and st.vehicle == "Hyundai Elantra 2025"
+    assert st.readings["rpm"] is None and st.readings["coolant_c"] == 85
+    assert st.codes == [] and st.diagnostics == {} and st.markers == []
+    assert st.vehicle_changed
+
+def test_new_capture_and_new_vehicle_button_start_clean(monkeypatch):
+    from server import app as app_module
+    monkeypatch.setattr(app_module, "Recorder", lambda *a, **k: SimpleNamespace(write=lambda f: None, close=lambda: None))
+    c = app_module.Controller()
+    c.set_source("live")
+    c.state.vehicle, c.state.vin = "Volkswagen Beetle 2013", "3VWFP7AT5DM688634"
+    c.state.apply({"readings": {"rpm": 700}, "trouble_codes": ["P0300"]}, 1.0)
+    c.explanation = {"headline": "old"}
+    c.live.start = c.live.stop = lambda: None           # no hardware in tests
+    c.start_capture()
+    assert c.state.readings["rpm"] is None and c.state.codes == [] and c.explanation is None
+    assert c.state.vehicle == "" and c.state.vin is None  # re-read from whichever car is plugged in
+    c.state.vehicle = "Hyundai Elantra 2025"
+    c.new_vehicle()
+    assert c.state.vehicle == "" and c.state.readings["rpm"] is None

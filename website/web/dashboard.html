@@ -33,11 +33,16 @@
       </button>
       <ul id="vehicleList" class="vs-list" role="listbox" hidden></ul>
     </div>
-    <small id="vinText" class="vin" hidden></small>
+    <div class="vin-row">
+      <small id="vinText" class="vin" hidden></small>
+      <button type="button" id="newVehicleBtn" class="link-btn" title="Clear all readings, codes and results from the current car">New vehicle</button>
+    </div>
   </div>
 
   <button id="captureBtn" class="btn primary capture"><span class="rec"></span><span id="captureLabel">Start capture</span></button>
 </header>
+
+<div id="connBanner" class="conn-banner" role="alert" hidden></div>
 
 <nav class="sourcebar" aria-label="Data source">
   <div class="seg" id="modeSeg" role="tablist">

@@ -538,3 +538,14 @@ def test_a_stuck_screen_never_pauses_reading_the_car(tmp_path):
     src._stop.set()
     poll.join(2); screen.join(6)
     assert sent_while_screen_stuck > 3                                    # kept polling the car meanwhile
+
+def test_otto_screen_comes_back_if_the_device_leaves_it(tmp_path):
+    src, fake = FreeWiliSource(), ScreenFreeWili()
+    src._fw, src.screen_manifest = fake, tmp_path / "screens.json"
+    src.device_view = lambda: {"text": "", "leds": [(0, 0, 0)] * 7, "screen": SCREEN}
+    src._update_device()
+    src._screen_thread.join(2)
+    shown = len(fake.shown)
+    src._view_at, src._screen_shown_at = 0, 0          # 10 s later, nothing changed
+    src._update_device()
+    assert len(fake.shown) == shown + 1 and len(fake.files) == 1     # shown again, not re-uploaded

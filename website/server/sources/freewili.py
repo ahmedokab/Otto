@@ -37,6 +37,7 @@ Env:
   OTTO_VIN_LOOKUP       0 = decode the VIN offline only (never send it to NHTSA)
 """
 import collections
+import logging
 from pathlib import Path
 import os
 import queue
@@ -95,10 +96,12 @@ class FreeWiliSource(Source):
         self._shown_text, self._shown_leds, self._view_at = None, [None] * 7, 0.0
         self._screen_sig, self._screen_at, self._screen_ok = None, 0.0, True
         self._screens = None                       # reload the stored-screens list for this device
+        self._screen_name, self._screen_shown_at = None, 0.0
         self._screen_busy = threading.Event()      # an image upload owns the screen chip's port
         self._screen_thread = None
         self.screen_error, self.screen_uploads, self._screen_failures = None, 0, 0
         self.screen_shows, self._screens = 0, None
+        self._screen_name, self._screen_shown_at = None, 0.0
         self.bench = BenchEcu(BENCH_SCENARIO) if BENCH_SCENARIO else None
         self._bench_tx = collections.deque()
         self._raw = None
@@ -181,6 +184,7 @@ class FreeWiliSource(Source):
                 self._poll_loop()
             except Exception as e:             # unplugged, wrong firmware, missing package...
                 self.error = str(e) or type(e).__name__
+                logging.getLogger("otto").warning("FREE-WILi link dropped: %s", self.error)
                 self._stop.wait(RETRY_AFTER_S)
             finally:
                 self._close()
@@ -276,21 +280,29 @@ class FreeWiliSource(Source):
         has never seen are uploaded (~5 s, the device writes them to its flash)."""
         sig = device_screen.signature(screen)
         if sig == self._screen_sig:
+            # The device can leave Otto's screen (its own menu, a reconnect): put it back now and then.
+            if self._screen_name and time.monotonic() - self._screen_shown_at >= self.SCREEN_REASSERT_S:
+                self._screen_shown_at = time.monotonic()
+                self._fw.show_gui_image(self._screen_name)
             return
         image = device_screen.render(screen)
         name = device_screen.file_name(image)
         if name in self._screen_cache():
             if self._fw.show_gui_image(name).is_ok():
                 self._screen_sig = sig
+                self._screen_name, self._screen_shown_at = name, time.monotonic()
                 self._screen_remember(name)          # most recently used
                 self.screen_shows += 1
                 return
             self._screen_forget(name)                # gone from the device: upload it again below
+        if self.capturing.is_set() and not self.SCREEN_UPLOAD_WHILE_CAPTURING:
+            return                                   # never write to the device while reading a car
         important = self._screen_sig is None or sig[0] != self._screen_sig[0]
         gap = (self.SCREEN_GAP_CAPTURE_S if self.capturing.is_set() else self.SCREEN_GAP_S) if important else self.SCREEN_VALUES_GAP_S
         if time.monotonic() - self._screen_at < gap:
             return
         self._screen_busy.set()
+        logging.getLogger("otto").info("screen upload %s", name)
 
         def job():
             # Runs beside the CAN loop: the upload only uses the screen chip's port.
@@ -298,12 +310,14 @@ class FreeWiliSource(Source):
             try:
                 self._make_room()
                 self._push_screen(image, name)
+                self._screen_name, self._screen_shown_at = name, time.monotonic()
                 self._screen_remember(name)
                 self._screen_sig = sig
                 self.screen_uploads += 1
                 self._screen_failures = 0
             except Exception as e:
                 self.screen_error = f"{type(e).__name__}: {e}"
+                logging.getLogger("otto").warning("screen upload failed: %s", self.screen_error)
                 self._screen_failures += 1
                 if self._screen_failures >= 3:
                     self._screen_ok = False    # this device can't show images: use the one-line text instead
@@ -316,7 +330,10 @@ class FreeWiliSource(Source):
         self._screen_thread.start()
 
     # ---- which screens the device already has (kept across server restarts) -------------
-    SCREEN_CACHE_MAX = 40          # oldest stored screens are deleted from the device beyond this
+    SCREEN_CACHE_MAX = 40
+    # OTTO_SCREEN_UPLOADS_LIVE=0 shows only already-stored screens during a live capture (no flash writes).
+    SCREEN_UPLOAD_WHILE_CAPTURING = os.getenv("OTTO_SCREEN_UPLOADS_LIVE", "1") == "1"
+    SCREEN_REASSERT_S = 10.0       # re-show Otto's screen this often in case the device left it          # oldest stored screens are deleted from the device beyond this
 
     screen_manifest = None         # tests point this at a temporary file
 
@@ -561,6 +578,8 @@ class FreeWiliSource(Source):
         """Button events are snapshots of which buttons are held; act on each new press."""
         down = {c for c in ("gray", "yellow", "green", "blue", "red") if getattr(data, c, False)}
         pressed, self._buttons_down = down - self._buttons_down, down
+        if pressed:
+            self._screen_shown_at = 0.0
         for color in pressed:
             if self.on_button:
                 threading.Thread(target=self.on_button, args=(color,), daemon=True).start()
@@ -677,8 +696,9 @@ class FreeWiliSource(Source):
     def status(self, now):
         if self.last_rx is None or now - self.last_rx > NO_DATA_AFTER_S:
             if self.error and self.error.startswith("CAN transmit failed"):
-                return "disconnected", ("The FREE-WILi stopped sending to the car. Unplug it for 5 seconds, "
-                                        "plug it back in, then start again with the car running.")
+                return "disconnected", ("The FREE-WILi's CAN connection is switched off. On the FREE-WILi, open "
+                                        "Neptune settings (just view it), then press Start capture again. If that "
+                                        "doesn't help, unplug the FREE-WILi for 5 seconds.")
             if self.error:
                 return "disconnected", self.error
         if self.last_rx is None:

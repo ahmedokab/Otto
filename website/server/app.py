@@ -7,6 +7,8 @@ then open http://localhost:8000
 import asyncio
 import json
 import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s %(levelname)s %(message)s')
 import os
 import threading
 import time
@@ -60,13 +62,31 @@ class Controller:
             self.state.capturing = True
             self.state.session_start = now
             self.state.frames = 0
-            self.state.session = {}
-            self.state.clear_codes()
+            # Every capture starts clean. In Live mode the car may be a different one, so its name
+            # and VIN are re-read from the car too (within a second or two).
+            self.state.clear_vehicle_data(forget_vehicle=self.state.mode == "live")
+            self._drop_explanation()
             if self.state.mode != "replay":
                 name = f"{self.state.mode}-{self.state.scenario or 'car'}-{time.strftime('%Y%m%d-%H%M%S')}.jsonl"
                 self.recorder = Recorder(name, {"vehicle": self.state.vehicle, "mode": self.state.mode,
                                                 "scenario": self.state.scenario, "started": iso(now)})
                 self.state.recording_file = name
+
+    def _drop_explanation(self):
+        self.explanation, self.explanation_codes = None, None
+        self.explanation_version += 1
+
+    def new_vehicle(self):
+        """The "New vehicle" button: forget everything about the current car."""
+        with self.lock:
+            was = self.state.capturing
+            self.stop_capture()
+            self.state.clear_vehicle_data(forget_vehicle=True)
+            self.state.frames, self.state.session_start, self.state.recording_file = 0, None, None
+            self.symptoms = ""
+            self._drop_explanation()
+            if was:
+                self.start_capture()
 
     def stop_capture(self):
         with self.lock:
@@ -109,6 +129,9 @@ class Controller:
                 frame = self.source.poll(now)
                 if frame:
                     self.state.apply(frame, now)
+                    if self.state.vehicle_changed:       # a different car was plugged in mid-capture
+                        self.state.vehicle_changed = False
+                        self._drop_explanation()
                     if self.recorder:
                         self.recorder.write(frame)
                 self.state.connection, self.state.connection_detail = conn, detail
@@ -375,6 +398,12 @@ def set_vehicle(req: VehicleReq):
     with ctl.lock:
         ctl.state.vehicle = req.name.strip()[:80] or ctl.state.vehicle
     return {"vehicle": ctl.state.vehicle}
+
+
+@app.post("/api/vehicle/new")
+def new_vehicle():
+    ctl.new_vehicle()
+    return {"ok": True}
 
 
 @app.post("/api/marker")

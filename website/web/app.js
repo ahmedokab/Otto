@@ -237,7 +237,12 @@ function updateChrome(snap) {
 
   $('connDot').className = 'dot ' + snap.connection;
   $('connText').textContent = CONN_LABEL[snap.connection] || snap.connection;
-  $('connDetail').textContent = snap.connection_detail || '';
+  const detail = snap.connection_detail || '';
+  const long = detail.length > 60;
+  $('connDetail').textContent = long ? detail.split('. ')[0] + '.' : detail;   // short version in the header
+  $('connDetail').title = detail;
+  $('connBanner').hidden = !(long && snap.connection === 'disconnected');
+  $('connBanner').textContent = detail;
 
   const btn = $('captureBtn');
   btn.classList.toggle('on', snap.capturing);
@@ -582,6 +587,15 @@ async function syncExplanation(snap) {
 
 // ---------- main loop ----------
 function onSnapshot(snap) {
+  // A new capture, or a different car (VIN changed): drop the old charts so nothing from before is shown
+  const newSession = S.sessionStarted !== undefined && snap.session.started !== S.sessionStarted;
+  const newCar = S.lastVin && snap.vin && snap.vin !== S.lastVin;
+  if (newSession || newCar) {
+    for (const k in KEYS) { S.buf[k] = []; delete S.lastUpd[k]; }
+    S.findingsKey = ''; S.healthKey = ''; S.diagKey = '';
+  }
+  S.sessionStarted = snap.session.started;
+  if (snap.vin) S.lastVin = snap.vin;
   S.snap = snap;
   updateChrome(snap);
   updateReadings(snap);
@@ -612,6 +626,12 @@ function bindControls() {
   $('captureBtn').onclick = () => api('/api/capture', { action: 'toggle' });
   $('explainBtn').onclick = explain;
   $('saveReportBtn').onclick = saveReport;
+  $('newVehicleBtn').onclick = async () => {
+    for (const k in KEYS) { S.buf[k] = []; delete S.lastUpd[k]; }
+    S.expl = null; $('aiOut').innerHTML = ''; $('aiStatus').textContent = ''; $('symptoms').value = '';
+    S.vsearch.setValue('');
+    await api('/api/vehicle/new', {});
+  };
   $('markerForm').onsubmit = (e) => {
     e.preventDefault();
     api('/api/marker', { note: $('markerNote').value }).then(() => { $('markerNote').value = ''; });
