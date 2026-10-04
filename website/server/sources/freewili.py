@@ -48,7 +48,7 @@ from .bench_ecu import BenchEcu
 from .replay import RECORDINGS_DIR
 from .. import device_screen, obd, vin as vin_decoder
 
-NO_DATA_AFTER_S = 2.0
+NO_DATA_AFTER_S = 4.0      # one slow reply shouldn't grey out the dashboard
 CAN_CHANNEL = int(os.getenv("FREEWILI_CAN_CHANNEL", "0"))
 REPLY_TIMEOUT_S = 0.1      # move on if no ECU answers a request
 DTC_EVERY_S = 5.0          # trouble codes change rarely
@@ -89,6 +89,7 @@ class FreeWiliSource(Source):
         self._new_capture = False
         self._streaming = False
         self.on_button = None                 # callback(color) for FREE-WILi button presses
+        self.device_ui = True                 # False: CAN only, never touch the screen, LEDs or buttons
         self.device_view = None               # callable -> {"text": str, "leds": [(r, g, b)] * 7}
         self._buttons_down = set()
         self._shown_text, self._shown_leds, self._view_at = None, [None] * 7, 0.0
@@ -204,10 +205,12 @@ class FreeWiliSource(Source):
         self._screen_sig, self._screen_at, self._screen_ok = None, 0.0, True
         self._screen_busy = threading.Event()      # an image upload owns the screen chip's port
         self._screen_thread = None
-        try:
-            fw.enable_button_events(True, 100)    # sample buttons every 100 ms
-        except Exception:
-            pass                                  # screen firmware without button events: CAN still works
+        if self.device_ui:
+            try:
+                fw.enable_button_events(True, 100)    # sample buttons every 100 ms
+            except Exception:
+                pass                                  # screen firmware without button events: CAN still works
+            threading.Thread(target=self._screen_loop, args=(fw,), name="freewili-screen-ui", daemon=True).start()
         self.error = None
 
     def _close(self):
@@ -216,10 +219,11 @@ class FreeWiliSource(Source):
             return
         try:
             self._set_streaming(fw, False)
-            fw.enable_button_events(False)
-            fw.show_text_display("Otto\nDisconnected")
-            for i in range(7):
-                fw.set_board_leds(i, 0, 0, 0)
+            if self.device_ui:
+                fw.enable_button_events(False)
+                fw.show_text_display("Otto: disconnected")
+                for i in range(7):
+                    fw.set_board_leds(i, 0, 0, 0)
         except Exception:
             pass
         try:
@@ -378,12 +382,25 @@ class FreeWiliSource(Source):
                 "screen_busy": self._screen_busy.is_set()}
 
     def _process_events(self):
-        """While a screen upload owns the screen chip, only read the main chip (CAN)."""
+        """The CAN thread only reads the main chip. The screen chip (buttons, screen, LEDs) belongs
+        to the screen thread, so a slow or stuck screen can never pause reading the car."""
         main = getattr(self._fw, "main_serial", None)
-        if self._screen_busy.is_set() and main is not None:
+        if main is not None:
             main.process_events()
         else:
-            self._fw.process_events()
+            self._fw.process_events()          # test doubles have a single event queue
+
+    def _screen_loop(self, fw):
+        """Screen thread: buttons, LEDs and the status screen, on the screen chip's port only."""
+        display = getattr(fw, "display_serial", None)
+        while not self._stop.is_set() and self._fw is fw:
+            try:
+                if display is not None and not self._screen_busy.is_set():
+                    display.process_events()   # button presses
+                self._update_device()
+            except Exception:
+                pass                           # never let the screen take the device link down
+            self._stop.wait(0.05)
 
     def _push_screen(self, image, name=None):
         import contextlib
@@ -421,11 +438,10 @@ class FreeWiliSource(Source):
         requests = None
         sent_at = 0.0
         while not self._stop.is_set():
-            self._process_events()             # runs _on_event for each received frame / button press
+            self._process_events()             # runs _on_event for each received CAN frame
             while self._bench_tx:              # fake car's replies, bench channel only
                 can_id, data = self._bench_tx.popleft()
                 self._fw.can_transmit(BENCH_CHANNEL, can_id, data, False, False)
-            self._update_device()
             if not self.capturing.is_set():
                 self._set_streaming(self._fw, False)
                 requests, self._awaiting, self._pending_fc = None, False, None
@@ -447,9 +463,9 @@ class FreeWiliSource(Source):
             try:
                 can_id, data = next(requests)
                 self.send_can(can_id, data, self.extended)
-            except RuntimeError as e:          # e.g. no ACK: CAN wires not connected
+            except RuntimeError as e:          # e.g. no ACK, or the CAN chip shut itself off after errors
                 self.error = str(e)
-                self._stop.wait(0.5)
+                self._stop.wait(3.0)           # don't keep hammering the car's network
                 continue
             self._awaiting = True
             sent_at = time.monotonic()
@@ -660,6 +676,9 @@ class FreeWiliSource(Source):
 
     def status(self, now):
         if self.last_rx is None or now - self.last_rx > NO_DATA_AFTER_S:
+            if self.error and self.error.startswith("CAN transmit failed"):
+                return "disconnected", ("The FREE-WILi stopped sending to the car. Unplug it for 5 seconds, "
+                                        "plug it back in, then start again with the car running.")
             if self.error:
                 return "disconnected", self.error
         if self.last_rx is None:

@@ -145,6 +145,6 @@ def render_html(ctx):
 {('<h2>Symptom markers</h2><ul>' + markers + '</ul>') if markers else ''}
 <h2>Readings <small>{"whole capture" if whole else "last 60 s of capture"}{(" · full recording: " + e(ctx["recording_file"])) if ctx.get("recording_file") else ""}</small></h2>
 <table><tr><th>Measurement</th><th>Unit</th><th>Latest</th><th>Min</th><th>Max</th><th>Avg</th></tr>{rows or '<tr><td colspan=6>No readings captured</td></tr>'}</table>
-<p class="muted">This report summarizes data read from the vehicle's OBD-II port. A trouble code identifies a condition the engine computer detected; it does not by itself prove which part has failed. Please have a qualified technician confirm the cause.</p>
+<p class="muted">This report summarizes data read from the vehicle's OBD-II port. A trouble code identifies a condition the car's computer detected; it does not by itself prove which part has failed. Please have a qualified technician confirm the cause.</p>
 <div class="foot"><b>Otto · One less trip to the mechanic</b><span>Made by the UofI Car Guys · read via FREE-WILi, read-only OBD-II</span></div>
 </body></html>"""

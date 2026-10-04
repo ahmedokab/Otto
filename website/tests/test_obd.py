@@ -519,21 +519,22 @@ def test_screen_upload_then_instant_reuse_then_text_fallback(tmp_path):
     broken._update_device()
     assert fake2.texts == ["Otto | Car connected"]
 
-def test_screen_upload_does_not_block_reading_the_car(tmp_path):
+def test_a_stuck_screen_never_pauses_reading_the_car(tmp_path):
+    """Regression: a hung screen command froze CAN polling for 26 s during a real capture."""
     src, fake = FreeWiliSource(), ScreenFreeWili()
     src.screen_manifest = tmp_path / "screens.json"
-    slow = threading.Event()
-    fake.send_file = lambda *a: (slow.wait(1), Ok("Ok"))[1]          # a slow device write
+    hang = threading.Event()
+    fake.set_board_leds = lambda *a: (hang.wait(5), Ok("Ok"))[1]          # the screen chip stops answering
+    fake.send_file = lambda *a: (hang.wait(5), Ok("Ok"))[1]
     fake.cb, src._fw = src._on_event, fake
-    src.device_view = lambda: {"text": "", "leds": [(0, 0, 0)] * 7, "screen": SCREEN}
+    src.device_view = lambda: {"text": "", "leds": [(9, 9, 9)] * 7, "screen": SCREEN}
     src.capturing.set()
-    t = threading.Thread(target=src._poll_loop, daemon=True)
-    t.start()
-    time.sleep(0.6)
-    sent_during_upload = len(fake.sent)
-    slow.set()
+    poll = threading.Thread(target=src._poll_loop, daemon=True)
+    screen = threading.Thread(target=src._screen_loop, args=(fake,), daemon=True)
+    poll.start(); screen.start()
+    time.sleep(0.8)
+    sent_while_screen_stuck = len(fake.sent)
+    hang.set()
     src._stop.set()
-    t.join(2)
-    src._screen_thread.join(2)
-    assert src._screen_busy.is_set() is False
-    assert sent_during_upload > 3                                    # kept polling the car meanwhile
+    poll.join(2); screen.join(6)
+    assert sent_while_screen_stuck > 3                                    # kept polling the car meanwhile

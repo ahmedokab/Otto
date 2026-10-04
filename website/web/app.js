@@ -345,7 +345,7 @@ function renderFindings(snap) {
   if (!snap.code_details.length) {
     const started = snap.session.frames > 0;
     box.innerHTML = started
-      ? `<div class="empty-state clear"><h3>No codes reported</h3><p>The engine computer isn't reporting any trouble codes right now. That's not a guarantee nothing is wrong — if you notice something, mark it.</p>${checksHtml(snap.code_checks)}</div>`
+      ? `<div class="empty-state clear"><h3>No codes reported</h3><p>The car's computer isn't reporting any trouble codes right now. That's not a guarantee nothing is wrong — if you notice something, mark it.</p>${checksHtml(snap.code_checks)}</div>`
       : `<div class="empty-state"><h3>Start a capture to read your car</h3><p>Press Start capture above, or the green button on the FREE-WILi. Readings and trouble codes appear here.</p></div>`;
     return;
   }
@@ -387,9 +387,9 @@ function renderFindings(snap) {
 
 const TAG_CLASS = { 'warning light': 'hot', active: 'hot', stored: 'on', pending: 'soft', permanent: 'on', intermittent: 'soft' };
 const TAG_HELP = {
-  'warning light': 'The engine computer has a dashboard warning light on for this fault',
+  'warning light': "The car's computer has a dashboard warning light on for this fault",
   active: 'Failing right now',
-  stored: 'Confirmed and saved in the engine computer',
+  stored: "Confirmed and saved in the car's computer",
   pending: 'Seen once; becomes stored if it happens again',
   permanent: 'Stays until the car confirms the repair, even if codes are cleared',
   intermittent: 'Failed at some point since codes were last cleared, not right now',

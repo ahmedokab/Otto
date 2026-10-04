@@ -309,6 +309,7 @@ h1,h2,h3,.gauge .value,.h-score b{letter-spacing:-.02em}
 .topbar{background:var(--navy);color:#fff;box-shadow:none;border-bottom:3px solid var(--orange);position:sticky;top:0;z-index:20}
 .topbar .brand span,.topbar .conn span:not(.dot),.topbar .vehicle>label{color:#B8C4D8}
 .topbar .vsearch input{background:rgba(255,255,255,.1);color:#fff}
+.topbar .vsearch:not(:focus-within) input{color:transparent}   /* the Make / Model / Year labels show instead */
 .topbar .vsearch input::placeholder{color:#8EA0BE}
 .topbar .vsearch input:focus{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3)}
 .topbar .vparts b{color:#fff}

@@ -127,7 +127,7 @@ class Controller:
                 # Failed at some point since the last clear but not now: worth
                 # knowing, not an alarm. Never present it as a live fault.
                 d["severity"] = "info"
-                d["driving"] = ("Not failing right now. The engine computer recorded this fault at some point "
+                d["driving"] = ("Not failing right now. The car's computer recorded this fault at some point "
                                 "since codes were last cleared; mention it if the symptom comes back.")
         details.sort(key=lambda d: -SEVERITY_ORDER.get(d["severity"], 0))
         return details
@@ -287,8 +287,11 @@ async def tick_loop():
 async def lifespan(app):
     task = asyncio.create_task(tick_loop())
     if os.getenv("OTTO_FREEWILI", "1") != "0":       # 0 = don't touch the device (second server, tests)
-        ctl.live.on_button = ctl.button
-        ctl.live.device_view = ctl.device_view
+        if os.getenv("OTTO_FREEWILI_UI", "1") != "0":  # 0 = CAN only: no screen, LEDs or buttons on the device
+            ctl.live.on_button = ctl.button
+            ctl.live.device_view = ctl.device_view
+        else:
+            ctl.live.device_ui = False
         ctl.live.link()
     yield
     task.cancel()

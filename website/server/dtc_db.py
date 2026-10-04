@@ -14,7 +14,7 @@ DTC = {
         "title": "System too lean (Bank 1)",
         "system": "Fuel & air metering",
         "severity": "caution",
-        "meaning": "The engine computer is seeing more air than fuel on bank 1 and has hit the limit of how much extra fuel it is allowed to add to compensate.",
+        "meaning": "The car's computer is seeing more air than fuel on bank 1 and has hit the limit of how much extra fuel it is allowed to add to compensate.",
         "common_causes": [
             "Vacuum leak (cracked hose, intake gasket, PCV valve or hose)",
             "Dirty or failing mass airflow (MAF) sensor",
@@ -92,7 +92,7 @@ DTC = {
         "title": "System voltage low",
         "system": "Charging & electrical",
         "severity": "caution",
-        "meaning": "The engine computer is seeing lower supply voltage than it expects while the engine runs.",
+        "meaning": "The car's computer is seeing lower supply voltage than it expects while the engine runs.",
         "common_causes": [
             "Failing alternator or voltage regulator",
             "Weak or aging battery",
@@ -173,7 +173,7 @@ DTC = {
         "title": "Throttle actuator control motor circuit range/performance",
         "system": "Electronic throttle",
         "severity": "caution",
-        "meaning": "The electronic throttle didn't move the way the engine computer commanded. Many cars limit engine power when this happens.",
+        "meaning": "The electronic throttle didn't move the way the car's computer commanded. Many cars limit engine power when this happens.",
         "common_causes": [
             "Dirty or sticking throttle body (carbon build-up)",
             "Failing throttle body motor",
