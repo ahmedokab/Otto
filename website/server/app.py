@@ -13,7 +13,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -24,7 +24,7 @@ try:
 except ImportError:
     pass
 
-from . import ai, obd, report                                    # noqa: E402
+from . import ai, health, obd, report                                    # noqa: E402
 from .dtc_db import SEVERITY_ORDER, details_for                                  # noqa: E402
 from .sources.freewili import FreeWiliSource                     # noqa: E402
 from .sources.replay import Recorder, ReplaySource, list_recordings  # noqa: E402
@@ -134,6 +134,7 @@ class Controller:
             snap = self.state.snapshot(now)
             stats = self.state.stats(now)
             snap["code_details"] = self.code_details(stats)
+            snap["health"] = self.health(snap["code_details"], stats)
             snap["explanation"] = {
                 "version": self.explanation_version,
                 "available": self.explanation is not None,
@@ -142,16 +143,23 @@ class Controller:
             }
             return snap
 
+    def health(self, code_details, stats):
+        # In Live mode only trust "no codes" once the car answered a code check
+        checked = bool(self.state.code_checks) or self.state.mode != "live"
+        return health.assess(code_details, self.state.readings, stats, codes_checked=checked)
+
     def context(self, now):
         with self.lock:
             stats = self.state.stats(now)
+            details = self.code_details(stats)
             return {
                 "vehicle": self.state.vehicle,
                 "data_mode": self.state.mode,
                 "scenario": self.state.scenario,
                 "codes": list(self.state.codes),
                 "mil": self.state.mil,
-                "code_details": self.code_details(stats),
+                "code_details": details,
+                "health": self.health(details, stats),
                 "code_checks": list(self.state.code_checks),
                 "vin": self.state.vin,
                 "readings_now": {k: v for k, v in self.state.readings.items() if v is not None},
@@ -325,6 +333,48 @@ def report_html():
     return report.render_html(ctl.context(time.time()))
 
 
+# ---- saved reports: documentation of the car's condition over time ------------
+REPORTS_DIR = ROOT / "reports"
+
+
+@app.post("/api/reports")
+def save_report():
+    """Save the current report (HTML + data) under reports/ and return its name."""
+    ctx = ctl.context(time.time())
+    REPORTS_DIR.mkdir(exist_ok=True)
+    slug = "-".join((ctx["vehicle"] or "vehicle").split()).lower()
+    slug = "".join(c for c in slug if c.isalnum() or c == "-")[:40] or "vehicle"
+    name = f"{time.strftime('%Y%m%d-%H%M%S')}-{slug}"
+    (REPORTS_DIR / f"{name}.html").write_text(report.render_html(ctx), encoding="utf-8")
+    (REPORTS_DIR / f"{name}.json").write_text(json.dumps(ctx, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
+    h = ctx["health"]
+    return {"name": name, "url": f"/reports/{name}.html", "score": h["score"], "label": h["label"]}
+
+
+@app.get("/api/reports")
+def list_reports():
+    REPORTS_DIR.mkdir(exist_ok=True)
+    out = []
+    for p in sorted(REPORTS_DIR.glob("*.json"), reverse=True)[:50]:
+        try:
+            ctx = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        h = ctx.get("health") or {}
+        out.append({"name": p.stem, "url": f"/reports/{p.stem}.html", "vehicle": ctx.get("vehicle"),
+                    "generated": ctx.get("generated"), "score": h.get("score"), "label": h.get("label"),
+                    "codes": ctx.get("codes", []), "mode": ctx.get("data_mode")})
+    return out
+
+
+@app.get("/reports/{name}.html", response_class=HTMLResponse)
+def saved_report(name: str):
+    path = REPORTS_DIR / f"{Path(name).name}.html"     # no path traversal
+    if not path.is_file():
+        raise HTTPException(404, "Report not found")
+    return path.read_text(encoding="utf-8")
+
+
 @app.get("/api/report.json")
 def report_json():
     # Indented so the downloaded file is readable when opened in a text editor
@@ -387,4 +437,9 @@ async def ws_endpoint(ws: WebSocket):
         clients.discard(ws)
 
 
-app.mount("/", StaticFiles(directory=ROOT / "web", html=True), name="web")
+@app.get("/dashboard", include_in_schema=False)
+def dashboard():
+    return FileResponse(ROOT / "web" / "dashboard.html")
+
+
+app.mount("/", StaticFiles(directory=ROOT / "web", html=True), name="web")   # "/" = landing page (index.html)

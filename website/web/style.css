@@ -289,3 +289,92 @@ textarea{width:100%;resize:vertical}
   .vsearch input{width:100%}.vehicle,.conn{flex:1 1 100%}.capture{flex:1;justify-content:center}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ======================================================================
+   Dark theme (Hennessey-style, Illinois colors). Overrides the light tokens
+   above; keep colors 6-digit hex (app.js appends alpha to some of them).
+   ====================================================================== */
+:root{
+  color-scheme:dark;
+  --orange:#FF5F05; --orange-ink:#FF8A4C; --orange-soft:#341a0b;
+  --navy:#1E3A6B; --navy-2:#13294B;
+  --blue:#5B9BFF; --blue-soft:#132a4d; --blue-line:#2a4a7a;
+  --bg:#060D18; --panel:#0E1A2E; --panel-2:#15243D; --field:#15243D; --line:#1B2B45; --line-2:#28395A;
+  --text:#EEF2F8; --muted:#8FA0BA; --dim:#55688A;
+  --live:#5B9BFF; --replay:#5B9BFF;
+  --ok:#3CCB8A; --warn:#F2B33D; --bad:#FF5D4A; --info:#5B9BFF;
+  --shadow:0 12px 32px -16px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.045);
+}
+body{background:radial-gradient(1200px 500px at 85% -10%,#13294B 0,transparent 60%),var(--bg);background-attachment:fixed}
+h2,.gauge .value,.vparts b,.empty-state.clear h3,.seg button:hover,.chip:hover,.seg.small button.on,.safety.ok{color:var(--text)}
+.topbar{background:rgba(9,18,32,.82);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--line);position:sticky;top:0;z-index:20}
+.vs-list{background:var(--panel);color:var(--text)}
+.vsearch input:focus,.marker-form input:focus,textarea:focus{background:var(--panel-2)}
+.capture.on{background:transparent}
+.gauge.flag{background:#271f0f}
+.gauge.flag.bad{background:#2a1412}
+.safety.stop,.sev.stop,.tag.hot,.ic.against{background:#3a1613}
+.safety.stop{color:#ffb4a8}
+.safety.caution,.sev.caution{background:#33270e}
+.safety.caution{color:#ffd58a}
+.safety .lvl{background:rgba(255,255,255,.1)}
+.ic.supports{background:#0f3022}
+.code-id{background:var(--orange)}
+
+/* ---------- brand link ---------- */
+a.brand{color:inherit;text-decoration:none}
+
+/* ---------- vehicle health ---------- */
+.health{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;align-items:center;margin-bottom:16px;
+  background:linear-gradient(135deg,#13294B,#0E1A2E 70%);position:relative;overflow:hidden}
+.health::after{content:"";position:absolute;inset:auto -60px -80px auto;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,95,5,.22),transparent 70%);pointer-events:none}
+.h-score{position:relative;width:118px;height:118px}
+.h-score svg{width:100%;height:100%;transform:rotate(-90deg)}
+.h-score circle{fill:none;stroke-width:10}
+.h-score .track{stroke:rgba(255,255,255,.08)}
+.h-score .fill{stroke:var(--orange);stroke-linecap:round;transition:stroke-dashoffset .8s ease,stroke .3s}
+.h-score.ok .fill{stroke:var(--ok)} .h-score.watch .fill{stroke:var(--warn)} .h-score.bad .fill{stroke:var(--bad)}
+.h-score>div{position:absolute;inset:0;display:grid;place-items:center;align-content:center}
+.h-score b{font-size:38px;font-weight:700;line-height:1;letter-spacing:-.03em}
+.h-score span{font-size:11px;color:var(--muted)}
+.h-kicker{font:600 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+.h-body h3{font-size:22px;margin:2px 0 10px;letter-spacing:-.01em}
+.h-systems{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.h-systems li{font-size:12px;padding:4px 10px 4px 8px;border-radius:99px;background:rgba(255,255,255,.06);display:flex;align-items:center;gap:6px;cursor:help}
+.h-systems li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.h-systems li.ok::before{background:var(--ok)} .h-systems li.watch::before{background:var(--warn)} .h-systems li.problem::before{background:var(--bad)}
+.h-systems li.unknown{color:var(--dim)}
+.h-good{grid-column:1/-1;list-style:none;margin:8px 0 0;padding:12px 0 0;border-top:1px solid rgba(255,255,255,.08);display:grid;gap:4px;font-size:13px}
+.h-good li::before{content:"✓";color:var(--ok);font-weight:700;margin-right:8px}
+.h-good:empty{display:none}
+
+/* ---------- AI fix panel ---------- */
+.ai-intro{margin:-4px 0 10px;font-size:13px}
+.ai-summary .well{list-style:none;padding:0;margin:0;display:grid;gap:4px}
+.ai-summary .well li::before{content:"✓";color:var(--ok);font-weight:700;margin-right:8px}
+.diy{list-style:none;padding:0;margin:0;display:grid;gap:8px;counter-reset:diy}
+.diy li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px 12px;border-radius:12px;background:var(--panel-2);counter-increment:diy}
+.diy li::before{content:counter(diy);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--orange);color:#fff;font-size:11px;font-weight:700}
+.diy small{display:block;color:var(--muted)}
+.diff{font:600 10px var(--sans);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.diff.easy{background:#0f3022;color:var(--ok)} .diff.moderate{background:#33270e;color:var(--warn)} .diff.advanced{background:#3a1613;color:var(--bad)}
+.mech-callout{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;border:1px solid var(--line-2)}
+.mech-callout.yes{border-color:var(--orange);background:var(--orange-soft)}
+
+/* ---------- reports + mechanic ---------- */
+.export{display:block}
+.export-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.export-btns{flex-wrap:wrap}
+.report-list{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px;position:relative}
+.report-list:empty{display:none}
+.report-list a{display:flex;justify-content:space-between;gap:12px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.07);color:#fff;text-decoration:none;font-size:13px}
+.report-list a:hover{background:rgba(255,255,255,.13)}
+.report-list b{color:var(--orange)}
+.mechanic{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:16px;border:1px solid var(--line-2)}
+.mechanic.urgent{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange),var(--shadow)}
+.mechanic h3{font-size:17px}
+.mechanic p{margin:4px 0 0;font-size:13px}
+.foot b{color:var(--orange)}
+.health{margin-top:0}
+.ai-h{margin:0 0 6px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}

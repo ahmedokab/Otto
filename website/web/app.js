@@ -325,7 +325,8 @@ function renderFindings(snap) {
   if (S.findingsKey.startsWith(structural) && now - S.findingsAt < 1000) return;
   S.findingsKey = key; S.findingsAt = now;
 
-  const aiByCode = {};
+  const aiByCode = {}, fixByCode = {};
+  for (const f of ex?.findings || []) fixByCode[f.code] = f;          // DIY steps: AI or offline
   if (ex && ex.source === 'ai') for (const f of ex.findings || []) aiByCode[f.code] = f;
 
   // safety banner: AI's if present, else worst offline severity
@@ -361,7 +362,8 @@ function renderFindings(snap) {
       ? `<h4>Likely causes <span class="ai-note">· ranked by AI using your data</span></h4><ol class="causes">${a.likely_causes.map((c) =>
           `<li><span class="lik ${esc(c.likelihood)}">${esc(c.likelihood)}</span>${esc(c.cause)}<br><small>${esc(c.why)}</small></li>`).join('')}</ol>`
       : (d.common_causes.length ? `<h4>Common causes</h4><ul class="causes">${d.common_causes.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>` : '');
-    const steps = (a?.next_checks?.length ? a.next_checks : d.next_checks);
+    const fix = fixByCode[d.code];
+    const steps = fix?.diy_steps?.length ? fix.diy_steps : d.next_checks.map((step) => ({ step, difficulty: '', tools: '' }));
     return `<article class="code">
       <div class="code-head">
         <span class="code-id">${esc(d.code)}</span>
@@ -373,7 +375,9 @@ function renderFindings(snap) {
         <p>${esc(a?.plain_meaning || d.meaning)}</p>
         ${evidence ? `<div><h4>What your data shows</h4><ul class="evidence">${evidence}</ul>${aiShows}</div>` : ''}
         <div>${causes}</div>
-        <div><h4>Next checks</h4><ol class="steps">${steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol></div>
+        <div><h4>${fix ? 'Try this first' : 'Next checks'}</h4><ol class="diy">${steps.map((s) =>
+          `<li><span>${esc(s.step)}${s.tools ? `<small>Tools: ${esc(s.tools)}</small>` : ''}</span>${s.difficulty ? `<span class="diff ${esc(s.difficulty)}">${esc(s.difficulty)}</span>` : '<span></span>'}</li>`).join('')}</ol>
+          ${fix?.mechanic_needed_if ? `<p class="muted" style="margin:8px 0 0;font-size:13px"><b>See a mechanic if:</b> ${esc(fix.mechanic_needed_if)}</p>` : ''}</div>
         <div class="driving"><b>Driving:</b> ${esc(d.driving)}</div>
       </div>
     </article>`;
@@ -424,12 +428,84 @@ function renderExplanation() {
   $('aiStatus').innerHTML = `${src}${ex.note ? ` — ${esc(ex.note)}` : ''}`;
   const outdated = S.snap?.explanation?.outdated ? '<div class="outdated">Codes changed since this analysis — run it again.</div>' : '';
   const qs = (ex.questions_for_mechanic || []).map((q) => `<li>${esc(q)}</li>`).join('');
+  const well = (ex.going_well || []).map((w) => `<li>${esc(w)}</li>`).join('');
+  const m = ex.mechanic || {};
+  const urgency = { now: 'See a mechanic now', soon: 'See a mechanic soon', when_convenient: 'A mechanic visit is worth booking', not_needed: 'No mechanic needed right now' }[m.urgency] || '';
   $('aiOut').innerHTML = `<div class="ai-summary">
       ${outdated}
       <div class="headline">${esc(ex.headline)}</div>
-      ${qs ? `<div><h4 class="muted" style="margin:0 0 4px;font-size:11px;letter-spacing:.09em;text-transform:uppercase">Ask your mechanic</h4><ul>${qs}</ul></div>` : ''}
+      ${ex.health_summary ? `<p style="margin:0">${esc(ex.health_summary)}</p>` : ''}
+      ${well ? `<div><h4 class="ai-h">What looks good</h4><ul class="well">${well}</ul></div>` : ''}
+      ${urgency ? `<div class="mech-callout ${m.recommended ? 'yes' : ''}"><div><b>${esc(urgency)}</b><br><small class="muted">${esc(m.why || '')}${m.shop_type && m.recommended ? ` · ${esc(m.shop_type)}` : ''}</small></div>
+        ${m.recommended ? `<a class="btn primary" href="${esc(mechanicUrl(m.shop_type))}" target="_blank" rel="noopener">Find one near me</a>` : ''}</div>` : ''}
+      ${qs ? `<div><h4 class="ai-h">Ask your mechanic</h4><ul>${qs}</ul></div>` : ''}
       <div class="muted" style="font-size:12px">${esc(ex.caveat || '')}</div>
     </div>`;
+  updateMechanicPanel();
+}
+
+// ---------- health ----------
+const HEALTH_RING = 2 * Math.PI * 52;
+function renderHealth(snap) {
+  const h = snap.health || {};
+  const key = JSON.stringify(h);
+  if (key === S.healthKey) return;
+  S.healthKey = key;
+  const score = h.score;
+  $('healthScore').textContent = score == null ? '—' : score;
+  $('healthLabel').textContent = h.label || 'No data yet';
+  const ring = $('health').querySelector('.h-score');
+  ring.className = 'h-score ' + (score == null ? '' : score >= 75 ? 'ok' : score >= 50 ? 'watch' : 'bad');
+  const arc = ring.querySelector('.fill');
+  arc.style.strokeDasharray = HEALTH_RING;
+  arc.style.strokeDashoffset = HEALTH_RING * (1 - (score ?? 0) / 100);
+  const label = { ok: 'OK', watch: 'Watch', problem: 'Problem', unknown: 'No data' };
+  $('healthSystems').innerHTML = (h.systems || []).map((x) =>
+    `<li class="${esc(x.status)}" title="${esc(label[x.status])}${x.reasons.length ? ': ' + esc(x.reasons.join('; ')) : ''}">${esc(x.name)}</li>`).join('');
+  $('healthGood').innerHTML = (h.positives || []).slice(0, 5).map((p) => `<li>${esc(p)}</li>`).join('');
+  updateMechanicPanel();
+}
+
+// ---------- mechanics + saved reports ----------
+function mechanicUrl(shopType) {
+  // Google Maps finds shops near the viewer's location; dealer/specialist advice searches for the car's make
+  const make = (S.snap?.vehicle || '').split(' ')[0];
+  const specialist = /dealer|special/i.test(shopType || '') && make;
+  const q = specialist ? `${make} repair near me` : 'auto repair near me';
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+}
+
+function updateMechanicPanel() {
+  const m = S.expl?.mechanic;
+  const worst = S.snap?.code_details?.[0]?.severity;
+  const urgent = m ? m.urgency === 'now' : worst === 'stop';
+  $('mechanicPanel').classList.toggle('urgent', !!urgent || !!m?.recommended);
+  $('mechanicBtn').href = mechanicUrl(m?.shop_type);
+  $('mechanicWhy').textContent = m?.recommended ? `${m.why} Bring your saved report.`
+    : urgent ? 'This code means the car should not be driven far. Find a shop near you.'
+    : 'If a fix is beyond a driveway job, find a shop near you. Bring your saved report.';
+}
+
+async function loadReports() {
+  const list = await api('/api/reports');
+  $('reportList').innerHTML = list.slice(0, 5).map((r) => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">
+      <span>${esc(new Date(r.generated).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }))} · ${esc(r.vehicle || 'Vehicle')}</span>
+      <span>${r.score == null ? '' : `<b>${r.score}</b>/100 · `}${r.codes.length ? esc(r.codes.join(', ')) : 'no codes'}</span></a></li>`).join('');
+}
+
+async function saveReport() {
+  const b = $('saveReportBtn');
+  b.disabled = true; b.textContent = 'Saving…';
+  try {
+    const r = await api('/api/reports', {});
+    b.textContent = 'Saved ✓';
+    await loadReports();
+    window.open(r.url, '_blank', 'noopener');
+  } catch (e) {
+    b.textContent = 'Save failed';
+  } finally {
+    setTimeout(() => { b.disabled = false; b.textContent = 'Save report'; }, 1800);
+  }
 }
 
 async function syncExplanation(snap) {
@@ -445,6 +521,7 @@ function onSnapshot(snap) {
   S.snap = snap;
   updateChrome(snap);
   updateReadings(snap);
+  renderHealth(snap);
   renderFindings(snap);
   syncExplanation(snap).catch(() => {});
   if (snap.explanation.running && !S.explaining) $('aiStatus').innerHTML = '<span class="spinner"></span> Analysis requested from FREE-WILi…';
@@ -469,6 +546,7 @@ async function backfill() {
 function bindControls() {
   $('captureBtn').onclick = () => api('/api/capture', { action: 'toggle' });
   $('explainBtn').onclick = explain;
+  $('saveReportBtn').onclick = saveReport;
   $('markerForm').onsubmit = (e) => {
     e.preventDefault();
     api('/api/marker', { note: $('markerNote').value }).then(() => { $('markerNote').value = ''; });
@@ -510,6 +588,7 @@ function bindControls() {
   b.className = 'badge' + (S.meta.ai.available ? ' on' : '');
   b.title = S.meta.ai.available ? 'Claude API key detected' : S.meta.ai.detail;
   await backfill().catch(() => {});
+  loadReports().catch(() => {});
   onSnapshot(await api('/api/state'));
   connect();
 })();

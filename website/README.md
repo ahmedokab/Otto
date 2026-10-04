@@ -1,11 +1,11 @@
-# Otto — understand your check-engine light
+# Otto — one less trip to the mechanic
 
-**FREE-WILi + OBD-II + AI.** Plug in, capture, and walk into the mechanic with evidence instead of a guess.
+**FREE-WILi + OBD-II + AI, by the UofI Car Guys.** Plug in, see how healthy your car is, understand what it's telling you, fix what you safely can, and walk into a shop with evidence when you can't.
 
 ```
 Car (OBD-II port) ──CAN──► FREE-WILi ──USB──► Python server ──WebSocket──► Browser dashboard
                            buttons/LEDs ◄── /api/hw/*                       └► AI explain (Claude API, optional)
-                                                                            └► Printable mechanic report
+                                                                            └► Health score, DIY steps, saved reports
 ```
 
 Everything runs locally. **No internet is needed for the demo** — without an API key the app uses its offline code database and says so.
@@ -19,11 +19,18 @@ pip install -r requirements.txt          # add --break-system-packages on some L
 pip install --no-deps freewili==0.0.51   # live FREE-WILi source (its pins break fastapi)
 cp .env.example .env                      # optional: paste ANTHROPIC_API_KEY for AI explanations
 python -m uvicorn server.app:app --reload --port 8000
-# open http://localhost:8000  →  pick a scenario  →  press Space
-python -m pytest -q                       # decoder + safety tests (23)
+# http://localhost:8000            landing page (scroll tour of the car's systems)
+# http://localhost:8000/dashboard  the app: pick a scenario, press Space
+python -m pytest -q                       # decoder, safety, health and AI tests
 ```
 
-Shortcuts: `Space` capture · `M` mark symptom · `E` explain · `1`–`6` scenarios.
+Shortcuts: `Space` capture · `M` mark symptom · `E` diagnose · `1`–`6` scenarios. `/#step-6` opens the landing tour at a given system (demos).
+
+### What the owner gets
+- **Vehicle health** (`server/health.py`): a 0–100 score and a status for 8 systems, computed from 60-second statistics and the codes, never by the AI. Conservative thresholds; no data = "no data", not "OK"; a system with a fault is never listed as going well; intermittent-only codes count as history.
+- **Help me fix it** (`server/ai.py`): plain-language summary, what looks good, each issue with ranked causes and safe DIY steps (difficulty + tools), and whether/how urgently to see a mechanic. Claude (`claude-opus-5-5`, structured outputs, server-side refusal fallback) when `ANTHROPIC_API_KEY` is set; the same shape from the offline knowledge base otherwise.
+- **Saved reports:** *Save report* writes a dated HTML + JSON to `reports/` (git-ignored: they include the VIN) and lists recent ones; print any as a PDF.
+- **Find mechanics near me:** opens Google Maps for repair shops near the viewer (a make specialist when the advice says so).
 
 ---
 
