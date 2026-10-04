@@ -36,6 +36,7 @@ How to write:
 - Rank likely causes using the measurements and symptoms, and say which numbers moved a cause up or down. If the data contradicts a code, say so.
 - "Intermittent" codes are not failing right now; treat them as history worth mentioning, not as an alarm. "Pending" means seen once and not yet confirmed.
 - If a code check was not answered by the car, don't claim there are no codes of that kind.
+- Make it specific to this vehicle (make, model, year, VIN when given): use that make's names for its warning lights and systems, and mention well-known issues for that model when they fit the data. Never assume a different make. If the vehicle is unknown, stay general.
 
 Fixes the owner can try (diy_steps):
 - Only suggest steps that are safe for an untrained owner with basic tools: visual checks, checking fluid levels on a cool engine, tightening a gas cap, checking battery terminals, cleaning parts that are commonly cleaned at home, checking connectors are seated, re-testing after a drive.

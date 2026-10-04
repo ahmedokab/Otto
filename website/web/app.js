@@ -3,40 +3,40 @@
 
 // range = [min, max] in metric units for the level bar under each value
 const KEYS = {
-  rpm:           { label: 'Engine speed',        unit: 'rpm',  dp: 0, primary: true, icon: 'engine', range: [0, 7000] },
-  coolant_c:     { label: 'Coolant temp',        unit: '°C',   dp: 0, primary: true, temp: true, icon: 'thermometer', range: [40, 125] },
-  ecu_voltage_v: { label: 'ECU voltage',         unit: 'V',    dp: 1, primary: true, icon: 'ecu', range: [10, 15] },
-  speed_kph:     { label: 'Vehicle speed',       unit: 'km/h', dp: 0, speed: true, icon: 'speedometer', range: [0, 200] },
-  throttle_pct:  { label: 'Throttle',            unit: '%',    dp: 0, icon: 'helmet', range: [0, 100] },
-  stft_pct:      { label: 'Short-term fuel trim', unit: '%',   dp: 1, signed: true, icon: 'pump', range: [-25, 25] },
-  ltft_pct:      { label: 'Long-term fuel trim', unit: '%',    dp: 1, signed: true, icon: 'fuelclock', range: [-25, 25] },
-  maf_gs:        { label: 'Mass air flow',       unit: 'g/s',  dp: 1, icon: 'airflow', range: [0, 60] },
-  intake_c:      { label: 'Intake air temp',     unit: '°C',   dp: 0, temp: true, icon: 'intake', range: [-10, 70] },
+  rpm:           { label: 'Engine RPM', hint: 'How fast the engine spins',        unit: 'rpm',  dp: 0, primary: true, icon: 'engine', range: [0, 7000] },
+  coolant_c:     { label: 'Engine temp', hint: 'Coolant temperature',        unit: '°C',   dp: 0, primary: true, temp: true, icon: 'thermometer', range: [40, 125] },
+  ecu_voltage_v: { label: 'Battery', hint: '13.5\u201314.7 V when running',         unit: 'V',    dp: 1, primary: true, icon: 'ecu', range: [10, 15] },
+  speed_kph:     { label: 'Speed', hint: 'How fast the car is moving',       unit: 'km/h', dp: 0, speed: true, icon: 'speedometer', range: [0, 200] },
+  throttle_pct:  { label: 'Throttle', hint: 'How far the engine\'s air valve is open',            unit: '%',    dp: 0, icon: 'helmet', range: [0, 100] },
+  stft_pct:      { label: 'Fuel adjust (now)', hint: 'Fuel the computer is adding (+) or cutting (\u2212) right now', unit: '%',   dp: 1, signed: true, icon: 'pump', range: [-25, 25] },
+  ltft_pct:      { label: 'Fuel adjust (learned)', hint: 'Long-term fuel correction; beyond \u00b110% is worth checking', unit: '%',    dp: 1, signed: true, icon: 'fuelclock', range: [-25, 25] },
+  maf_gs:        { label: 'Air flow', hint: 'Air entering the engine',       unit: 'g/s',  dp: 1, icon: 'airflow', range: [0, 60] },
+  intake_c:      { label: 'Intake air temp', hint: 'Temperature of the air going into the engine',     unit: '°C',   dp: 0, temp: true, icon: 'intake', range: [-10, 70] },
   // extra: only shown once the car actually reports it. more: in the collapsed "More readings" section
-  load_pct:      { label: 'Engine load',         unit: '%',    dp: 0, extra: true, icon: 'engine', range: [0, 100] },
-  map_kpa:       { label: 'Intake pressure',     unit: 'kPa',  dp: 0, extra: true, icon: 'gauge', range: [0, 250] },
-  pedal_d_pct:   { label: 'Gas pedal',           unit: '%',    dp: 0, extra: true, icon: 'pedal', range: [0, 100] },
-  cmd_throttle_pct: { label: 'Throttle commanded', unit: '%',  dp: 0, extra: true, icon: 'helmet', range: [0, 100] },
-  timing_deg:    { label: 'Timing advance',      unit: '°',    dp: 1, extra: true, signed: true, icon: 'spark', range: [-20, 40] },
-  oil_c:         { label: 'Oil temp',            unit: '°C',   dp: 0, extra: true, temp: true, icon: 'oil', range: [40, 140] },
-  cat_c:         { label: 'Catalyst temp',       unit: '°C',   dp: 0, extra: true, temp: true, icon: 'thermometer', range: [200, 900] },
-  lambda:        { label: 'Air-fuel ratio (λ)',  unit: 'λ',    dp: 2, extra: true, icon: 'airflow', range: [0.7, 1.3] },
-  cmd_lambda:    { label: 'Commanded λ',         unit: 'λ',    dp: 2, extra: true, icon: 'airflow', range: [0.7, 1.3] },
-  o2_up_v:       { label: 'O2 sensor (front)',   unit: 'V',    dp: 2, extra: true, icon: 'gauge', range: [0, 1.1] },
-  o2_down_v:     { label: 'O2 sensor (rear)',    unit: 'V',    dp: 2, extra: true, icon: 'gauge', range: [0, 1.1] },
-  rail_kpa:      { label: 'Fuel rail pressure',  unit: 'kPa',  dp: 0, extra: true, icon: 'pump', range: [0, 20000] },
-  fuel_pct:      { label: 'Fuel level',          unit: '%',    dp: 0, extra: true, icon: 'pump', range: [0, 100] },
-  throttle_b_pct:{ label: 'Throttle sensor B',   unit: '%',    dp: 0, extra: true, more: true, icon: 'helmet', range: [0, 100] },
-  pedal_e_pct:   { label: 'Gas pedal sensor E',  unit: '%',    dp: 0, extra: true, more: true, icon: 'pedal', range: [0, 100] },
-  fuel_rate_lph: { label: 'Fuel use',            unit: 'L/h',  dp: 1, extra: true, more: true, icon: 'pump', range: [0, 30] },
-  ambient_c:     { label: 'Outside air temp',    unit: '°C',   dp: 0, extra: true, more: true, temp: true, icon: 'thermometer', range: [-20, 45] },
-  baro_kpa:      { label: 'Barometric pressure', unit: 'kPa',  dp: 0, extra: true, more: true, icon: 'gauge', range: [70, 110] },
-  runtime_min:   { label: 'Engine run time',     unit: 'min',  dp: 1, extra: true, more: true, icon: 'clock', range: [0, 120] },
-  warmups:       { label: 'Warm-ups since codes cleared', unit: '', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 255] },
-  clear_dist_km: { label: 'Driven since codes cleared', unit: 'km', dp: 0, extra: true, more: true, dist: true, icon: 'road', range: [0, 5000] },
-  clear_time_min:{ label: 'Engine time since codes cleared', unit: 'min', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 6000] },
-  mil_dist_km:   { label: 'Driven with check-engine light on', unit: 'km', dp: 0, extra: true, more: true, dist: true, icon: 'road', range: [0, 1000] },
-  mil_time_min:  { label: 'Engine time with check-engine light on', unit: 'min', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 6000] },
+  load_pct:      { label: 'Engine load', hint: 'How hard the engine is working',         unit: '%',    dp: 0, extra: true, icon: 'engine', range: [0, 100] },
+  map_kpa:       { label: 'Intake pressure', hint: 'Low at idle, rises when you accelerate',     unit: 'kPa',  dp: 0, extra: true, icon: 'gauge', range: [0, 250] },
+  pedal_d_pct:   { label: 'Gas pedal', hint: 'How far the pedal is pressed',           unit: '%',    dp: 0, extra: true, icon: 'pedal', range: [0, 100] },
+  cmd_throttle_pct: { label: 'Throttle target', hint: 'Where the computer wants the throttle to be', unit: '%',  dp: 0, extra: true, icon: 'helmet', range: [0, 100] },
+  timing_deg:    { label: 'Spark timing', hint: 'When the spark plugs fire',      unit: '°',    dp: 1, extra: true, signed: true, icon: 'spark', range: [-20, 40] },
+  oil_c:         { label: 'Oil temp', hint: 'Engine oil temperature',            unit: '°C',   dp: 0, extra: true, temp: true, icon: 'oil', range: [40, 140] },
+  cat_c:         { label: 'Catalytic converter', hint: 'Exhaust cleaner temperature',       unit: '°C',   dp: 0, extra: true, temp: true, icon: 'thermometer', range: [200, 900] },
+  lambda:        { label: 'Air-fuel mix', hint: '1.00 is the ideal balance of air and fuel',  unit: 'λ',    dp: 2, extra: true, icon: 'airflow', range: [0.7, 1.3] },
+  cmd_lambda:    { label: 'Air-fuel target', hint: 'The mix the computer is aiming for',         unit: 'λ',    dp: 2, extra: true, icon: 'airflow', range: [0.7, 1.3] },
+  o2_up_v:       { label: 'Oxygen sensor (front)', hint: 'Exhaust oxygen before the converter',   unit: 'V',    dp: 2, extra: true, icon: 'gauge', range: [0, 1.1] },
+  o2_down_v:     { label: 'Oxygen sensor (rear)', hint: 'Exhaust oxygen after the converter',    unit: 'V',    dp: 2, extra: true, icon: 'gauge', range: [0, 1.1] },
+  rail_kpa:      { label: 'Fuel pressure', hint: 'Pressure feeding the fuel injectors',  unit: 'kPa',  dp: 0, extra: true, icon: 'pump', range: [0, 20000] },
+  fuel_pct:      { label: 'Fuel tank', hint: 'How full the tank is',          unit: '%',    dp: 0, extra: true, icon: 'pump', range: [0, 100] },
+  throttle_b_pct:{ label: 'Throttle sensor 2', hint: 'Backup throttle reading; should track the first',   unit: '%',    dp: 0, extra: true, more: true, icon: 'helmet', range: [0, 100] },
+  pedal_e_pct:   { label: 'Gas pedal sensor 2', hint: 'Backup pedal reading; should track the first',  unit: '%',    dp: 0, extra: true, more: true, icon: 'pedal', range: [0, 100] },
+  fuel_rate_lph: { label: 'Fuel use', hint: 'Fuel burned per hour',            unit: 'L/h',  dp: 1, extra: true, more: true, icon: 'pump', range: [0, 30] },
+  ambient_c:     { label: 'Outside temp', hint: 'Air temperature outside the car',    unit: '°C',   dp: 0, extra: true, more: true, temp: true, icon: 'thermometer', range: [-20, 45] },
+  baro_kpa:      { label: 'Air pressure', hint: 'Outside air pressure; lower at high altitude', unit: 'kPa',  dp: 0, extra: true, more: true, icon: 'gauge', range: [70, 110] },
+  runtime_min:   { label: 'Time running', hint: 'Since the engine was started',     unit: 'min',  dp: 1, extra: true, more: true, icon: 'clock', range: [0, 120] },
+  warmups:       { label: 'Warm-ups since cleared', hint: 'Engine warm-ups since codes were last cleared', unit: '', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 255] },
+  clear_dist_km: { label: 'Driven since cleared', hint: 'Distance since codes were last cleared', unit: 'km', dp: 0, extra: true, more: true, dist: true, icon: 'road', range: [0, 5000] },
+  clear_time_min:{ label: 'Run time since cleared', hint: 'Engine time since codes were last cleared', unit: 'min', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 6000] },
+  mil_dist_km:   { label: 'Driven with warning light', hint: 'Distance with the check-engine light on', unit: 'km', dp: 0, extra: true, more: true, dist: true, icon: 'road', range: [0, 1000] },
+  mil_time_min:  { label: 'Run time with warning light', hint: 'Engine time with the check-engine light on', unit: 'min', dp: 0, extra: true, more: true, icon: 'clock', range: [0, 6000] },
 };
 
 // Line icons on a 24×24 grid, drawn in currentColor (blue via CSS).
@@ -115,10 +115,10 @@ function buildGauges() {
     // Primary: stat card with a progress ring (icon in the middle). Others: icon tile + level bar.
     el.innerHTML = m.primary
       ? `<div class="g-main">
-          <div class="label">${esc(m.label)}</div>${value}<div class="fresh">Not reported</div>
+          <div class="label">${esc(m.label)}</div><div class="hint">${esc(m.hint)}</div>${value}<div class="fresh">Not reported</div>
           <div class="ring"><svg viewBox="0 0 64 64" aria-hidden="true"><circle class="track" cx="32" cy="32" r="${RING_R}"/><circle class="fill" cx="32" cy="32" r="${RING_R}"/></svg><span class="g-icon">${icon(m.icon)}</span></div>
         </div><canvas></canvas>`
-      : `<div class="g-top"><span class="g-icon">${icon(m.icon)}</span><div class="label">${esc(m.label)}</div></div>
+      : `<div class="g-top"><span class="g-icon">${icon(m.icon)}</span><div><div class="label">${esc(m.label)}</div><div class="hint">${esc(m.hint)}</div></div></div>
         ${value}<div class="meter${m.signed ? ' signed' : ''}"><i></i></div><div class="fresh">Not reported</div>`;
     $(m.primary ? 'primary' : m.more ? 'more' : 'secondary').appendChild(el);
   }
@@ -277,9 +277,10 @@ function buildSourceBar() {
   });
   fillRecordings(S.meta.recordings);
   $('liveBox').innerHTML = `<ol class="steps-inline">
-      <li><b>1</b>Plug the FREE-WILi into the port under your steering wheel</li>
-      <li><b>2</b>Turn the key to ON (engine can stay off)</li>
-      <li><b>3</b>Press <em>Start capture</em></li>
+      <li><b>1</b>Plug the OBD-II cable into your car's port: under the dashboard on the driver's side, near the pedals below the steering wheel</li>
+      <li><b>2</b>Check the other end of the cable is connected to the FREE-WILi, and the FREE-WILi to this laptop</li>
+      <li><b>3</b>Turn the car fully on (start the engine)</li>
+      <li><b>4</b>Press <em>Start capture</em></li>
     </ol>`;
   for (const b of $('modeSeg').children) b.onclick = () => setSource(b.dataset.mode);
   $('recordingSel').onchange = (e) => setSource('replay', { recording: e.target.value });
@@ -345,7 +346,7 @@ function renderFindings(snap) {
     const started = snap.session.frames > 0;
     box.innerHTML = started
       ? `<div class="empty-state clear"><h3>No codes reported</h3><p>The engine computer isn't reporting any trouble codes right now. That's not a guarantee nothing is wrong — if you notice something, mark it.</p>${checksHtml(snap.code_checks)}</div>`
-      : `<div class="empty-state"><h3>Start a capture to read your car</h3><p>Press <kbd>Space</kbd>, the button above, or the green button on the FREE-WILi. Readings and trouble codes appear here.</p></div>`;
+      : `<div class="empty-state"><h3>Start a capture to read your car</h3><p>Press Start capture above, or the green button on the FREE-WILi. Readings and trouble codes appear here.</p></div>`;
     return;
   }
 
@@ -401,7 +402,7 @@ function checksHtml(checks) {
   const items = Object.entries(CHECK_LABELS).map(([k, label]) =>
     `<li class="${checks.includes(k) ? 'ok' : 'na'}">${checks.includes(k) ? '✓' : '–'} ${label}</li>`).join('');
   const note = checks.includes('manufacturer') ? ''
-    : '<p class="muted">No module answered the fault-memory request yet, so faults kept only in a module\'s own memory (for example VW\'s EPC light) may not show here.</p>';
+    : '<p class="muted">No module has answered the fault-memory request yet, so faults some cars keep only in a module\'s own memory may not show here.</p>';
   return `<ul class="checks">${items}</ul>${note}`;
 }
 
@@ -565,16 +566,6 @@ function bindControls() {
       if (S.snap) onSnapshot(S.snap);
     };
   }
-  document.addEventListener('keydown', (e) => {
-    if (e.target.closest('input,textarea,select') || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (e.code === 'Space') { e.preventDefault(); $('captureBtn').click(); }
-    else if (e.key === 'm' || e.key === 'M') api('/api/marker', { note: 'Marked from keyboard' });
-    else if (e.key === 'e' || e.key === 'E') explain();
-    else if (/^[1-9]$/.test(e.key)) {
-      const id = Object.keys(S.meta.scenarios)[+e.key - 1];
-      if (id) setSource('simulator', { scenario: id });
-    }
-  });
   window.addEventListener('resize', () => S.snap && updateReadings(S.snap));
 }
 

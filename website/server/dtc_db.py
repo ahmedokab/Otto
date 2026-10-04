@@ -167,13 +167,13 @@ DTC = {
         "driving": "Usually drivable; speedometer, cruise control or shifting may misbehave.",
         "related": ["speed_kph"],
     },
-    # Throttle / pedal faults: on VW and Audi these light the EPC (Electronic
-    # Power Control) lamp, often without the check-engine light.
+    # Throttle / pedal (electronic throttle) faults. Many cars show a separate
+    # warning for these and limit power; make-specific wording lives in MAKE_NOTES.
     "P2101": {
         "title": "Throttle actuator control motor circuit range/performance",
-        "system": "Electronic throttle (EPC)",
+        "system": "Electronic throttle",
         "severity": "caution",
-        "meaning": "The electronic throttle didn't move the way the engine computer commanded. On VW/Audi this typically turns on the EPC light and can limit engine power.",
+        "meaning": "The electronic throttle didn't move the way the engine computer commanded. Many cars limit engine power when this happens.",
         "common_causes": [
             "Dirty or sticking throttle body (carbon build-up)",
             "Failing throttle body motor",
@@ -190,9 +190,9 @@ DTC = {
     },
     "P0638": {
         "title": "Throttle actuator control range/performance (Bank 1)",
-        "system": "Electronic throttle (EPC)",
+        "system": "Electronic throttle",
         "severity": "caution",
-        "meaning": "The throttle plate's measured position didn't follow the commanded position closely enough. On VW/Audi this usually lights EPC.",
+        "meaning": "The throttle plate's measured position didn't follow the commanded position closely enough.",
         "common_causes": ["Dirty or sticking throttle body", "Failing throttle body", "Wiring or connector fault at the throttle body"],
         "next_checks": ["Inspect and clean the throttle body", "Check the connector for corrosion or loose pins", "Ask for a throttle-body adaptation afterwards"],
         "driving": "Usually drivable, but power may be limited. Get it checked soon.",
@@ -200,9 +200,9 @@ DTC = {
     },
     "P0121": {
         "title": "Throttle/pedal position sensor 'A' circuit range/performance",
-        "system": "Electronic throttle (EPC)",
+        "system": "Electronic throttle",
         "severity": "caution",
-        "meaning": "One of the throttle position signals doesn't make sense compared with what the engine is doing. On VW/Audi this usually lights EPC.",
+        "meaning": "One of the throttle position signals doesn't make sense compared with what the engine is doing.",
         "common_causes": ["Failing throttle position sensor (part of the throttle body)", "Wiring or connector fault", "Dirty throttle body"],
         "next_checks": ["Watch the throttle reading for jumps while the engine idles", "Inspect the throttle body connector and wiring"],
         "driving": "Usually drivable; the car may go into reduced power.",
@@ -210,9 +210,9 @@ DTC = {
     },
     "P2135": {
         "title": "Throttle position sensors 'A'/'B' voltage correlation",
-        "system": "Electronic throttle (EPC)",
+        "system": "Electronic throttle",
         "severity": "caution",
-        "meaning": "The throttle body has two position sensors that should always agree. They don't, so the computer can't trust the throttle position. On VW/Audi this lights EPC.",
+        "meaning": "The throttle body has two position sensors that should always agree. They don't, so the computer can't trust the throttle position.",
         "common_causes": ["Failing throttle body (the sensors are built in)", "Wiring or connector fault at the throttle body", "Water or corrosion in the connector"],
         "next_checks": ["Inspect the throttle body connector", "A shop can compare both sensor signals live", "Replacement usually means the whole throttle body plus an adaptation"],
         "driving": "Expect reduced power (limp mode). Drive gently and get it checked soon.",
@@ -220,15 +220,32 @@ DTC = {
     },
     "P2138": {
         "title": "Accelerator pedal position sensors 'D'/'E' voltage correlation",
-        "system": "Electronic throttle (EPC)",
+        "system": "Electronic throttle",
         "severity": "caution",
-        "meaning": "The gas pedal has two sensors that should agree, and they don't. The computer can't be sure how far the pedal is pressed. On VW/Audi this lights EPC.",
+        "meaning": "The gas pedal has two sensors that should agree, and they don't. The computer can't be sure how far the pedal is pressed.",
         "common_causes": ["Failing accelerator pedal sensor (usually replaced as a pedal assembly)", "Wiring or connector fault at the pedal"],
         "next_checks": ["Note whether the car responds slowly or not at all to the pedal", "Inspect the connector at the top of the gas pedal"],
         "driving": "Expect reduced power or slow pedal response. Get it checked before relying on the car for highway driving.",
         "related": ["pedal_d_pct", "pedal_e_pct", "throttle_pct"],
     },
 }
+
+# What a code looks like on a particular make, shown only for that make.
+_THROTTLE_CODES = ("P2101", "P0638", "P0121", "P2135", "P2138")
+MAKE_NOTES = {
+    ("Volkswagen", "Audi", "Porsche", "Skoda", "Seat"): (_THROTTLE_CODES,
+        "On your {make} this usually turns on the EPC (Electronic Power Control) light and can limit engine power."),
+    ("Ford", "Lincoln"): (_THROTTLE_CODES, "On your {make} this often shows the wrench light and limits power."),
+    ("Chevrolet", "GMC", "Buick", "Cadillac"): (_THROTTLE_CODES, "On your {make} this often shows \"Reduced Engine Power\" on the dash."),
+}
+
+
+def make_note(code, make):
+    for makes, (codes, text) in MAKE_NOTES.items():
+        if make in makes and code in codes:
+            return text.format(make=make)
+    return None
+
 
 _SYSTEMS = {"P": "Powertrain", "C": "Chassis", "B": "Body", "U": "Network / communication"}
 _P0_SUB = {
@@ -344,11 +361,14 @@ def evidence_for(code, readings, stats):
     return out
 
 
-def details_for(codes, readings, stats):
+def details_for(codes, readings, stats, make=None):
     items = []
     for c in codes:
         base = DTC.get(c)
         d = dict(base, known=True) if base else describe_unknown(c)
+        note = make_note(c, make)
+        if note:
+            d["meaning"] = f"{d['meaning']} {note}"
         d["code"] = c
         d["evidence"] = evidence_for(c, readings, stats)
         items.append(d)

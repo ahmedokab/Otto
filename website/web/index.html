@@ -6,20 +6,20 @@
 <title>Otto · One less trip to the mechanic</title>
 <meta name="description" content="Otto reads your car through the OBD-II port, explains it in plain words, and helps you fix it. Made by the UofI Car Guys.">
 <link rel="stylesheet" href="landing.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='11' fill='none' stroke='%2313294B' stroke-width='6'/><path d='M16 5a11 11 0 0 1 11 11' fill='none' stroke='%23FF5F05' stroke-width='6'/></svg>">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 40'%3E%3Cpath fill='#FF5F05' d='M3,29 C3,25.5 5,23.5 9,23 C11.5,22.6 13.5,21.6 15.5,19.5 C18.5,11 25,6.5 33,6.5 C43,6.5 50,12 54,20 C56.5,22 59,24.5 60,27.5 C60.5,29 60.2,30.5 59,31 L53.6,31 A6.6,6.6 0 0 0 40.4,31 L23.6,31 A6.6,6.6 0 0 0 10.4,31 L5,31 C3.8,31 3,30.2 3,29 Z'/%3E%3Cpath fill='#13294B' d='M20.5,19 C23,13 27.5,10 33,10 C40,10 45.5,13.5 49,19 Z'/%3E%3Ccircle cx='17' cy='31' r='5.4' fill='#13294B'/%3E%3Ccircle cx='47' cy='31' r='5.4' fill='#13294B'/%3E%3C/svg%3E">
 </head>
 <body>
 
 <nav class="nav" id="nav">
   <a class="logo" href="#top" aria-label="Otto home">
-    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="none" stroke="#1E3A6B" stroke-width="6"/><path d="M16 5a11 11 0 0 1 11 11" fill="none" stroke="#FF5F05" stroke-width="6"/></svg>
+    <svg class="bug" viewBox="0 0 64 40" aria-hidden="true"><path fill="#FF5F05" d="M3,29 C3,25.5 5,23.5 9,23 C11.5,22.6 13.5,21.6 15.5,19.5 C18.5,11 25,6.5 33,6.5 C43,6.5 50,12 54,20 C56.5,22 59,24.5 60,27.5 C60.5,29 60.2,30.5 59,31 L53.6,31 A6.6,6.6 0 0 0 40.4,31 L23.6,31 A6.6,6.6 0 0 0 10.4,31 L5,31 C3.8,31 3,30.2 3,29 Z"/><path fill="#13294B" d="M20.5,19 C23,13 27.5,10 33,10 C40,10 45.5,13.5 49,19 Z"/><path stroke="#FF5F05" stroke-width="1.6" d="M34.5,10 V19"/><circle cx="17" cy="31" r="5.4" fill="#0B1A33" stroke="#fff" stroke-width="1.4"/><circle cx="17" cy="31" r="1.8" fill="#fff"/><circle cx="47" cy="31" r="5.4" fill="#0B1A33" stroke="#fff" stroke-width="1.4"/><circle cx="47" cy="31" r="1.8" fill="#fff"/></svg>
     <span>OTTO<i>.</i></span>
   </a>
   <div class="links">
     <a href="#tour">Inside your car</a>
     <a href="#how">How it works</a>
     <a href="#health">Vehicle health</a>
-    <a href="#safe">Read-only</a>
+    <a href="#safe">Safety first</a>
   </div>
   <a class="cta small" href="/dashboard">Open dashboard</a>
 </nav>
@@ -34,7 +34,7 @@
         <div class="step hero on" data-step="0">
           <div class="kicker">UofI Car Guys · FREE-WILi + OBD-II + AI</div>
           <h1>One less trip<br>to the <em>mechanic.</em></h1>
-          <p>Plug Otto into the port under your steering wheel. It reads what your car already knows, explains it in plain words, and helps you fix it yourself when that's safe.</p>
+          <p>Connect an OBD-II cable from your car's port to the FREE-WILi, turn the car fully on, and Otto reads what your car already knows, explains it in plain words, and helps you fix it yourself when that's safe.</p>
           <div class="actions">
             <a class="cta" href="/dashboard">Diagnose my car</a>
             <a class="ghost" href="#tour" id="seeInside">See inside ↓</a>
@@ -43,7 +43,7 @@
         <div class="step" data-step="1" id="tour-start">
           <div class="num">01 · The brain</div>
           <h2>It starts at the OBD-II port.</h2>
-          <p>It's under the steering wheel on every car sold in the US since 1996. Otto talks to the engine computer over CAN (standard since 2008), asking only read-only questions. It can't change a thing.</p>
+          <p>Every car sold in the US since 1996 has one, under the dashboard on the driver's side near the pedals. An OBD-II cable runs from it to the FREE-WILi, and Otto talks to the car's computers over CAN (standard since 2008), asking only read-only questions.</p>
           <ul class="reads"><li>VIN &amp; vehicle</li><li>Supported sensors</li><li>Trouble codes, 4 ways</li></ul>
         </div>
         <div class="step" data-step="2">
@@ -72,8 +72,8 @@
         </div>
         <div class="step" data-step="6">
           <div class="num">06 · Throttle &amp; pedal</div>
-          <h2>The EPC light, explained.</h2>
-          <p>Your pedal and the throttle are linked by wire, not cable. Otto compares what you asked for with what the throttle did, and reads the engine computer's own fault memory.</p>
+          <h2>What you asked for vs. what you got.</h2>
+          <p>In most modern cars the gas pedal talks to the throttle electronically. Otto compares what you asked for with what the throttle did: the first place to look when a car suddenly loses power or shows a throttle warning.</p>
           <ul class="reads"><li>Gas pedal</li><li>Throttle commanded</li><li>Throttle actual</li></ul>
         </div>
         <div class="step" data-step="7">
@@ -93,63 +93,65 @@
             <linearGradient id="beam" x1="0" x2="1">
               <stop offset="0" stop-color="#FF5F05" stop-opacity="0"/><stop offset=".5" stop-color="#FF5F05" stop-opacity=".55"/><stop offset="1" stop-color="#FF5F05" stop-opacity="0"/>
             </linearGradient>
-            <clipPath id="bodyClip"><path d="M70,295 C62,280 62,262 72,250 L95,236 C150,224 250,214 340,206 C390,180 430,150 470,138 C540,118 640,116 700,124 C760,132 820,160 860,196 L905,210 C930,216 940,236 938,258 L936,292 C934,300 926,304 916,304 L822,304 A52,52 0 0 0 718,304 L282,304 A52,52 0 0 0 178,304 L110,304 C90,304 74,302 70,295 Z"/></clipPath>
+            <clipPath id="bodyClip"><path d="M62,287 C58,268 58,248 66,236 C76,222 92,212 112,206 C150,188 190,172 230,166 C290,158 340,152 388,146 L652,148 C650,120 652,92 662,78 C680,74 700,76 714,82 C760,96 800,120 840,136 C870,142 896,142 916,146 C932,150 942,166 944,190 C946,226 944,262 934,290 C930,302 924,310 912,312 L834,312 L834,306 A77,77 0 0 0 680,306 L680,316 L296,316 L296,306 A77,77 0 0 0 140,306 L140,312 C110,313 80,306 62,287 Z"/></clipPath>
           </defs>
 
-          <line class="ground" x1="20" y1="352" x2="980" y2="352"/>
+          <line class="ground" x1="20" y1="346" x2="980" y2="346"/>
 
           <!-- internal systems (x-ray) -->
           <g class="sys" data-sys="emissions">
-            <path class="pipe" d="M250,292 C268,306 300,312 340,312 L860,312 C890,312 912,306 940,300"/>
-            <rect x="360" y="302" width="56" height="20" rx="8"/>
-            <rect x="812" y="300" width="74" height="24" rx="10"/>
-            <circle cx="346" cy="312" r="4"/><circle cx="430" cy="312" r="4"/>
+            <path class="pipe" d="M320,252 C336,300 360,324 404,326 L880,326 C904,326 926,320 946,312"/>
+            <rect x="414" y="318" width="52" height="16" rx="7"/>
+            <rect x="842" y="314" width="72" height="22" rx="10"/>
+            <circle cx="404" cy="326" r="4"/><circle cx="478" cy="326" r="4"/>
           </g>
           <g class="sys" data-sys="fuel_air">
-            <path d="M108,234 C160,220 260,220 296,240"/>
-            <rect x="600" y="258" width="128" height="38" rx="12"/>
-            <path class="line" d="M600,288 L330,296 L292,286"/>
+            <path d="M92,206 C180,190 300,184 362,196"/>
+            <rect x="628" y="226" width="98" height="40" rx="12"/>
+            <path class="line" d="M628,262 L360,296 L322,256"/>
           </g>
           <g class="sys" data-sys="cooling">
-            <rect x="80" y="240" width="18" height="56" rx="3"/>
-            <path d="M84,250 H94 M84,260 H94 M84,270 H94 M84,280 H94"/>
-            <path class="line" d="M98,248 C120,246 140,244 152,246 M98,288 C120,290 140,288 152,284"/>
+            <rect x="74" y="206" width="14" height="70" rx="3"/>
+            <path d="M77,218 H85 M77,230 H85 M77,242 H85 M77,254 H85 M77,266 H85"/>
+            <path class="line" d="M88,214 C150,200 210,194 250,198 M88,268 C150,262 220,252 250,244"/>
           </g>
           <g class="sys" data-sys="engine">
-            <rect x="152" y="232" width="134" height="62" rx="8"/>
-            <path d="M178,232 V294 M210,232 V294 M242,232 V294"/>
-            <rect x="162" y="222" width="114" height="12" rx="4"/>
+            <rect x="250" y="186" width="112" height="66" rx="8"/>
+            <path d="M278,186 V252 M306,186 V252 M334,186 V252"/>
+            <rect x="258" y="174" width="96" height="13" rx="4"/>
           </g>
           <g class="sys" data-sys="electrical">
-            <rect x="108" y="262" width="34" height="26" rx="4"/>
-            <path d="M116,262 V256 M134,262 V256"/>
-            <circle cx="170" cy="282" r="9"/>
-            <path class="line" d="M142,270 C150,266 158,272 162,278"/>
+            <rect x="100" y="232" width="30" height="22" rx="4"/>
+            <path d="M107,232 V226 M123,232 V226"/>
+            <circle cx="264" cy="240" r="8"/>
+            <path class="line" d="M130,240 C170,236 220,236 256,240"/>
           </g>
           <g class="sys" data-sys="throttle">
-            <circle cx="300" cy="248" r="11"/>
-            <path d="M292,256 L308,240"/>
-            <path d="M392,250 L404,292 L390,294"/>
-            <path class="line" d="M392,252 C370,238 340,236 312,244"/>
+            <circle cx="374" cy="200" r="10"/>
+            <path d="M367,207 L381,193"/>
+            <path d="M424,248 L438,290 L426,292"/>
+            <path class="line" d="M424,250 C410,230 394,214 384,206"/>
           </g>
           <g class="sys" data-sys="brain">
-            <rect x="344" y="206" width="38" height="22" rx="4"/>
-            <path d="M350,212 H376 M350,218 H370"/>
-            <path class="bus" d="M444,264 C420,252 392,236 382,222 M344,218 C300,214 240,212 170,222 M444,264 L620,262"/>
-            <rect class="port" x="434" y="258" width="22" height="12" rx="3"/>
+            <rect x="392" y="156" width="34" height="20" rx="4"/>
+            <path d="M398,162 H420 M398,168 H414"/>
+            <path class="bus" d="M462,236 C440,214 420,192 410,178 M392,166 C340,166 300,170 258,176 M472,242 L630,244"/>
+            <rect class="port" x="452" y="232" width="20" height="11" rx="3"/>
           </g>
 
-          <!-- body -->
-          <path class="body" pathLength="1" d="M70,295 C62,280 62,262 72,250 L95,236 C150,224 250,214 340,206 C390,180 430,150 470,138 C540,118 640,116 700,124 C760,132 820,160 860,196 L905,210 C930,216 940,236 938,258 L936,292 C934,300 926,304 916,304 L822,304 A52,52 0 0 0 718,304 L282,304 A52,52 0 0 0 178,304 L110,304 C90,304 74,302 70,295 Z"/>
-          <path class="trim" pathLength="1" d="M405,198 C430,172 455,154 478,146 C540,131 620,129 690,135 C735,141 772,162 798,192 Z"/>
-          <path class="trim" pathLength="1" d="M612,132 L606,196 M470,204 L472,296 M640,200 L642,296"/>
-          <path class="trim lamp" pathLength="1" d="M82,246 L112,238"/>
-          <path class="trim lamp rear" pathLength="1" d="M928,226 L936,250"/>
-          <g class="wheel"><circle cx="230" cy="304" r="44" pathLength="1"/><circle cx="230" cy="304" r="26"/><circle cx="230" cy="304" r="5" pathLength="1"/></g>
-          <g class="wheel"><circle cx="770" cy="304" r="44" pathLength="1"/><circle cx="770" cy="304" r="26"/><circle cx="770" cy="304" r="5" pathLength="1"/></g>
+          <!-- body: Mazda MX-5 Miata RF, side profile -->
+          <path class="body" pathLength="1" d="M62,287 C58,268 58,248 66,236 C76,222 92,212 112,206 C150,188 190,172 230,166 C290,158 340,152 388,146 L652,148 C650,120 652,92 662,78 C680,74 700,76 714,82 C760,96 800,120 840,136 C870,142 896,142 916,146 C932,150 942,166 944,190 C946,226 944,262 934,290 C930,302 924,310 912,312 L834,312 L834,306 A77,77 0 0 0 680,306 L680,316 L296,316 L296,306 A77,77 0 0 0 140,306 L140,312 C110,313 80,306 62,287 Z"/>
+          <path class="trim" pathLength="1" d="M392,146 L536,72 L548,76 L414,148 Z"/>
+          <path class="trim" pathLength="1" d="M666,140 C664,120 666,104 672,94 C690,94 704,104 708,116 C704,126 696,134 690,140 Z"/>
+          <path class="trim" pathLength="1" d="M384,152 C380,200 382,250 392,286 L650,288 C664,250 670,200 668,152 M606,178 L632,178 M466,152 C470,145 486,145 490,152 C488,160 470,161 466,152 Z"/>
+          <circle class="trim" pathLength="1" cx="846" cy="164" r="11"/>
+          <path class="trim lamp" pathLength="1" d="M90,212 C104,204 122,202 140,206"/>
+          <path class="trim lamp rear" pathLength="1" d="M872,176 C890,172 906,172 920,176"/>
+          <g class="wheel"><circle cx="218" cy="283" r="63" pathLength="1"/><circle cx="218" cy="283" r="40"/><circle cx="218" cy="283" r="6" pathLength="1"/></g>
+          <g class="wheel"><circle cx="757" cy="283" r="63" pathLength="1"/><circle cx="757" cy="283" r="40"/><circle cx="757" cy="283" r="6" pathLength="1"/></g>
 
           <!-- scan beam, clipped to the body -->
-          <g clip-path="url(#bodyClip)"><rect class="beam" x="-160" y="100" width="160" height="220" fill="url(#beam)"/></g>
+          <g clip-path="url(#bodyClip)"><rect class="beam" x="-160" y="60" width="160" height="270" fill="url(#beam)"/></g>
         </svg>
 
         <!-- live / sample readouts that follow the active system -->
@@ -168,8 +170,8 @@
     <div class="kicker reveal">How it works</div>
     <h2 class="reveal">Four steps. No guesswork.</h2>
     <ol class="steps4">
-      <li class="reveal"><b>01</b><h3>Plug in</h3><p>FREE-WILi + Neptune into the OBD-II port, key on. Otto finds the car and reads its VIN.</p></li>
-      <li class="reveal"><b>02</b><h3>Capture</h3><p>Live readings and every kind of trouble code. Press the marker the moment something feels wrong.</p></li>
+      <li class="reveal"><b>01</b><h3>Connect</h3><p>OBD-II cable into the port under the driver-side dashboard, other end into the FREE-WILi. Turn the car fully on; Otto finds the car and reads its VIN.</p></li>
+      <li class="reveal"><b>02</b><h3>Capture</h3><p>Press Start capture for live readings and every kind of trouble code. Mark the moment something feels wrong.</p></li>
       <li class="reveal"><b>03</b><h3>Understand</h3><p>A health score, what's going well, and what each code means in plain words, checked against your data.</p></li>
       <li class="reveal"><b>04</b><h3>Fix or find help</h3><p>Safe DIY steps first, easiest to hardest. If it's beyond a driveway job, find a shop near you with your report in hand.</p></li>
     </ol>
@@ -186,15 +188,15 @@
       <p class="reveal">Otto scores eight systems from the data, not from a guess, and tells you what's healthy as well as what isn't. A single sensor blip never sets off an alarm. A fault that's history, not happening, is shown as history.</p>
       <ul class="sys-list reveal">
         <li class="ok">Engine &amp; ignition</li><li class="ok">Fuel &amp; air</li><li class="ok">Cooling</li><li class="ok">Battery &amp; charging</li>
-        <li class="watch">Throttle &amp; pedal (EPC)</li><li class="ok">Emissions</li><li class="ok">Transmission</li><li class="ok">Modules</li>
+        <li class="watch">Throttle &amp; pedal</li><li class="ok">Emissions</li><li class="ok">Transmission</li><li class="ok">Modules</li>
       </ul>
       <a class="cta reveal" href="/dashboard">Check my car</a>
     </div>
   </section>
 
   <section class="safe" id="safe">
-    <div class="kicker reveal">Read-only by design</div>
-    <h2 class="reveal">Safe to plug into your car.</h2>
+    <div class="kicker reveal">Safety first</div>
+    <h2 class="reveal">Built to be safe in your car.</h2>
     <div class="safe-grid">
       <div class="reveal"><h3>Asks, never tells</h3><p>Only standard read requests leave the device. Clearing codes, writing settings, resets and reflashing are blocked in code.</p></div>
       <div class="reveal"><h3>Honest about limits</h3><p>A code points to a condition, not a broken part. Otto says what the data supports, and when a professional is the right call.</p></div>

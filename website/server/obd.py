@@ -230,7 +230,7 @@ def build_request(mode, *params):
 
 
 # UDS fault memory: everything the engine computer is flagging, including
-# manufacturer codes (e.g. VW EPC faults) that Mode 03 doesn't report.
+# manufacturer codes that Mode 03 (emissions codes only) doesn't report.
 # Status mask bits: 0 failing now, 2 pending, 3 confirmed/stored, 5 failed
 # since last clear, 7 warning light requested. Skips "test not run yet" noise.
 UDS_STATUS_MASK = 0xAD

@@ -117,7 +117,8 @@ class Controller:
     # ---- views ---------------------------------------------------------
     def code_details(self, stats):
         """Offline evidence per code, plus how the car reported it (stored, pending, warning light...)."""
-        details = details_for(self.state.codes, self.state.readings, stats)
+        make = (self.state.vehicle or "").split(" ")[0] or None     # make-specific notes only for that make
+        details = details_for(self.state.codes, self.state.readings, stats, make)
         for d in details:
             d["status"] = self.state.code_status.get(d["code"], [])
             if d["status"] == ["intermittent"]:

@@ -24,7 +24,7 @@ python -m uvicorn server.app:app --reload --port 8000
 python -m pytest -q                       # decoder, safety, health and AI tests
 ```
 
-Shortcuts: `Space` capture · `M` mark symptom · `E` diagnose · `1`–`6` scenarios. `/#step-6` opens the landing tour at a given system (demos).
+`/#step-6` opens the landing tour at a given system (demos).
 
 ### What the owner gets
 - **Vehicle health** (`server/health.py`): a 0–100 score and a status for 8 systems, computed from 60-second statistics and the codes, never by the AI. Conservative thresholds; no data = "no data", not "OK"; a system with a fault is never listed as going well; intermittent-only codes count as history.
@@ -34,7 +34,7 @@ Shortcuts: `Space` capture · `M` mark symptom · `E` diagnose · `1`–`6` scen
 
 ---
 
-## Safety: read-only by design
+## Safety first: read-only by design
 
 We never touch anything that could change how the car behaves. Enforced in code, not by convention:
 

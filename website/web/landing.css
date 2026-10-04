@@ -1,8 +1,9 @@
-/* Otto landing page. Dark, bold, scroll-driven; Illinois colors. Fonts bundled: works offline. */
-@font-face{font-family:Poppins;font-weight:400;font-display:swap;src:url(fonts/poppins-400.woff2) format("woff2")}
-@font-face{font-family:Poppins;font-weight:500;font-display:swap;src:url(fonts/poppins-500.woff2) format("woff2")}
-@font-face{font-family:Poppins;font-weight:600;font-display:swap;src:url(fonts/poppins-600.woff2) format("woff2")}
-@font-face{font-family:Poppins;font-weight:700;font-display:swap;src:url(fonts/poppins-700.woff2) format("woff2")}
+/* Otto landing page. Bold and scroll-driven: dark Illini Blue for the car tour, white sections
+   for balance, Illini Orange accents. Fonts bundled: works offline. */
+@font-face{font-family:"Plus Jakarta Sans";font-weight:400 800;font-display:swap;src:url(fonts/jakarta-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Plus Jakarta Sans";font-weight:400 800;font-display:swap;src:url(fonts/jakarta-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 
 :root{
   color-scheme:dark;
@@ -11,14 +12,14 @@
   --bg:#05090F; --bg-2:#0A1424; --line:#1B2B45;
   --text:#F1F4F9; --muted:#93A3BC; --dim:#4E6284;
   --ok:#3CCB8A; --warn:#F2B33D; --bad:#FF5D4A;
-  --sans:Poppins,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --pad:clamp(20px,5vw,72px);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);overflow-x:hidden}
 a{color:inherit}
-h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em;line-height:1.02}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em;line-height:1.02}
 em{font-style:normal;color:var(--orange)}
 .kicker{font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--orange)}
 
@@ -27,7 +28,7 @@ em{font-style:normal;color:var(--orange)}
   transition:background .3s,backdrop-filter .3s,padding .3s}
 .nav.scrolled{background:rgba(5,9,15,.78);backdrop-filter:blur(14px);padding-block:10px;box-shadow:0 1px 0 var(--line)}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:20px;letter-spacing:.08em}
-.logo svg{width:30px;height:30px}
+.logo svg{width:48px;height:30px}
 .logo i,.footer i{font-style:normal;color:var(--orange)}
 .links{display:flex;gap:26px;margin-left:auto}
 .links a{text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s}
@@ -180,3 +181,12 @@ section h2{font-size:clamp(38px,5.6vw,84px);text-transform:uppercase;letter-spac
   .car .sys{opacity:1}
   .reveal{opacity:1;transform:none}
 }
+
+/* ---------- white sections for balance ---------- */
+.how,.safe{background:#fff;color:#13294B}
+.how h2,.safe h2{color:#13294B}
+.steps4 li{background:#F5F6F9;border-top-color:#13294B}
+.steps4 li:hover{background:#EEF1F6}
+.steps4 h3{color:#13294B}
+.steps4 p,.safe-grid p{color:#5E6B82}
+.safe-grid h3{color:#13294B}

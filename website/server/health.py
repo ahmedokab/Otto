@@ -14,7 +14,7 @@ SYSTEMS = {
     "fuel_air":   "Fuel & air",
     "cooling":    "Cooling",
     "electrical": "Battery & charging",
-    "throttle":   "Throttle & pedal (EPC)",
+    "throttle":   "Throttle & pedal",
     "emissions":  "Emissions & exhaust",
     "transmission": "Transmission",
     "network":    "Body, chassis & modules",
