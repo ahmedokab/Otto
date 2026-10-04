@@ -28,7 +28,7 @@ em{font-style:normal;color:var(--orange)}
   transition:background .3s,backdrop-filter .3s,padding .3s}
 .nav.scrolled{background:rgba(5,9,15,.78);backdrop-filter:blur(14px);padding-block:10px;box-shadow:0 1px 0 var(--line)}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:20px;letter-spacing:.08em}
-.logo svg{width:48px;height:30px}
+.logo svg{width:60px;height:32px}
 .logo i,.footer i{font-style:normal;color:var(--orange)}
 .links{display:flex;gap:26px;margin-left:auto}
 .links a{text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s}
@@ -67,13 +67,22 @@ em{font-style:normal;color:var(--orange)}
 .car-wrap{position:relative;z-index:1}
 .car{width:100%;height:auto;overflow:visible;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
 .car .ground{stroke:var(--line);stroke-width:2}
-.car .body{fill:rgba(19,41,75,.18);stroke:#5d86c9;stroke-width:2.5;stroke-linejoin:round}
-.car .trim{fill:none;stroke:#3a5f9c;stroke-width:1.6;stroke-linejoin:round}
-.car .lamp{stroke:var(--orange-2);stroke-width:4;stroke-linecap:round}
-.car .lamp.rear{stroke:var(--bad)}
-.car .wheel circle{fill:#05090F;stroke:#5d86c9;stroke-width:2.5}
-.car .wheel circle:nth-child(2){fill:none;stroke:#2D5394;stroke-dasharray:4 5}
-.car .wheel circle:nth-child(3){fill:#5d86c9}
+.car .shadow{fill:#000;opacity:.45;filter:blur(6px)}
+.car .body{fill:url(#bodyShade);stroke:#7FA6E6;stroke-width:2.2;stroke-linejoin:round}
+.car .shade{fill:rgba(5,9,15,.35);stroke:none}
+.car .crease{fill:none;stroke:#9DBDF0;stroke-opacity:.35;stroke-width:1.2;stroke-linecap:round}
+.car .glass{fill:rgba(140,180,240,.12);stroke:none}
+.car .trim{fill:none;stroke:#4F78BC;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.car .lamp{fill:rgba(255,138,76,.75);stroke:#FFB48A;stroke-width:1}
+.car .lamp.rear{fill:rgba(255,93,74,.8);stroke:#FF9A8E}
+.car .wheel .tire{fill:url(#tireShade);stroke:#7FA6E6;stroke-width:2}
+.car .wheel .sidewall{fill:none;stroke:#2B3C5C;stroke-width:1.2}
+.car .wheel .rotor{fill:#16233A;stroke:#3E5B8C;stroke-width:1.5}
+.car .wheel .caliper{fill:#FF5F05;opacity:.85}
+.car .wheel .rim{fill:none;stroke:#9DBDF0;stroke-width:2.2}
+.car .wheel .spokes{fill:#5D86C9;stroke:#9DBDF0;stroke-width:.6;stroke-linejoin:round}
+.car .wheel .hub{fill:#2B3C5C;stroke:#9DBDF0;stroke-width:1.2}
+.car .wheel .lug{fill:#9DBDF0}
 .sys *{fill:rgba(45,83,148,.12);stroke:#2D5394;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .45s,fill .45s,opacity .45s}
 .sys .line,.sys .pipe,.sys path:not([class]){fill:none}
 .sys .bus{fill:none;stroke-dasharray:6 7}
@@ -86,10 +95,10 @@ em{font-style:normal;color:var(--orange)}
 @keyframes flow{to{stroke-dashoffset:-26}}
 
 /* intro: outline draws itself, systems fade in, beam sweeps */
-.car .body,.car .trim,.car .wheel circle{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s cubic-bezier(.6,.1,.2,1) forwards}
+.car .body,.car .trim,.car .wheel .tire{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s cubic-bezier(.6,.1,.2,1) forwards}
 .car .trim{animation-delay:.5s}
-.car .wheel circle{animation-delay:.8s}
-.car .wheel circle:nth-child(2){stroke-dasharray:4 5;stroke-dashoffset:0;animation:spin 1.6s ease-out .8s both}
+.car .wheel .tire{animation-delay:.8s}
+.car .wheel :is(.sidewall,.rotor,.caliper,.rim,.spokes,.hub,.lug),.car .lamp,.car .crease,.car .glass,.car .shade{animation:spin 1.2s ease-out 1.2s both}
 @keyframes draw{to{stroke-dashoffset:0}}
 @keyframes spin{from{opacity:0}to{opacity:1}}
 .car .sys{opacity:0;animation:appear .8s ease forwards}
@@ -177,7 +186,7 @@ section h2{font-size:clamp(38px,5.6vw,84px);text-transform:uppercase;letter-spac
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .car .body,.car .trim,.car .wheel circle{stroke-dashoffset:0}
+  .car .body,.car .trim,.car .wheel .tire{stroke-dashoffset:0}
   .car .sys{opacity:1}
   .reveal{opacity:1;transform:none}
 }

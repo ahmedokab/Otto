@@ -9,13 +9,13 @@
   // step -> system highlighted, zoom point (viewBox units), readout rows
   const SYSTEMS = [
     null,
-    { sys: 'brain', at: [430, 200], label: 'Engine computer', rows: [['vin', 'VIN'], ['codes', 'Trouble codes'], ['checks', 'Code checks']] },
-    { sys: 'engine', at: [305, 220], label: 'Engine', rows: [['rpm', 'RPM'], ['load_pct', 'Load'], ['timing_deg', 'Timing']] },
-    { sys: 'fuel_air', at: [480, 240], label: 'Fuel & air', rows: [['stft_pct', 'Short trim'], ['ltft_pct', 'Long trim'], ['map_kpa', 'Intake pressure']] },
-    { sys: 'cooling', at: [90, 240], label: 'Cooling', rows: [['coolant_c', 'Coolant'], ['oil_c', 'Oil'], ['intake_c', 'Intake air']] },
-    { sys: 'electrical', at: [150, 238], label: 'Battery & charging', rows: [['ecu_voltage_v', 'Voltage'], ['rpm', 'Engine']] },
-    { sys: 'throttle', at: [400, 228], label: 'Throttle & pedal', rows: [['pedal_d_pct', 'Gas pedal'], ['cmd_throttle_pct', 'Commanded'], ['throttle_pct', 'Throttle']] },
-    { sys: 'emissions', at: [620, 322], label: 'Emissions', rows: [['cat_c', 'Catalyst'], ['o2_down_v', 'Rear O2'], ['lambda', 'Air-fuel λ']] },
+    { sys: 'brain', at: [430, 195], label: 'Engine computer', rows: [['vin', 'VIN'], ['codes', 'Trouble codes'], ['checks', 'Code checks']] },
+    { sys: 'engine', at: [316, 204], label: 'Engine', rows: [['rpm', 'RPM'], ['load_pct', 'Load'], ['timing_deg', 'Timing']] },
+    { sys: 'fuel_air', at: [470, 230], label: 'Fuel & air', rows: [['stft_pct', 'Short trim'], ['ltft_pct', 'Long trim'], ['map_kpa', 'Intake pressure']] },
+    { sys: 'cooling', at: [70, 248], label: 'Cooling', rows: [['coolant_c', 'Coolant'], ['oil_c', 'Oil'], ['intake_c', 'Intake air']] },
+    { sys: 'electrical', at: [110, 236], label: 'Battery & charging', rows: [['ecu_voltage_v', 'Voltage'], ['rpm', 'Engine']] },
+    { sys: 'throttle', at: [395, 215], label: 'Throttle & pedal', rows: [['pedal_d_pct', 'Gas pedal'], ['cmd_throttle_pct', 'Commanded'], ['throttle_pct', 'Throttle']] },
+    { sys: 'emissions', at: [620, 318], label: 'Emissions', rows: [['cat_c', 'Catalyst'], ['o2_down_v', 'Rear O2'], ['lambda', 'Air-fuel λ']] },
   ];
   // What a healthy idling car typically shows, used when no capture is running
   const SAMPLE = { rpm: 742, load_pct: 21, timing_deg: 6.5, stft_pct: -0.8, ltft_pct: 2.3, map_kpa: 31, coolant_c: 90, oil_c: 86,

@@ -46,6 +46,26 @@ def render_html(ctx):
     {'<h4>Going well</h4><ul>' + good + '</ul>' if good else ''}
     <table><tr><th>System</th><th>Status</th><th>Why</th></tr>{systems}</table>"""
 
+    d = ctx.get("diagnostics") or {}
+    parts = []
+    tests = d.get("readiness") or []
+    if tests:
+        open_ = [t["name"] for t in tests if not t["ready"]]
+        verdict = "Yes, all self-tests complete" if not open_ else f"{len(open_)} of {len(tests)} not finished: {', '.join(open_)}"
+        parts.append(f"<p><b>Ready for inspection:</b> {e(verdict)}</p>")
+    if d.get("fuel_status"):
+        parts.append(f"<p><b>Fuel control:</b> {e(d['fuel_status']['text'])}</p>")
+    mis = d.get("misfires") or {}
+    if mis:
+        cells = "".join(f"<td>Cyl {e(c)}: <b>{v.get('recent', v.get('last_drive', 0))}</b></td>" for c, v in mis.items())
+        parts.append(f"<p><b>Misfires by cylinder</b> (recent drives)</p><table><tr>{cells}</tr></table>")
+    ff = d.get("freeze_frame") or {}
+    if ff.get("code"):
+        rows_ff = "".join(f"<tr><td>{e(READINGS.get(k, {}).get('label', k))}</td><td>{_fmt(v)} {e(READINGS.get(k, {}).get('unit', ''))}</td></tr>"
+                          for k, v in (ff.get("readings") or {}).items())
+        parts.append(f"<p><b>Snapshot when {e(ff['code'])} was set</b></p><table>{rows_ff}</table>")
+    diag_html = ("<h2>Under the hood</h2>" + "".join(parts)) if parts else ""
+
     ex = ctx.get("explanation")
     ex_html = ""
     if ex:
@@ -63,7 +83,7 @@ def render_html(ctx):
         qs = "".join(f"<li>{e(q)}</li>" for q in ex.get("questions_for_mechanic", []))
         well = "".join(f"<li>{e(w)}</li>" for w in ex.get("going_well", []))
         mech = ex.get("mechanic") or {}
-        src = "AI-assisted (" + e(ex.get("model") or "") + ")" if ex.get("source") == "ai" else "Offline reference"
+        src = "AI analysis" if ex.get("source") == "ai" else "Offline reference"
         ex_html = f"""
         <h2>Analysis <small>{src}</small></h2>
         <p><b>{e(ex.get('headline',''))}</b></p>
@@ -76,8 +96,9 @@ def render_html(ctx):
         <p class="muted">{e(ex.get('caveat',''))}</p>"""
 
     rows = ""
+    whole = ctx.get("session_stats") or {}
     for k, meta in READINGS.items():
-        st = ctx["stats_last_60s"].get(k)
+        st = whole.get(k) or ctx["stats_last_60s"].get(k)      # whole capture when known
         now = ctx["readings_now"].get(k)
         if st is None and now is None:
             continue
@@ -119,9 +140,10 @@ def render_html(ctx):
 {('<h2>Owner-reported symptoms</h2><p>' + e(ctx['symptoms']) + '</p>') if ctx.get('symptoms') else ''}
 {health_html}
 <h2>Trouble codes</h2>{codes_html}
+{diag_html}
 {ex_html}
 {('<h2>Symptom markers</h2><ul>' + markers + '</ul>') if markers else ''}
-<h2>Readings <small>last 60 s of capture</small></h2>
+<h2>Readings <small>{"whole capture" if whole else "last 60 s of capture"}{(" · full recording: " + e(ctx["recording_file"])) if ctx.get("recording_file") else ""}</small></h2>
 <table><tr><th>Measurement</th><th>Unit</th><th>Latest</th><th>Min</th><th>Max</th><th>Avg</th></tr>{rows or '<tr><td colspan=6>No readings captured</td></tr>'}</table>
 <p class="muted">This report summarizes data read from the vehicle's OBD-II port. A trouble code identifies a condition the engine computer detected; it does not by itself prove which part has failed. Please have a qualified technician confirm the cause.</p>
 <div class="foot"><b>Otto · One less trip to the mechanic</b><span>Made by the UofI Car Guys · read via FREE-WILi, read-only OBD-II</span></div>

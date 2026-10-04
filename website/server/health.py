@@ -63,7 +63,7 @@ def _status(systems, key, status, reason):
         s["reasons"].append(reason)
 
 
-def assess(code_details, readings, stats, codes_checked=True):
+def assess(code_details, readings, stats, codes_checked=True, diagnostics=None):
     """-> {"score": int|None, "label": str, "systems": [...], "positives": [...], "concerns": [...]}
 
     codes_checked: the car actually answered a trouble-code request. Without it,
@@ -127,6 +127,25 @@ def assess(code_details, readings, stats, codes_checked=True):
         elif 550 <= rpm["mean"] <= 1100 and rpm.get("roughness", 0) < 25:
             positives.append(("engine", f"Smooth, steady idle ({rpm['mean']:.0f} rpm)"))
 
+    # ---- deeper diagnostics (conservative: only clear faults count) -----------
+    diag = diagnostics or {}
+    fuel = (diag.get("fuel_status") or {}).get("code")
+    if fuel == 8:
+        _status(systems, "fuel_air", "watch", "Fuel control fell back to open loop because of a fault")
+    elif fuel == 16:
+        _status(systems, "fuel_air", "watch", "Fuel control reports a sensor fault")
+    misfires = {c: (v.get("recent") or 0) for c, v in (diag.get("misfires") or {}).items()}
+    if misfires:
+        worst_cyl, worst = max(misfires.items(), key=lambda kv: kv[1])
+        others = [v for c, v in misfires.items() if c != worst_cyl]
+        if worst >= 10 and worst > 3 * max(others or [0]):
+            _status(systems, "engine", "watch", f"Cylinder {worst_cyl} has far more misfires than the others ({worst})")
+        elif not any(misfires.values()):
+            positives.append(("engine", "No misfires recorded on any cylinder"))
+    readiness = diag.get("readiness") or []
+    if readiness and all(t["ready"] for t in readiness):
+        positives.append(("emissions", "All emissions self-tests complete (ready for inspection)"))
+
     # ---- codes -------------------------------------------------------------
     score = 100
     for d in code_details or []:
@@ -147,7 +166,7 @@ def assess(code_details, readings, stats, codes_checked=True):
             score -= WATCH_PENALTY
         if s["status"] in ("watch", "problem"):
             for r in s["reasons"]:
-                if not any(r.startswith(c.get("code", "~")) for c in concerns):
+                if not any(r.startswith(c.get("code") or "~") for c in concerns):
                     concerns.append({"code": None, "title": r, "severity": "caution" if s["status"] == "problem" else "info",
                                      "system": s["name"]})
 

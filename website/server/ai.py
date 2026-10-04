@@ -36,6 +36,7 @@ How to write:
 - Rank likely causes using the measurements and symptoms, and say which numbers moved a cause up or down. If the data contradicts a code, say so.
 - "Intermittent" codes are not failing right now; treat them as history worth mentioning, not as an alarm. "Pending" means seen once and not yet confirmed.
 - If a code check was not answered by the car, don't claim there are no codes of that kind.
+- diagnostics (when present): readiness = the car's emissions self-tests; "not ready" means a test hasn't finished since codes were last cleared or the battery was disconnected, not a fault, but it matters for an inspection. fuel_status = whether the engine is warming up or running normally. freeze_frame = readings the car saved the moment a code was set; use them to describe the conditions (cold engine, highway speed, idle...). misfires = misfire counts per cylinder; one cylinder far above the others points to that cylinder's spark plug, coil or injector.
 - Make it specific to this vehicle (make, model, year, VIN when given): use that make's names for its warning lights and systems, and mention well-known issues for that model when they fit the data. Never assume a different make. If the vehicle is unknown, stay general.
 
 Fixes the owner can try (diy_steps):
@@ -204,7 +205,7 @@ def ai_available():
 
 
 def _payload(ctx):
-    keys = ("vehicle", "vin", "data_mode", "codes", "code_checks", "code_details", "health",
+    keys = ("vehicle", "vin", "data_mode", "codes", "code_checks", "code_details", "health", "diagnostics",
             "readings_now", "stats_last_60s", "markers", "symptoms")
     return {k: ctx.get(k) for k in keys}
 
@@ -218,7 +219,9 @@ def explain(ctx):
         return fallback
     import anthropic
     try:
-        client = anthropic.Anthropic(timeout=TIMEOUT_S, max_retries=1)
+        workspace = os.getenv("ANTHROPIC_WORKSPACE_ID")   # only for keys not scoped to a workspace
+        client = anthropic.Anthropic(timeout=TIMEOUT_S, max_retries=1,
+                                     default_headers={"anthropic-workspace-id": workspace} if workspace else None)
         msg = client.beta.messages.create(
             model=MODEL,
             max_tokens=16000,
@@ -234,8 +237,12 @@ def explain(ctx):
             raise RuntimeError("the answer was cut off")
         text = next(b.text for b in msg.content if b.type == "text")
         obj = json.loads(text)
-        obj.update(source="ai", model=msg.model, key=fallback["key"])
+        obj.update(source="ai", model=None, key=fallback["key"])     # the UI never names the model
         return obj
+    except anthropic.BadRequestError as e:
+        fallback["note"] = ("AI setup: this API key needs a workspace. Use a key created inside a workspace, "
+                            "or set ANTHROPIC_WORKSPACE_ID in .env" if "workspace" in str(e.message)
+                            else f"AI request rejected ({e.status_code}): showing the offline explanation")
     except anthropic.AuthenticationError:
         fallback["note"] = "The API key was rejected: showing the offline explanation"
     except anthropic.RateLimitError:

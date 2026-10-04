@@ -425,7 +425,7 @@ async function explain() {
 function renderExplanation() {
   const ex = S.expl;
   if (!ex || !ex.headline) { $('aiOut').innerHTML = ''; $('aiStatus').textContent = ''; return; }
-  const src = ex.source === 'ai' ? `AI-assisted · ${esc(ex.model)}` : 'Offline reference';
+  const src = ex.source === 'ai' ? 'AI analysis' : 'Offline reference';
   $('aiStatus').innerHTML = `${src}${ex.note ? ` — ${esc(ex.note)}` : ''}`;
   const outdated = S.snap?.explanation?.outdated ? '<div class="outdated">Codes changed since this analysis — run it again.</div>' : '';
   const qs = (ex.questions_for_mechanic || []).map((q) => `<li>${esc(q)}</li>`).join('');
@@ -443,6 +443,69 @@ function renderExplanation() {
       <div class="muted" style="font-size:12px">${esc(ex.caveat || '')}</div>
     </div>`;
   updateMechanicPanel();
+}
+
+// ---------- under the hood ----------
+const FUEL_NOTE = {
+  1: 'Normal right after starting; it switches to normal once the engine warms up.',
+  2: 'The engine is fine-tuning fuel with its oxygen sensors, as it should.',
+  4: 'Temporary and normal when accelerating hard or coasting.',
+  8: 'Worth checking: the computer stopped fine-tuning fuel because of a fault.',
+  16: 'Worth checking: one of the oxygen sensors is reporting a problem.',
+};
+
+function renderDiagnostics(snap) {
+  const d = snap.diagnostics || {};
+  const key = JSON.stringify([d, S.units]);
+  if (key === S.diagKey) return;
+  S.diagKey = key;
+  $('diagPanel').hidden = !Object.keys(d).length;
+
+  const tests = d.readiness || [];
+  $('dReady').hidden = !tests.length;
+  if (tests.length) {
+    const open = tests.filter((t) => !t.ready);
+    const [verdict, cls, note] = !open.length ? ['Yes', 'ok', `All ${tests.length} emissions self-tests are complete.`]
+      : open.length === 1 ? ['Probably', 'watch', 'One test is still running. Most states allow one unfinished test (older cars: two).']
+      : ['Not yet', 'bad', `${open.length} tests haven't finished. They complete on their own after a few days of normal driving. This is common after a battery change or cleared codes, and isn't a fault.`];
+    $('dReady').querySelector('.d-big').innerHTML = `<span class="${cls}">${verdict}</span>`;
+    $('dReady').querySelector('.d-note').textContent = note;
+    $('dReady').querySelector('.d-tests').innerHTML = tests.map((t) =>
+      `<li class="${t.ready ? 'ok' : 'na'}">${t.ready ? '✓' : '…'} ${esc(t.name)}</li>`).join('');
+  }
+
+  const fuel = d.fuel_status;
+  $('dFuel').hidden = !fuel;
+  if (fuel) {
+    const cls = fuel.code === 2 ? 'ok' : fuel.code >= 8 ? 'bad' : 'watch';
+    $('dFuel').querySelector('.d-big').innerHTML = `<span class="${cls}">${esc(fuel.text)}</span>`;
+    $('dFuel').querySelector('.d-note').textContent = FUEL_NOTE[fuel.code] || '';
+  }
+
+  const mis = Object.entries(d.misfires || {}).map(([c, v]) => [c, v.recent ?? v.last_drive ?? 0]);
+  $('dMis').hidden = !mis.length;
+  if (mis.length) {
+    const top = Math.max(10, ...mis.map(([, n]) => n));
+    const [worstCyl, worst] = mis.reduce((a, b) => (b[1] > a[1] ? b : a));
+    const others = Math.max(0, ...mis.filter(([c]) => c !== worstCyl).map(([, n]) => n));
+    const standout = worst >= 10 && worst > 3 * others;
+    $('dMis').querySelector('.d-bars').innerHTML = mis.map(([c, n]) => `<div class="bar ${standout && c === worstCyl ? 'hot' : ''}">
+        <span>Cyl ${esc(c)}</span><i style="width:${Math.max(2, (n / top) * 100)}%"></i><b>${n}</b></div>`).join('');
+    $('dMis').querySelector('.d-note').textContent = standout
+      ? `Cylinder ${worstCyl} stands out. Its spark plug, ignition coil or fuel injector is the first thing to check.`
+      : !worst ? 'No misfires recorded on any cylinder.'
+      : !others ? `Only cylinder ${worstCyl} has misfired so far (${worst}). Worth watching if the number keeps climbing.`
+      : 'A few misfires spread across cylinders; normal in small numbers.';
+  }
+
+  const ff = d.freeze_frame;
+  $('dFreeze').hidden = !(ff && ff.code);
+  if (ff && ff.code) {
+    $('dFreeze').querySelector('.d-big').innerHTML = `<span class="code-chip">${esc(ff.code)}</span>`;
+    $('dFreeze').querySelector('.d-note').textContent = 'What the car was doing the moment this code was set:';
+    $('dFreeze').querySelector('.d-snap').innerHTML = Object.entries(ff.readings || {}).filter(([k]) => KEYS[k]).map(([k, v]) =>
+      `<dt>${esc(KEYS[k].label)}</dt><dd>${esc(fmt(k, v))} ${esc(unitOf(k))}</dd>`).join('');
+  }
 }
 
 // ---------- health ----------
@@ -523,6 +586,7 @@ function onSnapshot(snap) {
   updateChrome(snap);
   updateReadings(snap);
   renderHealth(snap);
+  renderDiagnostics(snap);
   renderFindings(snap);
   syncExplanation(snap).catch(() => {});
   if (snap.explanation.running && !S.explaining) $('aiStatus').innerHTML = '<span class="spinner"></span> Analysis requested from FREE-WILi…';
@@ -575,9 +639,9 @@ function bindControls() {
   buildSourceBar();
   bindControls();
   const b = $('aiBadge');
-  b.textContent = S.meta.ai.available ? `AI · ${S.meta.ai.detail}` : 'Offline mode';
+  b.textContent = S.meta.ai.available ? 'AI ready' : 'Offline mode';
   b.className = 'badge' + (S.meta.ai.available ? ' on' : '');
-  b.title = S.meta.ai.available ? 'Claude API key detected' : S.meta.ai.detail;
+  b.title = S.meta.ai.available ? 'AI analysis is available' : S.meta.ai.detail;
   await backfill().catch(() => {});
   loadReports().catch(() => {});
   onSnapshot(await api('/api/state'));

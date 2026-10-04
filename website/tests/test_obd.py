@@ -122,6 +122,7 @@ class FakeFreeWili:
 def test_live_loop_polls_car_and_reassembles_codes():
     src, fake = FreeWiliSource(), FakeFreeWili()
     fake.cb, src._fw = src._on_event, fake
+    src.capturing.set()
     t = threading.Thread(target=src._poll_loop, daemon=True)
     t.start()
     time.sleep(1.5)            # discovery + four code checks time out first on this fake
@@ -182,6 +183,7 @@ def test_bench_loop_end_to_end():
     src.bench = BenchEcu("lean")
     src.bench._state = lambda now: FIXED
     fake.cb, src._fw = src._on_event, fake
+    src.capturing.set()
     t = threading.Thread(target=src._poll_loop, daemon=True)
     t.start()
     time.sleep(1.5)
@@ -271,6 +273,7 @@ class EpcCar(FakeFreeWili):
 def test_epc_style_fault_reaches_the_dashboard():
     src, fake = FreeWiliSource(), EpcCar()
     fake.cb, src._fw = src._on_event, fake
+    src.capturing.set()
     t = threading.Thread(target=src._poll_loop, daemon=True)
     t.start()
     time.sleep(1.5)
@@ -325,6 +328,7 @@ class Car29(FakeFreeWili):
 def test_switches_to_29_bit_when_car_needs_it():
     src, fake = FreeWiliSource(), Car29()
     fake.cb, src._fw = src._on_event, fake
+    src.capturing.set()
     t = threading.Thread(target=src._poll_loop, daemon=True)
     t.start()
     time.sleep(1.0)
@@ -345,3 +349,101 @@ def test_every_decoded_reading_reaches_the_dashboard():
         assert key in READINGS, f"state drops {key}"
         assert re.search(r"\n  " + key + r":", js), f"dashboard has no tile for {key}"
         assert pid in obd.PID_INTERVAL, f"PID 0x{pid:02X} is never polled"
+
+
+# ---- FREE-WILi buttons --------------------------------------------------------
+def test_button_presses_fire_once_per_press():
+    src, pressed = FreeWiliSource(), []
+    src.on_button = pressed.append
+    snap = lambda **down: SimpleNamespace(**{c: down.get(c, False) for c in ("gray", "yellow", "green", "blue", "red")})
+    for data in (snap(), snap(gray=True), snap(gray=True), snap(), snap(green=True)):   # held across samples = one press
+        src._on_event(SimpleNamespace(name="Button"), None, data)
+    time.sleep(0.1)
+    assert sorted(pressed) == ["gray", "green"]
+
+def test_not_capturing_means_no_requests_to_the_car():
+    src, fake = FreeWiliSource(), FakeFreeWili()
+    fake.cb, src._fw = src._on_event, fake
+    t = threading.Thread(target=src._poll_loop, daemon=True)
+    t.start()
+    time.sleep(0.3)
+    src._stop.set()
+    t.join(1)
+    assert fake.sent == []
+
+
+# ---- deeper diagnostics ------------------------------------------------------------
+def test_readiness_from_the_beetles_real_reply():
+    tests = obd.parse_readiness(bytes.fromhex("410100076504"))        # same encoding the Beetle sent
+    assert [t["name"] for t in tests if not t["ready"]] == ["Fuel vapor (EVAP)"]
+    assert len(tests) == 7
+
+def test_fuel_status_freeze_frame_and_misfires():
+    assert obd.parse_fuel_status(bytes.fromhex("41030100"))["text"].startswith("Warming up")
+    assert obd.parse_freeze(bytes.fromhex("4202000300")) == ("code", "P0300")
+    assert obd.parse_freeze(bytes.fromhex("4202000000")) == ("code", None)
+    assert obd.parse_freeze(bytes.fromhex("42050081")) == ("coolant_c", 89)
+    kind, mids = obd.parse_mode06(bytes.fromhex("46A07E000000"))       # cylinders 1-6 supported
+    assert kind == "support" and set(range(0xA2, 0xA8)) <= mids
+    kind, res = obd.parse_mode06(bytes.fromhex("46A40B240096000000FF" "A40C24000C000000FF"))
+    assert obd.misfire_counts(res) == {3: {"recent": 150, "last_drive": 12}}
+
+def test_freeze_frame_and_mode06_are_read_only_requests():
+    assert obd.check_tx(0x7DF, obd.build_request(0x02, 0x0C, 0x00))
+    assert obd.check_tx(0x7DF, obd.build_request(0x06, 0xA4))
+
+
+class DeepCar(FakeFreeWili):
+    """A car with a stored misfire code, a freeze frame and Mode 06 misfire counters."""
+    REPLIES = {
+        b"\x01\x00": "064100" + "B8180000",        # 01, 03, 04, 05, 0C, 0D
+        b"\x01\x01": "06410181076504",
+        b"\x01\x03": "0441030200",
+        b"\x01\x0C": "04410C0BB8",
+        b"\x03": "0443010300",
+        b"\x02\x02": "0542020003" + "00",
+        b"\x02\x0C": "05420C001AF8",
+        b"\x02\x05": "0442050081",
+        b"\x06\xA0": "0646A07E000000",
+    }
+    def can_transmit(self, channel, can_id, data, is_extended, is_fd):
+        self.sent.append((can_id, bytes(data)))
+        n = data[0]
+        req = bytes(data[1:1 + n])
+        if req == b"\x06\xA4":                     # long reply: first frame, rest after flow control
+            self._pending = bytes.fromhex("46A40B240096000000FF" "A40C24000C000000FF")
+            self._reply(bytes([0x10, len(self._pending)]) + self._pending[:6])
+            return Ok("Ok")
+        if can_id == 0x7E0 and bytes(data) == obd.FLOW_CONTROL and getattr(self, "_pending", None):
+            rest, sn = self._pending[6:], 1
+            while rest:
+                self._reply((bytes([0x20 | sn]) + rest[:7]).ljust(8, b"\x00"))
+                rest, sn = rest[7:], sn + 1
+            self._pending = None
+            return Ok("Ok")
+        for prefix, hexreply in self.REPLIES.items():
+            if req.startswith(prefix):
+                self._reply(bytes.fromhex(hexreply).ljust(8, b"\x00"))
+                break
+        return Ok("Ok")
+
+def test_live_loop_collects_deeper_diagnostics(monkeypatch):
+    import server.sources.freewili as fwmod
+    monkeypatch.setattr(fwmod, "DEEP_FIRST_S", 0.3)
+    src, fake = FreeWiliSource(), DeepCar()
+    fake.cb, src._fw = src._on_event, fake
+    src.capturing.set()
+    t = threading.Thread(target=src._poll_loop, daemon=True)
+    t.start()
+    time.sleep(2.5)
+    src._stop.set()
+    t.join(1)
+    assert all(obd.check_tx(i, d, i > 0x7FF) for i, d in fake.sent)
+    state = State()
+    state.reset("live")
+    state.apply(src.poll(time.time()), time.time())
+    d = state.diagnostics
+    assert d["fuel_status"]["code"] == 2
+    assert [t["name"] for t in d["readiness"] if not t["ready"]] == ["Fuel vapor (EVAP)"]
+    assert d["freeze_frame"]["code"] == "P0300" and d["freeze_frame"]["readings"]["rpm"] == 1726
+    assert d["misfires"]["3"] == {"recent": 150, "last_drive": 12}

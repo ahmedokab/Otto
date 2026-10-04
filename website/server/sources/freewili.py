@@ -66,6 +66,8 @@ UDS_FAULT_MEMORY = obd.build_request(*obd.UDS_READ_DTCS)
 TAG_ORDER = ["warning light", "active", "stored", "pending", "permanent", "intermittent"]
 CHECK_NAMES = {"stored": "stored", "pending": "pending", "permanent": "permanent", "uds": "manufacturer"}
 FRAME_KEYS = ("trouble_codes", "code_status", "code_checks", "mil", "connection", "supported", "vin", "vehicle")
+DEEP_EVERY_S = 30.0        # freeze frame + misfire counters change rarely
+DEEP_FIRST_S = 3.0         # first deep check after the first round of codes and readings
 
 
 class FreeWiliSource(Source):
@@ -81,7 +83,14 @@ class FreeWiliSource(Source):
         self._thread = None
         self._awaiting = False
         self._pending_fc = None
-        self._stop = threading.Event()
+        self._stop = threading.Event()        # shuts the device thread down (server exit, tests)
+        self.capturing = threading.Event()    # poll the car only while this is set
+        self._new_capture = False
+        self._streaming = False
+        self.on_button = None                 # callback(color) for FREE-WILi button presses
+        self.device_view = None               # callable -> {"text": str, "leds": [(r, g, b)] * 7}
+        self._buttons_down = set()
+        self._shown_text, self._shown_leds, self._view_at = None, [None] * 7, 0.0
         self.bench = BenchEcu(BENCH_SCENARIO) if BENCH_SCENARIO else None
         self._bench_tx = collections.deque()
         self._raw = None
@@ -97,18 +106,31 @@ class FreeWiliSource(Source):
         self._vin_tries = 0
         self.extended = False          # 29-bit CAN IDs (found during discovery)
         self.ecus = set()              # reply IDs of ECUs that answered
+        self._freeze = {"code": None, "readings": {}}
+        self._mode06 = None            # supported Mode 06 test IDs; None = not asked yet
+        self._misfires = {}
+
+    def link(self):
+        """Keep the FREE-WILi connected for its screen, LEDs and buttons, even
+        when not capturing. Reconnects by itself after an unplug."""
+        self._stop.clear()
+        if self._thread is None or not self._thread.is_alive():
+            self._thread = threading.Thread(target=self._run, name="freewili", daemon=True)
+            self._thread.start()
+
+    def shutdown(self):
+        self._stop.set()
 
     def start(self):
-        self._stop.clear()
         while not self.inbox.empty():      # drop anything pushed before capture started
             self.inbox.get_nowait()
         self._open_raw_log()
-        if self._thread is None or not self._thread.is_alive():
-            self._thread = threading.Thread(target=self._run, name="freewili-can", daemon=True)
-            self._thread.start()
+        self._new_capture = True
+        self.capturing.set()
+        self.link()
 
     def stop(self):
-        self._stop.set()
+        self.capturing.clear()
         raw, self._raw = self._raw, None
         if raw:
             raw.close()
@@ -170,11 +192,12 @@ class FreeWiliSource(Source):
         self._fw = fw
         self._reset_car()
         fw.set_event_callback(self._on_event)
-        result = fw.can_enable_streaming(CAN_CHANNEL, True)
-        if result.is_err():
-            raise RuntimeError(f"CAN streaming refused (needs SpartaHack firmware V92): {result.unwrap_err()}")
-        if self.bench:
-            fw.can_enable_streaming(BENCH_CHANNEL, True)
+        self._streaming = False
+        self._shown_text, self._shown_leds = None, [None] * 7
+        try:
+            fw.enable_button_events(True, 100)    # sample buttons every 100 ms
+        except Exception:
+            pass                                  # screen firmware without button events: CAN still works
         self.error = None
 
     def _close(self):
@@ -182,21 +205,66 @@ class FreeWiliSource(Source):
         if fw is None:
             return
         try:
-            fw.can_enable_streaming(CAN_CHANNEL, False)
-            if self.bench:
-                fw.can_enable_streaming(BENCH_CHANNEL, False)
+            self._set_streaming(fw, False)
+            fw.enable_button_events(False)
+            fw.show_text_display("Otto\nDisconnected")
+            for i in range(7):
+                fw.set_board_leds(i, 0, 0, 0)
+        except Exception:
+            pass
+        try:
             fw.close()
         except Exception:
             pass
 
+    def _set_streaming(self, fw, on):
+        """CAN frames are only streamed to the laptop while capturing."""
+        if self._streaming == on or not hasattr(fw, "can_enable_streaming"):
+            self._streaming = on
+            return
+        result = fw.can_enable_streaming(CAN_CHANNEL, on)
+        if on and result.is_err():
+            raise RuntimeError(f"CAN streaming refused (needs SpartaHack firmware V92): {result.unwrap_err()}")
+        if self.bench:
+            fw.can_enable_streaming(BENCH_CHANNEL, on)
+        self._streaming = on
+
+    def _update_device(self):
+        """Mirror Otto's status on the FREE-WILi screen and LEDs (only what changed, ~1/s)."""
+        if self.device_view is None or time.monotonic() - self._view_at < 1.0:
+            return
+        self._view_at = time.monotonic()
+        try:
+            view = self.device_view()
+            if view["text"] != self._shown_text:
+                self._fw.show_text_display(view["text"])
+                self._shown_text = view["text"]
+            for i, rgb in enumerate(view["leds"][:7]):
+                if rgb != self._shown_leds[i]:
+                    self._fw.set_board_leds(i, *rgb)
+                    self._shown_leds[i] = rgb
+        except Exception:
+            pass                               # the screen is a nice-to-have; never stop reading the car for it
+
     def _poll_loop(self):
-        requests = self._requests()
+        requests = None
         sent_at = 0.0
         while not self._stop.is_set():
-            self._fw.process_events()          # runs _on_event for each received frame
+            self._fw.process_events()          # runs _on_event for each received frame / button press
             while self._bench_tx:              # fake car's replies, bench channel only
                 can_id, data = self._bench_tx.popleft()
                 self._fw.can_transmit(BENCH_CHANNEL, can_id, data, False, False)
+            self._update_device()
+            if not self.capturing.is_set():
+                self._set_streaming(self._fw, False)
+                requests, self._awaiting, self._pending_fc = None, False, None
+                self._stop.wait(0.02)
+                continue
+            if requests is None or self._new_capture:   # a fresh capture: rediscover the car
+                self._new_capture = False
+                self._reset_car()
+                self._set_streaming(self._fw, True)
+                requests = self._requests()
             if self._pending_fc is not None:   # ECU is mid-reply and waiting for us
                 fc_id, self._pending_fc = self._pending_fc, None
                 self.send_can(fc_id, obd.FLOW_CONTROL, self.extended)
@@ -249,8 +317,13 @@ class FreeWiliSource(Source):
                 for pid, every in obd.PID_INTERVAL.items() if self._supports(pid)]
         asked_directly = set()
         next_vin = 0.0
+        next_deep = time.monotonic() + DEEP_FIRST_S
         while True:
             now = time.monotonic()
+            if now >= next_deep:
+                next_deep = now + DEEP_EVERY_S
+                yield from self._deep_checks()
+                continue
             for ecu in sorted(self.ecus - asked_directly):  # fault memory, one ECU at a time
                 asked_directly.add(ecu)
                 codes.append([0.0, DTC_EVERY_S, obd.physical_id(ecu, self.extended), UDS_FAULT_MEMORY])
@@ -265,8 +338,29 @@ class FreeWiliSource(Source):
             task[0] = now + task[1]
             yield (task[2] or self._broadcast_id()), task[3]
 
+    def _deep_checks(self):
+        """Freeze frame (readings saved when a code was set) and misfire counts per cylinder."""
+        bcast = self._broadcast_id()
+        yield bcast, obd.build_request(0x02, 0x02, 0x00)            # which code caused the freeze frame
+        if self._freeze["code"]:
+            for pid in obd.FREEZE_PIDS:
+                if self._supports(pid):
+                    yield bcast, obd.build_request(0x02, pid, 0x00)
+        if self._mode06 is None:
+            self._mode06 = set()
+            yield bcast, obd.build_request(0x06, obd.MISFIRE_SUPPORT_MID)
+        for mid in sorted(self._mode06 & set(obd.MISFIRE_MIDS)):
+            yield bcast, obd.build_request(0x06, mid)
+
+    def _diag(self, now, **parts):
+        self.ingest_frame({"diagnostics": parts, "connection": "connected"}, now)
+
     def _on_event(self, event_type, frame, data):
-        if getattr(event_type, "name", "") not in ("CANRX0", "CANRX1"):
+        name = getattr(event_type, "name", "")
+        if name == "Button":
+            self._on_buttons(data)
+            return
+        if name not in ("CANRX0", "CANRX1"):
             return
         if self.bench and not data.is_extended and data.arb_id not in obd.ECU_RESPONSE_IDS:
             self._bench_tx.extend(self.bench.handle(data.arb_id, data.data, time.time()))   # fake car sees our request
@@ -275,6 +369,14 @@ class FreeWiliSource(Source):
             return
         self._log_raw("RX", data.arb_id, data.data)
         self.ingest_can(data.arb_id, data.data, time.time())
+
+    def _on_buttons(self, data):
+        """Button events are snapshots of which buttons are held; act on each new press."""
+        down = {c for c in ("gray", "yellow", "green", "blue", "red") if getattr(data, c, False)}
+        pressed, self._buttons_down = down - self._buttons_down, down
+        for color in pressed:
+            if self.on_button:
+                threading.Thread(target=self.on_button, args=(color,), daemon=True).start()
 
     # ---- shared plumbing -----------------------------------------------
     def ingest_frame(self, frame, now):
@@ -307,6 +409,9 @@ class FreeWiliSource(Source):
             if monitor is not None:
                 self._mil_lamp = monitor[0]
                 self.ingest_frame({"mil": monitor[0], "connection": "connected"}, now)
+                readiness = obd.parse_readiness(payload)
+                if readiness:
+                    self._diag(now, readiness=readiness)
                 return {"mil": monitor[0], "obd_code_count": monitor[1]}
             decoded = obd.parse_mode01(data)   # every PID we poll fits in one frame
             if decoded:
@@ -324,6 +429,32 @@ class FreeWiliSource(Source):
             if found is not None:
                 self._update_codes(can_id, "uds", found, now)
                 return {"fault_memory": found}
+        if service == 0x41 and len(payload) > 1 and payload[1] == obd.FUEL_STATUS_PID:
+            status = obd.parse_fuel_status(payload)
+            if status:
+                self._diag(now, fuel_status=status)
+                return {"fuel_status": status}
+        if service == 0x42:
+            item = obd.parse_freeze(payload)
+            if item:
+                key, value = item
+                if key == "code":
+                    if value != self._freeze["code"]:
+                        self._freeze = {"code": value, "readings": {}}
+                else:
+                    self._freeze["readings"][key] = value
+                self._diag(now, freeze_frame={"code": self._freeze["code"], "readings": dict(self._freeze["readings"])})
+                return {"freeze_frame": item}
+        if service == 0x46:
+            parsed = obd.parse_mode06(payload)
+            if parsed and parsed[0] == "support":
+                self._mode06 = (self._mode06 or set()) | parsed[1]
+            elif parsed:
+                for cyl, counts in obd.misfire_counts(parsed[1]).items():
+                    self._misfires[cyl] = {**self._misfires.get(cyl, {}), **counts}
+                if self._misfires:
+                    self._diag(now, misfires={str(c): v for c, v in sorted(self._misfires.items())})
+            return {"mode06": parsed}
         if service == 0x49:
             vin = obd.parse_vin(payload)
             if vin and vin != self.vin:
@@ -378,6 +509,8 @@ class FreeWiliSource(Source):
             if merged is None:
                 merged = {"readings": {}}
             merged["readings"].update(f.get("readings") or {})
+            if f.get("diagnostics"):
+                merged.setdefault("diagnostics", {}).update(f["diagnostics"])
             for k in FRAME_KEYS:
                 if f.get(k) is not None:
                     merged[k] = f[k]

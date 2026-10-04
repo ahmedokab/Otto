@@ -95,7 +95,7 @@ def test_ai_request_is_grounded_and_structured(monkeypatch):
     fake = FakeMessages(reply)
     _fake_client(monkeypatch, fake)
     ex = ai.explain(CTX)
-    assert ex["source"] == "ai" and ex["model"] == ai.MODEL
+    assert ex["source"] == "ai" and ex["model"] is None          # never shown to users
     kw = fake.kwargs
     assert kw["model"] == "claude-opus-5-5"
     assert kw["fallbacks"] == "default" and kw["betas"] == ["server-side-fallback-2026-07-01"]
@@ -125,3 +125,37 @@ def test_a_faulty_system_is_never_praised():
     h = health.assess([lean], HEALTHY_NOW, HEALTHY_STATS)        # trims look fine right now
     assert not any("Fuel mixture" in p for p in h["positives"])
     assert any("Charging" in p for p in h["positives"])           # other systems still get credit
+
+def test_saved_report_documents_the_whole_capture(tmp_path, monkeypatch):
+    import time as _t
+    from server import app as app_module
+    from server.app import Controller
+    monkeypatch.setattr(app_module, "REPORTS_DIR", tmp_path)
+    monkeypatch.setattr(app_module, "Recorder", lambda *a, **k: SimpleNamespace(write=lambda f: None, close=lambda: None))
+    monkeypatch.setattr(app_module, "ctl", Controller())
+    c = app_module.ctl
+    c.set_source("simulator", "lean")
+    c.start_capture()
+    t = _t.time()
+    for i in range(200):                                  # 40 s of driving
+        c.tick(t + i * 0.2)
+    c.state.add_marker(t + 30, "Hesitation pulling away")
+    saved = app_module.save_report()
+    data = json.loads((tmp_path / f"{saved['name']}.json").read_text(encoding="utf-8"))
+    html = (tmp_path / f"{saved['name']}.html").read_text(encoding="utf-8")
+    assert data["codes"] == ["P0171"] and data["health"]["score"] is not None
+    assert data["session_stats"]["rpm"]["n"] > 30            # every rpm sample, not just the last minute
+    assert data["markers"][0]["note"] == "Hesitation pulling away"
+    for text in ("whole capture", "P0171", "Engine RPM", "Hesitation pulling away", "Vehicle health"):
+        assert text in html
+    c.stop_capture()
+
+
+def test_reading_concern_plus_code_does_not_crash():
+    """Regression: a reading-based concern (no code) next to a coded one crashed health.assess."""
+    stats = dict(HEALTHY_STATS, ecu_voltage_v={"mean": 12.3})                  # low charging -> watch, no code
+    misfire = dict(EPC, code="P0300", title="Misfire", severity="caution", status=["stored"])
+    diag = {"misfires": {"1": {"recent": 0}, "2": {"recent": 0}, "3": {"recent": 40}, "4": {"recent": 0}}}
+    h = health.assess([misfire], HEALTHY_NOW, stats, diagnostics=diag)
+    assert h["score"] < 75
+    assert any("Cylinder 3" in r for s in h["systems"] for r in s["reasons"])

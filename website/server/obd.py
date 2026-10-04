@@ -78,6 +78,8 @@ PID_INTERVAL = {
 }
 MONITOR_PID = 0x01         # check-engine lamp state + stored code count
 PID_INTERVAL[MONITOR_PID] = SLOW
+FUEL_STATUS_PID = 0x03     # open / closed loop: is the engine still warming up?
+PID_INTERVAL[FUEL_STATUS_PID] = SLOW
 # Reading key -> expected refresh interval, so "stale" means "later than expected"
 KEY_INTERVAL = {PIDS[p][0]: s for p, s in PID_INTERVAL.items() if p in PIDS}
 # Mode 01 PIDs 0x00/0x20/0x40/0x60 answer with a bitmap of the PIDs the ECU supports.
@@ -92,7 +94,9 @@ SUPPORT_PIDS = [0x00, 0x20, 0x40, 0x60]
 # ---------------------------------------------------------------------------
 SAFE_SERVICES = {
     0x01: "Show current data (live PIDs)",
+    0x02: "Show freeze-frame data (readings saved when a code was set)",
     0x03: "Show stored trouble codes",
+    0x06: "Show on-board test results (e.g. misfire counts per cylinder)",
     0x07: "Show pending trouble codes",
     0x09: "Vehicle information (VIN, calibration IDs)",
     0x0A: "Show permanent trouble codes",
@@ -300,6 +304,93 @@ def parse_monitor(payload):
     if len(payload) < 3 or payload[0] != 0x41 or payload[1] != MONITOR_PID:
         return None
     return bool(payload[2] & 0x80), payload[2] & 0x7F
+
+
+# ---------------------------------------------------------------------------
+# Deeper diagnostics: inspection readiness, fuel control, freeze frame, misfires
+# ---------------------------------------------------------------------------
+CONTINUOUS_TESTS = ["Misfire", "Fuel system", "Engine sensors"]
+SPARK_TESTS = ["Catalytic converter", "Heated catalyst", "Fuel vapor (EVAP)", "Secondary air",
+               "A/C refrigerant", "Oxygen sensors", "Oxygen sensor heaters", "EGR / valve timing"]
+DIESEL_TESTS = ["Diesel catalyst", "NOx after-treatment", None, "Boost pressure", None,
+                "Exhaust gas sensor", "Particulate filter", "EGR / valve timing"]
+
+
+def parse_readiness(payload):
+    """Mode 01 PID 01 bytes B-D -> [{"name", "ready"}] for each emissions self-test the car runs.
+    "Not ready" means the test hasn't finished since codes were last cleared, not a fault."""
+    if len(payload) < 6 or payload[0] != 0x41 or payload[1] != MONITOR_PID:
+        return None
+    b, c, d = payload[3], payload[4], payload[5]
+    tests = [{"name": n, "ready": not b & (1 << (i + 4))} for i, n in enumerate(CONTINUOUS_TESTS) if b & (1 << i)]
+    names = DIESEL_TESTS if b & 0x08 else SPARK_TESTS
+    tests += [{"name": n, "ready": not d & (1 << i)} for i, n in enumerate(names) if n and c & (1 << i)]
+    return tests
+
+
+FUEL_STATUS = {
+    1: "Warming up (open loop)",
+    2: "Normal (closed loop)",
+    4: "Open loop: hard acceleration or slowing down",
+    8: "Open loop: fault in the fuel control system",
+    16: "Closed loop, but a sensor is reporting a fault",
+}
+
+
+def parse_fuel_status(payload):
+    """Mode 01 PID 03 -> plain-language fuel control status (bank 1)."""
+    if len(payload) < 3 or payload[0] != 0x41 or payload[1] != FUEL_STATUS_PID or not payload[2]:
+        return None
+    return {"code": payload[2], "text": FUEL_STATUS.get(payload[2], "Unknown")}
+
+
+FREEZE_PIDS = [0x0C, 0x0D, 0x05, 0x04, 0x06, 0x07, 0x0B, 0x11, 0x0F, 0x10, 0x42]
+
+
+def parse_freeze(payload):
+    """Mode 02 reply (42 PID frame data...) -> ("code", "P0171" | None) or (reading key, value)."""
+    if len(payload) < 4 or payload[0] != 0x42:
+        return None
+    pid, data = payload[1], payload[3:]
+    if pid == 0x02:
+        return ("code", decode_dtc(data[0], data[1]) if len(data) >= 2 and (data[0] or data[1]) else None)
+    if pid in PIDS:
+        key, n, fn = PIDS[pid]
+        if len(data) >= n:
+            return (key, round(fn(data[:n]), 2))
+    return None
+
+
+MISFIRE_MIDS = range(0xA2, 0xAE)          # Mode 06 test IDs for cylinders 1-12
+MISFIRE_SUPPORT_MID = 0xA0                # bitmap of supported test IDs A1-C0
+
+
+def parse_mode06(payload):
+    """Mode 06 reply. Returns ("support", {mids}) for a bitmap, or ("results", [(mid, tid, value)])."""
+    if len(payload) < 2 or payload[0] != 0x46:
+        return None
+    mid = payload[1]
+    if mid % 0x20 == 0 and len(payload) == 6:
+        bits = int.from_bytes(payload[2:6], "big")
+        return "support", {mid + n for n in range(1, 33) if bits & (1 << (32 - n))}
+    out = []
+    data = payload[1:]
+    for i in range(0, len(data) - 8, 9):                 # MID TID UASID value(2) min(2) max(2)
+        out.append((data[i], data[i + 1], (data[i + 3] << 8) | data[i + 4]))
+    return "results", out
+
+
+def misfire_counts(results):
+    """Mode 06 results -> {cylinder: {"recent": EWMA over last 10 drives, "last_drive": count}}."""
+    cyl = {}
+    for mid, tid, value in results:
+        if mid in MISFIRE_MIDS:
+            entry = cyl.setdefault(mid - 0xA1, {})
+            if tid == 0x0B:
+                entry["recent"] = value
+            elif tid == 0x0C:
+                entry["last_drive"] = value
+    return cyl
 
 
 def parse_vin(payload):

@@ -49,7 +49,7 @@ class BenchEcu:
 
     def _state(self, now):
         if self._frame is None or now - self._frame_t >= REFRESH_S:
-            self._frame, self._frame_t = self.sim.poll(now), now
+            self._frame, self._frame_t = {"readings": self.sim.values(now), "trouble_codes": sorted(self.sim.latched)}, now
         return self._frame
 
 

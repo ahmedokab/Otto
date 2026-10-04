@@ -6,6 +6,7 @@ then open http://localhost:8000
 """
 import asyncio
 import json
+import logging
 import os
 import threading
 import time
@@ -59,6 +60,7 @@ class Controller:
             self.state.capturing = True
             self.state.session_start = now
             self.state.frames = 0
+            self.state.session = {}
             self.state.clear_codes()
             if self.state.mode != "replay":
                 name = f"{self.state.mode}-{self.state.scenario or 'car'}-{time.strftime('%Y%m%d-%H%M%S')}.jsonl"
@@ -147,7 +149,8 @@ class Controller:
     def health(self, code_details, stats):
         # In Live mode only trust "no codes" once the car answered a code check
         checked = bool(self.state.code_checks) or self.state.mode != "live"
-        return health.assess(code_details, self.state.readings, stats, codes_checked=checked)
+        return health.assess(code_details, self.state.readings, stats, codes_checked=checked,
+                             diagnostics=self.state.diagnostics)
 
     def context(self, now):
         with self.lock:
@@ -162,9 +165,12 @@ class Controller:
                 "code_details": details,
                 "health": self.health(details, stats),
                 "code_checks": list(self.state.code_checks),
+                "diagnostics": dict(self.state.diagnostics),
                 "vin": self.state.vin,
                 "readings_now": {k: v for k, v in self.state.readings.items() if v is not None},
                 "stats_last_60s": stats,
+                "session_stats": self.state.session_stats(),
+                "recording_file": self.state.recording_file,
                 "markers": [dict(m) for m in self.state.markers],
                 "symptoms": self.symptoms,
                 "session_start": iso(self.state.session_start),
@@ -188,6 +194,51 @@ class Controller:
             self.explanation_codes = list(ctx["codes"])
             self.explanation_version += 1
         return result
+
+    # ---- FREE-WILi buttons, screen and LEDs --------------------------
+    def button(self, color):
+        """A FREE-WILi button (or POST /api/hw/button). Returns the action taken, or None."""
+        action = BUTTONS.get(color.lower())
+        if action == "start":
+            self.start_capture()
+        elif action == "stop":
+            self.stop_capture()
+        elif action == "marker":
+            with self.lock:
+                self.state.add_marker(time.time(), "Marked on FREE-WILi", "freewili")
+        elif action == "next_scenario" and self.state.mode == "simulator":
+            keys = list(SCENARIOS)
+            self.set_source("simulator", keys[(keys.index(self.state.scenario) + 1) % len(keys)])
+        elif action == "explain":
+            threading.Thread(target=self.run_explain, daemon=True).start()
+        else:
+            return None
+        return action
+
+    def device_view(self):
+        """What the FREE-WILi shows: a few short lines on its screen and 7 LEDs."""
+        with self.lock:
+            s = self.state
+            stats = s.stats(time.time())
+            h = self.health(self.code_details(stats), stats)
+            mode = {"live": "LIVE", "simulator": "SIMULATOR", "replay": "HISTORY"}[s.mode]
+            if not s.capturing:
+                status = "Ready: GREEN to start"
+            else:
+                status = {"connected": "Car connected", "waiting": "Waiting for car"}.get(s.connection, "Car not answering")
+            score = h["score"]
+            health_line = "Health --" if score is None else f"Health {score}/100"
+            if s.codes:
+                codes_line = s.codes[0] + (f" +{len(s.codes) - 1} more" if len(s.codes) > 1 else "")
+            else:
+                codes_line = "No codes" if s.capturing and s.frames else ""
+            hint = "RED stop  GREY mark" if s.capturing else ""
+            text = "\n".join(line for line in (f"OTTO  {mode}", status, health_line, codes_line, hint) if line)
+            off = (0, 0, 0)
+            conn = {"connected": (0, 60, 0), "idle": (0, 20, 70), "waiting": (70, 35, 0)}.get(s.connection, (70, 0, 0))
+            health_led = off if score is None else (0, 60, 0) if score >= 75 else (70, 40, 0) if score >= 50 else (70, 0, 0)
+            leds = [conn, (80, 24, 0) if s.capturing else off, health_led, (70, 35, 0) if s.mil else off, off, off, off]
+            return {"text": text, "leds": leds}
 
     def hw_display(self, now):
         """What the FREE-WILi screen + 7 LEDs should show. The device polls this."""
@@ -215,8 +266,13 @@ clients: set[WebSocket] = set()
 async def tick_loop():
     while True:
         now = time.time()
-        ctl.tick(now)
-        snap = ctl.snapshot(now)
+        try:
+            ctl.tick(now)
+            snap = ctl.snapshot(now)
+        except Exception:                       # never let one bad frame stop the live dashboard
+            logging.getLogger("otto").exception("tick failed")
+            await asyncio.sleep(TICK_S)
+            continue
         for ws in list(clients):
             try:
                 await ws.send_json(snap)
@@ -228,9 +284,14 @@ async def tick_loop():
 @asynccontextmanager
 async def lifespan(app):
     task = asyncio.create_task(tick_loop())
+    if os.getenv("OTTO_FREEWILI", "1") != "0":       # 0 = don't touch the device (second server, tests)
+        ctl.live.on_button = ctl.button
+        ctl.live.device_view = ctl.device_view
+        ctl.live.link()
     yield
     task.cancel()
     ctl.stop_capture()
+    ctl.live.shutdown()
 
 
 app = FastAPI(title="Otto", lifespan=lifespan)
@@ -278,7 +339,7 @@ def get_history(seconds: int = 60):
 def get_meta():
     ok, why = ai.ai_available()
     return {"readings": READINGS, "scenarios": SCENARIOS, "recordings": list_recordings(),
-            "ai": {"available": ok, "detail": why}, "safety": safety()}
+            "ai": {"available": ok, "detail": "AI ready" if ok else why}, "safety": safety()}
 
 
 @app.get("/api/safety")
@@ -386,21 +447,8 @@ def report_json():
 # ---- FREE-WILi integration ----------------------------------------------
 @app.post("/api/hw/button")
 async def hw_button(req: ButtonReq):
-    action = BUTTONS.get(req.button.lower())
-    if action == "start":
-        ctl.start_capture()
-    elif action == "stop":
-        ctl.stop_capture()
-    elif action == "marker":
-        with ctl.lock:
-            ctl.state.add_marker(time.time(), "Marked on FREE-WILi", "freewili")
-    elif action == "next_scenario" and ctl.state.mode == "simulator":
-        keys = list(SCENARIOS)
-        nxt = keys[(keys.index(ctl.state.scenario) + 1) % len(keys)]
-        ctl.set_source("simulator", nxt)
-    elif action == "explain":
-        asyncio.create_task(asyncio.to_thread(ctl.run_explain))
-    else:
+    action = await asyncio.to_thread(ctl.button, req.button)
+    if action is None:
         return {"ok": False, "reason": f"button '{req.button}' has no action in mode {ctl.state.mode}"}
     return {"ok": True, "action": action}
 

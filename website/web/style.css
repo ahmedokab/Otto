@@ -24,7 +24,7 @@ kbd{font:500 10.5px var(--sans);padding:1px 6px;border-radius:6px;border:1px sol
 /* ---------- top bar ---------- */
 .topbar{display:flex;align-items:center;gap:20px;padding:16px 28px;background:var(--panel);box-shadow:0 1px 0 var(--line);flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto}
-.brand .logo{width:52px;height:33px}
+.brand .logo{width:64px;height:34px}
 .brand strong{display:block;font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
 .brand strong i{font-style:normal;color:var(--orange)}
 .brand span{display:block;font-size:12px;color:var(--muted)}
@@ -383,3 +383,23 @@ a.brand{color:inherit;text-decoration:none}
 .hint{font-size:11.5px;line-height:1.35;color:var(--muted);margin-top:1px}
 .g-main .hint{max-width:170px}
 .health .h-systems li{background:rgba(255,255,255,.1)}
+
+/* ---------- under the hood ---------- */
+.diag-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.diag-card{background:var(--panel-2);border-radius:12px;padding:14px 16px}
+.diag-card h4{margin:0 0 6px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.d-big{font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+.d-big .ok{color:var(--ok)} .d-big .watch{color:var(--warn)} .d-big .bad{color:var(--bad)}
+.d-note{margin:6px 0 0;font-size:12.5px;color:var(--muted)}
+.d-tests{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px}
+.d-tests .ok{color:var(--ok)} .d-tests .na{color:var(--warn)}
+.d-bars{display:grid;gap:6px;margin-top:4px}
+.d-bars .bar{display:grid;grid-template-columns:44px 1fr 36px;align-items:center;gap:8px;font-size:12.5px}
+.d-bars i{display:block;height:8px;border-radius:99px;background:var(--blue);opacity:.75}
+.d-bars .bar.hot i{background:var(--bad);opacity:1}
+.d-bars .bar.hot b{color:var(--bad)}
+.d-bars b{text-align:right;font-variant-numeric:tabular-nums}
+.code-chip{font:700 15px var(--mono);padding:4px 10px;border-radius:10px;background:var(--orange);color:#fff}
+.d-snap{display:grid;grid-template-columns:auto auto;gap:3px 14px;margin:10px 0 0;font-size:12.5px}
+.d-snap dt{color:var(--muted)} .d-snap dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:700px){.diag-grid{grid-template-columns:1fr}}

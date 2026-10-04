@@ -94,17 +94,20 @@ class State:
         self.code_status = {}      # code -> ["warning light", "stored", "pending", ...]
         self.code_checks = []      # kinds of code check the car answered: stored, pending, ...
         self.supported = None      # reading keys the car supports; None = unknown
+        self.diagnostics = {}      # readiness, fuel_status, freeze_frame, misfires
         self.mil = False
         self.markers = []
         self.last_updated = None
         self.session_start = None
         self.frames = 0
+        self.session = {}          # whole-capture stats per reading: n, sum, min, max (for saved reports)
         self.recording_file = None
 
     def clear_codes(self):
         self.codes = []
         self.code_status = {}
         self.code_checks = []
+        self.diagnostics = {}
         self.mil = False
 
     def apply(self, frame, now):
@@ -117,6 +120,10 @@ class State:
             self.readings[k] = None if v is None else round(float(v), 2)
             self.updated[k] = t
             if v is not None:
+                agg = self.session.setdefault(k, {"n": 0, "sum": 0.0, "min": float(v), "max": float(v)})
+                agg["n"] += 1
+                agg["sum"] += float(v)
+                agg["min"], agg["max"] = min(agg["min"], float(v)), max(agg["max"], float(v))
                 h = self.history[k]
                 h.append((t, float(v)))
                 while h and h[0][0] < t - HISTORY_S:
@@ -124,6 +131,8 @@ class State:
         if frame.get("trouble_codes") is not None:
             self.codes = sorted({str(c).upper().strip() for c in frame["trouble_codes"] if c})
             self.code_status = {c: list(t) for c, t in (frame.get("code_status") or {}).items() if c in self.codes}
+        if frame.get("diagnostics"):
+            self.diagnostics.update(frame["diagnostics"])
         if frame.get("code_checks") is not None:
             self.code_checks = list(frame["code_checks"])
         if frame.get("supported") is not None:
@@ -149,6 +158,11 @@ class State:
     def stale_keys(self, now):
         return [k for k, t in self.updated.items()
                 if t is not None and now - t > stale_after(k)]
+
+    def session_stats(self):
+        """Min / max / average of every reading over the whole capture."""
+        return {k: {"min": round(a["min"], 2), "max": round(a["max"], 2), "mean": round(a["sum"] / a["n"], 2), "n": a["n"]}
+                for k, a in self.session.items() if a["n"]}
 
     def stats(self, now, window=60):
         out = {}
@@ -181,6 +195,7 @@ class State:
             "vin": self.vin,
             "supported": self.supported,
             "code_checks": list(self.code_checks),
+            "diagnostics": dict(self.diagnostics),
             "connection": self.connection,
             "connection_detail": self.connection_detail,
             "capturing": self.capturing,

@@ -17,7 +17,7 @@ Everything runs locally. **No internet is needed for the demo** — without an A
 ```bash
 pip install -r requirements.txt          # add --break-system-packages on some Linux setups
 pip install --no-deps freewili==0.0.51   # live FREE-WILi source (its pins break fastapi)
-cp .env.example .env                      # optional: paste ANTHROPIC_API_KEY for AI explanations
+cp .env.example .env                      # optional: ANTHROPIC_API_KEY (+ ANTHROPIC_WORKSPACE_ID if the key isn't workspace-scoped)
 python -m uvicorn server.app:app --reload --port 8000
 # http://localhost:8000            landing page (scroll tour of the car's systems)
 # http://localhost:8000/dashboard  the app: pick a scenario, press Space
@@ -30,6 +30,7 @@ python -m pytest -q                       # decoder, safety, health and AI tests
 - **Vehicle health** (`server/health.py`): a 0–100 score and a status for 8 systems, computed from 60-second statistics and the codes, never by the AI. Conservative thresholds; no data = "no data", not "OK"; a system with a fault is never listed as going well; intermittent-only codes count as history.
 - **Help me fix it** (`server/ai.py`): plain-language summary, what looks good, each issue with ranked causes and safe DIY steps (difficulty + tools), and whether/how urgently to see a mechanic. Claude (`claude-opus-5-5`, structured outputs, server-side refusal fallback) when `ANTHROPIC_API_KEY` is set; the same shape from the offline knowledge base otherwise.
 - **Saved reports:** *Save report* writes a dated HTML + JSON to `reports/` (git-ignored: they include the VIN) and lists recent ones; print any as a PDF.
+- **On the FREE-WILi itself:** Otto stays connected to the device while the server runs. Its screen shows the mode, whether the car is connected, the health score and the first trouble code; LEDs show connection (green/blue/amber/red), capturing (orange), health (green/amber/red) and the check-engine lamp. Buttons: **green** start capture, **red** stop, **grey** mark a symptom, **blue** run the AI diagnosis, **yellow** next simulator scenario. `OTTO_FREEWILI=0` leaves the device alone (e.g. a second server).
 - **Find mechanics near me:** opens Google Maps for repair shops near the viewer (a make specialist when the advice says so).
 
 ---
