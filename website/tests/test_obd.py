@@ -59,3 +59,76 @@ def test_read_only_blocks_physical_addressing_and_multiframe():
 def test_live_send_goes_through_guard():
     with pytest.raises(obd.UnsafeRequest):
         FreeWiliSource().send_can(0x7DF, bytes.fromhex("0104000000000000"))   # clear codes
+
+
+# ---- ISO-TP + live FREE-WILi loop -------------------------------------------
+from types import SimpleNamespace
+import threading
+import time
+
+from result import Ok
+
+FF_3_CODES = bytes.fromhex("1008430301710300")   # first frame: 8-byte Mode 03 reply
+CF_3_CODES = bytes.fromhex("2104200000000000")   # consecutive frame: rest of it
+
+def test_flow_control_is_the_only_physical_frame_allowed():
+    assert obd.check_tx(0x7E0, obd.FLOW_CONTROL)
+    with pytest.raises(obd.UnsafeRequest):
+        obd.check_tx(0x7E0, bytes.fromhex("3000050000000000"))   # anything but the fixed frame
+    with pytest.raises(obd.UnsafeRequest):
+        obd.check_tx(0x7E8, obd.FLOW_CONTROL)                    # not an ECU request ID
+
+def test_isotp_reassembles_three_codes():
+    a = obd.IsoTpAssembler()
+    assert a.feed(0x7E8, FF_3_CODES) == (None, True)
+    payload, fc = a.feed(0x7E8, CF_3_CODES)
+    assert not fc and obd.parse_mode03(payload) == ["P0171", "P0300", "P0420"]
+
+def test_isotp_drops_out_of_order_frames():
+    a = obd.IsoTpAssembler()
+    a.feed(0x7E8, FF_3_CODES)
+    assert a.feed(0x7E8, bytes.fromhex("2204200000000000")) == (None, False)
+
+def test_codes_merge_across_ecus():
+    src = FreeWiliSource()
+    src.ingest_can(0x7E8, bytes.fromhex("0443010171000000"), 1.0)
+    src.ingest_can(0x7E9, bytes.fromhex("0243000000000000"), 1.1)   # transmission: no codes
+    assert src.poll(1.2)["trouble_codes"] == ["P0171"]
+
+
+class FakeFreeWili:
+    """Answers like a car would, through the freewili package's API shape."""
+    def __init__(self):
+        self.sent, self.events, self.cb = [], [], None
+
+    def can_transmit(self, channel, can_id, data, is_extended, is_fd):
+        self.sent.append((can_id, bytes(data)))
+        if can_id == 0x7DF and data[1:3] == b"\x01\x0C":
+            self._reply(bytes.fromhex("04410C1AF8000000"))
+        elif can_id == 0x7DF and data[1] == 0x03:
+            self._reply(FF_3_CODES)
+        elif can_id == 0x7E0 and bytes(data) == obd.FLOW_CONTROL:
+            self._reply(CF_3_CODES)
+        return Ok("Ok")
+
+    def _reply(self, data):
+        self.events.append(SimpleNamespace(arb_id=0x7E8, is_extended=False, data=data))
+
+    def process_events(self):
+        while self.events:
+            self.cb(SimpleNamespace(name="CANRX0"), None, self.events.pop(0))
+        time.sleep(0.001)
+
+def test_live_loop_polls_car_and_reassembles_codes():
+    src, fake = FreeWiliSource(), FakeFreeWili()
+    fake.cb, src._fw = src._on_event, fake
+    t = threading.Thread(target=src._poll_loop, daemon=True)
+    t.start()
+    time.sleep(0.5)
+    src._stop.set()
+    t.join(1)
+    assert all(obd.check_tx(i, d) for i, d in fake.sent)          # everything sent was allowed
+    assert (0x7E0, obd.FLOW_CONTROL) in fake.sent
+    f = src.poll(time.time())
+    assert f["readings"]["rpm"] == 1726
+    assert f["trouble_codes"] == ["P0171", "P0300", "P0420"] and f["mil"] is True

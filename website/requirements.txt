@@ -3,4 +3,10 @@ uvicorn[standard]>=0.29
 anthropic>=0.40
 python-dotenv>=1.0
 pytest>=8.0
-# pyserial>=3.5   # uncomment when the hardware team talks to FREE-WILi directly from Python
+# FREE-WILi live source. freewili pins typing-extensions==4.12.2, which breaks
+# fastapi/anyio, so install it separately without its pins:
+#   pip install --no-deps freewili==0.0.51
+pyserial>=3.5
+result>=0.17
+pyfwfinder==0.5.0
+pillow>=12.0

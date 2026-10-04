@@ -16,6 +16,7 @@ Everything runs locally. **No internet is needed for the demo** — without an A
 
 ```bash
 pip install -r requirements.txt          # add --break-system-packages on some Linux setups
+pip install --no-deps freewili==0.0.51   # live FREE-WILi source (its pins break fastapi)
 cp .env.example .env                      # optional: paste ANTHROPIC_API_KEY for AI explanations
 python -m uvicorn server.app:app --reload --port 8000
 # open http://localhost:8000  →  pick a scenario  →  press Space
@@ -34,7 +35,7 @@ We never touch anything that could change how the car behaves. Enforced in code,
 |---|---|
 | `0x01` current data · `0x03` stored codes · `0x07` pending codes · `0x09` VIN | `0x04` clear codes, `0x08` component control, UDS `0x10` sessions, `0x11` reset, `0x14` clear, `0x27` unlock, `0x2E` write, `0x2F` I/O control, `0x31` routines, `0x34–0x37` reflash, `0x3D` write memory, `0x85` DTC setting |
 
-- Only functional broadcast `0x7DF`, single-frame requests. No physically-addressed frames to a specific ECU.
+- Only functional broadcast `0x7DF`, single-frame requests. The one physically-addressed frame is the fixed ISO-TP flow control `30 00 00` to `0x7E0–0x7E7`, which carries no service and only lets an ECU finish a long trouble-code reply.
 - `server/obd.py:check_tx()` is the gate. `FreeWiliSource.send_can()` is the **only** transmit path and calls it.
 - The web server has **no endpoint that transmits** on the vehicle bus. `/api/ingest*` only receives.
 - Even safer option: passive listen-only (transmit nothing, decode what's already on the bus).
@@ -65,7 +66,8 @@ Tell judges this explicitly. It answers "is this safe to plug into my car?" befo
 | File | What it does | Owner |
 |---|---|---|
 | `server/obd.py` | PID formulas, DTC decoding, **read-only TX guard** | P2 |
-| `server/sources/freewili.py` | Live source: HTTP push works now; in-process serial reader is a TODO with guiding questions | P1 + P2 |
+| `server/sources/freewili.py` | Live source: polls the car through FREE-WILi + Neptune (SpartaHack firmware), ISO-TP reassembly; HTTP push still works | P1 + P2 |
+| `tools/can_probe.py` | First-frame test against the real car, no server | P1 |
 | `server/sources/simulator.py` | 6 labeled fault scenarios | P3 |
 | `server/sources/replay.py` | Records every capture to `recordings/*.jsonl`, replays with original timing | P2 |
 | `server/dtc_db.py` | Offline code knowledge + evidence rules (data supports / contradicts the code) | P4 |

@@ -63,11 +63,67 @@ class UnsafeRequest(ValueError):
     pass
 
 
+# ---------------------------------------------------------------------------
+# ISO-TP multi-frame replies (ISO 15765-2). A reply longer than 7 bytes —
+# e.g. Mode 03 with 3+ codes — starts with a First Frame (1N LL ...). The ECU
+# then waits (~75 ms) for Flow Control "30 00 00" on its physical request ID
+# (reply ID - 8) before sending Consecutive Frames (2N ...).
+# ---------------------------------------------------------------------------
+FLOW_CONTROL = bytes([0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])  # CTS, no block limit, no gap
+FLOW_CONTROL_IDS = range(0x7E0, 0x7E8)
+
+
+def flow_control_id(response_id):
+    return response_id - 8
+
+
+class IsoTpAssembler:
+    """Turns ECU frames into complete payloads (starting at the service byte).
+
+    feed() returns (payload or None, send_flow_control). One reassembly in
+    flight per ECU response ID.
+    """
+
+    def __init__(self):
+        self._rx = {}
+
+    def feed(self, can_id, data):
+        if not data:
+            return None, False
+        kind = data[0] >> 4
+        if kind == 0:                                   # single frame
+            n = data[0] & 0x0F
+            if n == 0 or len(data) < 1 + n:
+                return None, False
+            return bytes(data[1:1 + n]), False
+        if kind == 1 and len(data) >= 2:                # first frame
+            total = ((data[0] & 0x0F) << 8) | data[1]
+            self._rx[can_id] = {"total": total, "buf": bytearray(data[2:8]), "sn": 1}
+            return None, True
+        if kind == 2:                                   # consecutive frame
+            rx = self._rx.get(can_id)
+            if rx is None:
+                return None, False
+            if (data[0] & 0x0F) != rx["sn"]:            # lost a frame: drop this message
+                del self._rx[can_id]
+                return None, False
+            rx["buf"] += data[1:8]
+            rx["sn"] = (rx["sn"] + 1) & 0x0F
+            if len(rx["buf"]) >= rx["total"]:
+                del self._rx[can_id]
+                return bytes(rx["buf"][:rx["total"]]), False
+        return None, False
+
+
 def check_tx(can_id, data):
     """Gatekeeper for EVERY frame the hardware transmits. Raises UnsafeRequest.
 
     Allowed: functional broadcast 0x7DF, single frame, read-only service only.
+    One exception: the fixed ISO-TP flow-control frame, which carries no
+    service byte and only tells an ECU "send the rest of your reply".
     """
+    if can_id in FLOW_CONTROL_IDS and bytes(data) == FLOW_CONTROL:
+        return True
     if can_id != OBD_REQUEST_ID:
         raise UnsafeRequest(f"TX to 0x{can_id:X} blocked: only 0x7DF read-only requests are allowed")
     if len(data) < 2 or (data[0] >> 4) != 0:
@@ -116,8 +172,8 @@ def parse_mode03(payload):
     """Decode a Mode 03 response payload that starts at the service byte (0x43).
 
     On CAN the byte after 0x43 is the number of codes, then 2 bytes per code.
-    More than 2 codes won't fit in a single frame — that needs ISO-TP
-    multi-frame reassembly first (see the TODO in sources/freewili.py).
+    More than 2 codes won't fit in a single frame — IsoTpAssembler
+    reassembles those first.
     """
     if len(payload) < 2 or payload[0] != 0x43:
         return None

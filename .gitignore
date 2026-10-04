@@ -4,3 +4,4 @@ build
 __pycache__/
 .pytest_cache/
 .env
+firmware/*.uf2
