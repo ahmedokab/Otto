@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Otto</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='11' fill='none' stroke='%2313294B' stroke-width='6'/><path d='M16 5a11 11 0 0 1 11 11' fill='none' stroke='%23FF5F05' stroke-width='6'/></svg>">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="none" stroke="var(--navy)" stroke-width="6"/><path d="M16 5a11 11 0 0 1 11 11" fill="none" stroke="var(--orange)" stroke-width="6"/><path d="M5 16a11 11 0 0 0 5.5 9.5" fill="none" stroke="var(--blue)" stroke-width="6"/></svg>
+    <div><strong>Otto<i>.</i></strong><span>Understand your check-engine light</span></div>
+  </div>
+
+  <div id="modePill" class="mode-pill" title="Where the data is coming from">—</div>
+
+  <div class="conn" title="Hardware / data connection">
+    <span id="connDot" class="dot"></span>
+    <div><b id="connText">—</b><span id="connDetail"></span></div>
+  </div>
+
+  <div class="vehicle">
+    <label for="vehicle">Vehicle</label>
+    <div class="vsearch">
+      <input id="vehicle" type="text" maxlength="80" autocomplete="off" spellcheck="false"
+             placeholder="Search make, model, year… e.g. 2019 Beetle"
+             role="combobox" aria-autocomplete="list" aria-controls="vehicleList" aria-expanded="false">
+      <div class="vparts" aria-hidden="true"></div>
+      <button type="button" class="vs-btn" tabindex="-1" aria-label="Search vehicles">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      </button>
+      <ul id="vehicleList" class="vs-list" role="listbox" hidden></ul>
+    </div>
+  </div>
+
+  <button id="captureBtn" class="btn primary capture"><span class="rec"></span><span id="captureLabel">Start capture</span><kbd>Space</kbd></button>
+</header>
+
+<nav class="sourcebar" aria-label="Data source">
+  <div class="seg" id="modeSeg" role="tablist">
+    <button data-mode="live">Live car</button>
+    <button data-mode="simulator">Simulator</button>
+    <button data-mode="replay">History</button>
+  </div>
+  <div id="scenarioBox" class="scenarios"></div>
+  <div id="replayBox" class="replay" hidden>
+    <select id="recordingSel" aria-label="Saved session"></select>
+    <button class="btn ghost" id="refreshRec">Refresh</button>
+  </div>
+  <div id="liveBox" class="livehint" hidden></div>
+</nav>
+
+<main class="layout">
+  <section class="col">
+    <div class="sec-head">
+      <h2>Live readings</h2>
+      <div class="seg small" id="unitSeg">
+        <button data-units="metric">°C · km/h</button>
+        <button data-units="imperial">°F · mph</button>
+      </div>
+    </div>
+    <div id="primary" class="primary-grid"></div>
+    <div id="secondary" class="secondary-grid"></div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Symptom markers</h3>
+        <span class="muted">Press <kbd>M</kbd> or the grey FREE-WILi button the moment you feel it</span>
+      </div>
+      <form id="markerForm" class="marker-form">
+        <input id="markerNote" placeholder="e.g. shudder when accelerating uphill" maxlength="200">
+        <button class="btn">Mark now</button>
+      </form>
+      <ol id="markerList" class="markers"></ol>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="sec-head">
+      <h2>Findings</h2>
+      <span id="milBadge" class="mil" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15h16l-1.5-5h-3L14 8H9L7.5 10H5.5z" fill="currentColor"/></svg>
+        Check-engine light ON
+      </span>
+    </div>
+    <div id="safety" class="safety" hidden></div>
+    <div id="codes"></div>
+
+    <div class="panel ai">
+      <div class="panel-head">
+        <h3>Explain it</h3>
+        <span id="aiBadge" class="badge"></span>
+      </div>
+      <textarea id="symptoms" rows="2" placeholder="What are you noticing? (optional) e.g. rough idle at stoplights, smells like fuel"></textarea>
+      <div class="ai-row">
+        <button id="explainBtn" class="btn accent">Explain with AI <kbd>E</kbd></button>
+        <span id="aiStatus" class="muted"></span>
+      </div>
+      <div id="aiOut"></div>
+    </div>
+
+    <div class="panel export">
+      <div>
+        <h3>Take it to the mechanic</h3>
+        <p class="muted">Codes, readings, your symptom markers and the analysis, timestamped on one page.</p>
+      </div>
+      <div class="export-btns">
+        <a class="btn primary" href="/report" target="_blank" rel="noopener">Open report</a>
+        <a class="btn ghost" id="dataBtn" href="/api/report.json" download="otto-data.json"
+           title="Every reading, trouble code and symptom marker from this session in one file. Send it to your team or a shop that wants the raw numbers.">Download data file</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Shortcuts: <kbd>Space</kbd> capture · <kbd>M</kbd> mark symptom · <kbd>E</kbd> explain · <kbd>1</kbd>–<kbd>6</kbd> scenarios</span>
+  <span id="wsState" class="muted"></span>
+</footer>
+
+<script src="vehicles.js"></script>
+<script src="vehicle-search.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

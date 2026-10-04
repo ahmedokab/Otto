@@ -1,0 +1,454 @@
+// Otto dashboard. Plain JS, no build step, no internet needed.
+// Data flow: server pushes one snapshot every 200 ms over /ws (falls back to polling).
+
+// range = [min, max] in metric units for the level bar under each value
+const KEYS = {
+  rpm:           { label: 'Engine speed',        unit: 'rpm',  dp: 0, primary: true, icon: 'engine', range: [0, 7000] },
+  coolant_c:     { label: 'Coolant temp',        unit: '°C',   dp: 0, primary: true, temp: true, icon: 'thermometer', range: [40, 125] },
+  ecu_voltage_v: { label: 'ECU voltage',         unit: 'V',    dp: 1, primary: true, icon: 'ecu', range: [10, 15] },
+  speed_kph:     { label: 'Vehicle speed',       unit: 'km/h', dp: 0, speed: true, icon: 'speedometer', range: [0, 200] },
+  throttle_pct:  { label: 'Throttle',            unit: '%',    dp: 0, icon: 'helmet', range: [0, 100] },
+  stft_pct:      { label: 'Short-term fuel trim', unit: '%',   dp: 1, signed: true, icon: 'pump', range: [-25, 25] },
+  ltft_pct:      { label: 'Long-term fuel trim', unit: '%',    dp: 1, signed: true, icon: 'fuelclock', range: [-25, 25] },
+  maf_gs:        { label: 'Mass air flow',       unit: 'g/s',  dp: 1, icon: 'airflow', range: [0, 60] },
+  intake_c:      { label: 'Intake air temp',     unit: '°C',   dp: 0, temp: true, icon: 'intake', range: [-10, 70] },
+};
+
+// Line icons on a 24×24 grid, drawn in currentColor (blue via CSS).
+const ICONS = {
+  engine: '<path d="M8 5h6M11 5v3M6 8h9l2 2h2V8.5h2V17h-2v-1.5h-2L15 19H9l-3-3z"/><path d="M3 11v4M3 13h3"/>',
+  thermometer: '<path d="M10 14.3V5a2 2 0 0 1 4 0v9.3a4 4 0 1 1-4 0z"/><path d="M12 9v7.5"/><circle cx="12" cy="17.5" r="1.4" fill="currentColor"/><path d="M16.5 6h2M16.5 9h2M16.5 12h2"/>',
+  ecu: '<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M9.5 4v3M12 4v3M14.5 4v3M9.5 17v3M12 17v3M14.5 17v3M4 9.5h3M4 12h3M4 14.5h3M17 9.5h3M17 12h3M17 14.5h3"/><path d="M12.6 9l-2 3.2h2.8L11.4 15" stroke-width="1.6"/>',
+  speedometer: '<path d="M3.5 17a8.5 8.5 0 1 1 17 0"/><path d="M12 16l4.2-5"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/><path d="M6.2 10.9l1.2 1M12 7.5V9M17.8 10.9l-1.2 1M4.6 15.3h1.5M17.9 15.3h1.5"/>',
+  helmet: '<path d="M3.5 15.5C3.5 9.5 7.5 5.5 13 5.5c4 0 6.8 2.4 7.8 6l.7 2.5V17a1.5 1.5 0 0 1-1.5 1.5H6.5a3 3 0 0 1-3-3z"/><path d="M11.5 10.5h9.4l.6 3.5h-8a2 2 0 0 1-2-2z"/><path d="M4.6 12.4C6.4 9 9.2 7.3 12.8 7.2M8 18.5v-3h3.5"/>',
+  pump: '<path d="M5 20V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v15M3.5 20h12"/><rect x="7" y="6.5" width="5" height="4" rx=".5"/><path d="M14 9h1.5l2.5 2.5v5.5a1.5 1.5 0 0 0 3 0V9.5L19 7.5"/>',
+  fuelclock: '<path d="M12 3.5s-6 6.4-6 10.8a6 6 0 0 0 12 0C18 9.9 12 3.5 12 3.5z"/><path d="M12 11v3.3l2.2 1.4"/>',
+  airflow: '<path d="M3 8.5h10a2.5 2.5 0 1 0-2.5-2.5M3 12.5h15a2.5 2.5 0 1 1-2.5 2.5M3 16.5h7"/>',
+  intake: '<path d="M5.4 13.6V6a1.6 1.6 0 0 1 3.2 0v7.6a3.2 3.2 0 1 1-3.2 0z"/><path d="M7 9v6.2"/><path d="M12 8h6a2 2 0 1 0-2-2M12 12h8.5M12 16h5a2 2 0 1 1-2 2"/>',
+};
+const icon = (name) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]}</svg>`;
+
+const WINDOW_S = 60;
+const MODE_LABEL = { live: 'LIVE', simulator: 'SIMULATOR', replay: 'HISTORY' };
+const CONN_LABEL = { connected: 'Connected', idle: 'Ready', waiting: 'Not connected yet', disconnected: 'Connection lost' };
+const ICON = { supports: '✓', against: '✕', neutral: '–', missing: '?' };
+const SEV_LABEL = { stop: 'Stop driving', caution: 'Caution', info: 'Info' };
+
+const S = {
+  snap: null, meta: null, buf: {}, lastUpd: {},
+  units: load('units', 'metric'),
+  expl: null, explVersion: -1, findingsKey: '', findingsAt: 0, explaining: false,
+};
+for (const k in KEYS) S.buf[k] = [];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function load(k, d) { try { return localStorage.getItem('pitstop.' + k) || d; } catch { return d; } }
+function save(k, v) { try { localStorage.setItem('pitstop.' + k, v); } catch {} }
+
+async function api(path, body) {
+  const r = await fetch(path, body === undefined ? {} : {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`${path} → ${r.status}`);
+  return r.json();
+}
+
+// ---------- units ----------
+function conv(key, v) {
+  if (v == null) return null;
+  const m = KEYS[key];
+  if (S.units === 'imperial') { if (m.temp) return v * 9 / 5 + 32; if (m.speed) return v * 0.621371; }
+  return v;
+}
+function unitOf(key) {
+  const m = KEYS[key];
+  if (S.units === 'imperial') { if (m.temp) return '°F'; if (m.speed) return 'mph'; }
+  return m.unit;
+}
+function fmt(key, v, stat) {
+  if (v == null) return '—';
+  if (stat === 'roughness') return `±${v.toFixed(0)} ${unitOf(key)}`;   // a spread, not a temperature
+  const c = conv(key, v);
+  const s = c.toFixed(KEYS[key]?.dp ?? 1);
+  return (KEYS[key]?.signed && c > 0 ? '+' : '') + s;
+}
+
+// ---------- readings ----------
+function buildGauges() {
+  for (const [k, m] of Object.entries(KEYS)) {
+    const el = document.createElement('div');
+    el.className = 'gauge' + (m.primary ? '' : ' small');
+    el.id = 'g-' + k;
+    const value = '<div class="value"><span class="num">—</span><span class="unit"></span></div>';
+    // Primary: stat card with a progress ring (icon in the middle). Others: icon tile + level bar.
+    el.innerHTML = m.primary
+      ? `<div class="g-main">
+          <div class="label">${esc(m.label)}</div>${value}<div class="fresh">Not reported</div>
+          <div class="ring"><svg viewBox="0 0 64 64" aria-hidden="true"><circle class="track" cx="32" cy="32" r="${RING_R}"/><circle class="fill" cx="32" cy="32" r="${RING_R}"/></svg><span class="g-icon">${icon(m.icon)}</span></div>
+        </div><canvas></canvas>`
+      : `<div class="g-top"><span class="g-icon">${icon(m.icon)}</span><div class="label">${esc(m.label)}</div></div>
+        ${value}<div class="meter${m.signed ? ' signed' : ''}"><i></i></div><div class="fresh">Not reported</div>`;
+    $(m.primary ? 'primary' : 'secondary').appendChild(el);
+  }
+}
+
+function flagFor(k, v, snap) {
+  if (v == null) return '';
+  const running = (snap.readings.rpm ?? 0) > 500;
+  if (k === 'coolant_c') return v >= 112 ? 'flag bad' : v >= 105 ? 'flag' : '';
+  if (k === 'ecu_voltage_v' && running) return v < 12.0 ? 'flag bad' : v < 12.8 ? 'flag' : '';
+  if (k === 'ltft_pct' || k === 'stft_pct') return Math.abs(v) > 10 ? 'flag' : '';
+  return '';
+}
+
+function updateReadings(snap) {
+  const now = Date.parse(snap.server_time) / 1000;
+  for (const k in KEYS) {
+    const v = snap.readings[k];
+    const upd = snap.reading_updated[k];
+    if (upd && upd !== S.lastUpd[k] && v != null) {
+      S.lastUpd[k] = upd;
+      S.buf[k].push([Date.parse(upd) / 1000, v]);
+    }
+    S.buf[k] = S.buf[k].filter(([t]) => t >= now - WINDOW_S);
+
+    const el = $('g-' + k);
+    const stale = snap.stale.includes(k);
+    el.querySelector('.num').textContent = fmt(k, v);
+    el.querySelector('.unit').textContent = v == null ? '' : unitOf(k);
+    let fresh = 'Not reported', cls = '';
+    if (upd && v == null) fresh = 'Not supported by vehicle';
+    else if (upd && stale) { fresh = `Last seen ${Math.round(now - Date.parse(upd) / 1000)}s ago`; cls = 'stale'; }
+    else if (upd) { fresh = snap.capturing ? 'Live' : 'Paused'; cls = snap.capturing ? 'live' : ''; }
+    el.className = `gauge${KEYS[k].primary ? '' : ' small'} ${cls} ${flagFor(k, v, snap)}`;
+    el.querySelector('.fresh').textContent = fresh;
+    if (KEYS[k].primary) setRing(el.querySelector('.ring .fill'), k, v);
+    else setMeter(el.querySelector('.meter i'), k, v);
+    if (KEYS[k].primary) drawSpark(el.querySelector('canvas'), k, now, snap.markers, stale);
+  }
+}
+
+// Level bar: fills from the left, or from the centre for signed values like fuel trim.
+function setMeter(bar, key, v) {
+  const [lo, hi] = KEYS[key].range;
+  if (v == null) { bar.style.left = '0'; bar.style.width = '0'; return; }
+  const pos = (x) => Math.min(100, Math.max(0, ((x - lo) / (hi - lo)) * 100));
+  const from = KEYS[key].signed ? pos(0) : 0;
+  const to = pos(v);
+  bar.style.left = Math.min(from, to) + '%';
+  bar.style.width = Math.abs(to - from) + '%';
+}
+
+const RING_R = 27, RING_C = 2 * Math.PI * RING_R;
+function setRing(arc, key, v) {
+  const [lo, hi] = KEYS[key].range;
+  const f = v == null ? 0 : Math.min(1, Math.max(0, (v - lo) / (hi - lo)));
+  arc.style.strokeDasharray = RING_C;
+  arc.style.strokeDashoffset = RING_C * (1 - f);
+}
+
+function drawSpark(cv, key, now, markers, stale) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (!w) return;
+  if (cv.width !== w * dpr) { cv.width = w * dpr; cv.height = h * dpr; }
+  const g = cv.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, h);
+  const css = getComputedStyle(document.documentElement);
+  const pts = S.buf[key];
+  const x = (t) => ((t - (now - WINDOW_S)) / WINDOW_S) * w;
+
+  g.strokeStyle = css.getPropertyValue('--line');
+  g.lineWidth = 1;
+  g.beginPath(); g.moveTo(0, h - 0.5); g.lineTo(w, h - 0.5); g.stroke();
+
+  g.setLineDash([3, 3]);
+  g.strokeStyle = css.getPropertyValue('--orange');
+  for (const m of markers || []) {
+    if (m.epoch < now - WINDOW_S) continue;
+    g.beginPath(); g.moveTo(x(m.epoch), 0); g.lineTo(x(m.epoch), h); g.stroke();
+  }
+  g.setLineDash([]);
+  if (pts.length < 2) return;
+
+  let lo = Infinity, hi = -Infinity;
+  for (const [, v] of pts) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+  const pad = Math.max((hi - lo) * 0.15, Math.abs(hi) * 0.02, 0.5);
+  lo -= pad; hi += pad;
+  const y = (v) => h - 4 - ((v - lo) / (hi - lo)) * (h - 8);
+
+  const color = (stale ? css.getPropertyValue('--dim') : css.getPropertyValue('--orange')).trim();
+  g.beginPath();
+  pts.forEach(([t, v], i) => (i ? g.lineTo(x(t), y(v)) : g.moveTo(x(t), y(v))));
+  g.strokeStyle = color; g.lineWidth = 2; g.lineJoin = 'round'; g.stroke();
+  // soft area fill under the line
+  g.lineTo(x(pts[pts.length - 1][0]), h); g.lineTo(x(pts[0][0]), h); g.closePath();
+  const grad = g.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, color + '38'); grad.addColorStop(1, color + '00');
+  g.fillStyle = grad; g.fill();
+  const [lt, lv] = pts[pts.length - 1];
+  g.fillStyle = color; g.beginPath(); g.arc(x(lt), y(lv), 2.6, 0, Math.PI * 2); g.fill();
+}
+
+// ---------- header / source bar ----------
+function updateChrome(snap) {
+  const pill = $('modePill');
+  pill.textContent = MODE_LABEL[snap.source] + (snap.source === 'simulator' ? ' · SIMULATED DATA' : '');
+  pill.className = 'mode-pill ' + snap.source;
+
+  $('connDot').className = 'dot ' + snap.connection;
+  $('connText').textContent = CONN_LABEL[snap.connection] || snap.connection;
+  $('connDetail').textContent = snap.connection_detail || '';
+
+  const btn = $('captureBtn');
+  btn.classList.toggle('on', snap.capturing);
+  $('captureLabel').textContent = snap.capturing ? 'Stop capture' : 'Start capture';
+
+  S.vsearch.setValue(snap.vehicle);
+
+  for (const b of $('modeSeg').children) b.classList.toggle('on', b.dataset.mode === snap.source);
+  $('scenarioBox').hidden = snap.source !== 'simulator';
+  $('replayBox').hidden = snap.source !== 'replay';
+  $('liveBox').hidden = snap.source !== 'live';
+  for (const c of $('scenarioBox').children) c.classList.toggle('on', c.dataset.s === snap.scenario);
+  if (snap.source === 'replay' && snap.recording) $('recordingSel').value = snap.recording;
+
+  $('milBadge').hidden = !snap.mil;
+
+  const ml = $('markerList');
+  const key = snap.markers.map((m) => m.t).join();
+  if (ml.dataset.key !== key) {
+    ml.dataset.key = key;
+    ml.innerHTML = snap.markers.length
+      ? snap.markers.slice().reverse().map((m) => `<li class="${esc(m.origin)}"><time>${new Date(m.t).toLocaleTimeString()}</time><span>${esc(m.note)}</span></li>`).join('')
+      : '<li class="empty">No markers yet. They show up as dashed lines on the charts and in the report.</li>';
+  }
+}
+
+function buildSourceBar() {
+  const box = $('scenarioBox');
+  Object.entries(S.meta.scenarios).forEach(([id, s], i) => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.dataset.s = id; b.title = s.description;
+    b.innerHTML = `${esc(s.label)}${s.code ? `<b>${s.code}</b>` : ''}`;
+    b.onclick = () => setSource('simulator', { scenario: id });
+    box.appendChild(b);
+  });
+  fillRecordings(S.meta.recordings);
+  $('liveBox').innerHTML = `<ol class="steps-inline">
+      <li><b>1</b>Plug the FREE-WILi into the port under your steering wheel</li>
+      <li><b>2</b>Turn the key to ON (engine can stay off)</li>
+      <li><b>3</b>Press <em>Start capture</em></li>
+    </ol>`;
+  for (const b of $('modeSeg').children) b.onclick = () => setSource(b.dataset.mode);
+  $('recordingSel').onchange = (e) => setSource('replay', { recording: e.target.value });
+  $('refreshRec').onclick = async () => fillRecordings((await api('/api/meta')).recordings);
+}
+
+// "simulator-lean-20261003-204512.jsonl" -> "Lean condition · Oct 3, 8:45 PM"
+function recordingLabel(name) {
+  const sample = name.match(/^sample-(.+)\.jsonl$/);
+  if (sample) return `Sample · ${S.meta?.scenarios[sample[1]]?.label || sample[1]}`;
+  const m = name.match(/^(live|simulator)-(.+)-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})\d{2}\.jsonl$/);
+  if (!m) return name;
+  const [, mode, scen, y, mo, d, h, mi] = m;
+  const what = mode === 'live' ? 'Real car' : (S.meta?.scenarios[scen]?.label || scen);
+  const when = new Date(+y, mo - 1, +d, +h, +mi)
+    .toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  return `${what} · ${when}`;
+}
+
+function fillRecordings(list) {
+  $('recordingSel').innerHTML = list.length
+    ? list.map((r) => `<option value="${esc(r)}">${esc(recordingLabel(r))}</option>`).join('')
+    : '<option value="">No saved sessions yet — capture something first</option>';
+}
+
+async function setSource(mode, extra = {}) {
+  S.expl = null; $('aiOut').innerHTML = ''; S.findingsKey = '';
+  for (const k in KEYS) { S.buf[k] = []; delete S.lastUpd[k]; }
+  await api('/api/source', { mode, ...extra });
+}
+
+// ---------- findings ----------
+function renderFindings(snap) {
+  const ex = S.expl;
+  // Re-render immediately on structural change (codes, verdicts, mode...);
+  // evidence numbers alone refresh at most once a second so text doesn't flicker.
+  const structural = JSON.stringify([snap.code_details.map((d) => [d.code, d.evidence.map((e) => e.verdict)]),
+    snap.capturing, snap.session.frames > 0, snap.explanation.version, S.units, snap.source]);
+  const values = JSON.stringify(snap.code_details.map((d) => d.evidence.map((e) => e.value)));
+  const now = performance.now();
+  const key = structural + values;
+  if (key === S.findingsKey) return;
+  if (S.findingsKey.startsWith(structural) && now - S.findingsAt < 1000) return;
+  S.findingsKey = key; S.findingsAt = now;
+
+  const aiByCode = {};
+  if (ex && ex.source === 'ai') for (const f of ex.findings || []) aiByCode[f.code] = f;
+
+  // safety banner: AI's if present, else worst offline severity
+  const sb = $('safety');
+  const worst = snap.code_details[0];
+  if (ex && ex.safety && snap.code_details.length) {
+    sb.hidden = false; sb.className = 'safety ' + ex.safety.level;
+    sb.innerHTML = `<span class="lvl">${esc(ex.safety.level.toUpperCase())}</span><span>${esc(ex.safety.message)}</span>`;
+  } else if (worst && worst.severity !== 'info') {
+    sb.hidden = false; sb.className = 'safety ' + worst.severity;
+    sb.innerHTML = `<span class="lvl">${esc(SEV_LABEL[worst.severity].toUpperCase())}</span><span>${esc(worst.driving)}</span>`;
+  } else sb.hidden = true;
+
+  const box = $('codes');
+  if (!snap.code_details.length) {
+    const started = snap.session.frames > 0;
+    box.innerHTML = started
+      ? `<div class="empty-state clear"><h3>No codes reported</h3><p>The engine computer isn't reporting any stored trouble codes right now. That's not a guarantee nothing is wrong — if you notice something, mark it.</p></div>`
+      : `<div class="empty-state"><h3>Start a capture to read your car</h3><p>Press <kbd>Space</kbd>, the button above, or the green button on the FREE-WILi. Readings and trouble codes appear here.</p></div>`;
+    return;
+  }
+
+  box.innerHTML = snap.code_details.map((d) => {
+    const a = aiByCode[d.code];
+    const evidence = d.evidence.map((e) => `<li>
+        <span class="ic ${e.verdict}" title="${esc(e.verdict)}">${ICON[e.verdict]}</span>
+        <span>${esc(KEYS[e.key]?.label || e.key)}${e.stat && e.stat !== 'latest' ? ` <small>${esc(e.stat)} over last 60 s</small>` : ''}<small>${esc(e.note)}</small></span>
+        <span class="v">${e.value == null ? '—' : esc(fmt(e.key, e.value, e.stat))}${e.value == null || e.stat === 'roughness' ? '' : ' ' + esc(unitOf(e.key))}</span>
+      </li>`).join('');
+    const aiShows = a?.what_the_data_shows?.length
+      ? `<ul class="causes">${a.what_the_data_shows.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>` : '';
+    const causes = a?.likely_causes?.length
+      ? `<h4>Likely causes <span class="ai-note">· ranked by AI using your data</span></h4><ol class="causes">${a.likely_causes.map((c) =>
+          `<li><span class="lik ${esc(c.likelihood)}">${esc(c.likelihood)}</span>${esc(c.cause)}<br><small>${esc(c.why)}</small></li>`).join('')}</ol>`
+      : (d.common_causes.length ? `<h4>Common causes</h4><ul class="causes">${d.common_causes.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>` : '');
+    const steps = (a?.next_checks?.length ? a.next_checks : d.next_checks);
+    return `<article class="code">
+      <div class="code-head">
+        <span class="code-id">${esc(d.code)}</span>
+        <h3>${esc(d.title)}<span class="sys">${esc(d.system)}</span></h3>
+        <span class="sev ${esc(d.severity)}">${esc(SEV_LABEL[d.severity])}</span>
+      </div>
+      <div class="code-body">
+        <p>${esc(a?.plain_meaning || d.meaning)}</p>
+        ${evidence ? `<div><h4>What your data shows</h4><ul class="evidence">${evidence}</ul>${aiShows}</div>` : ''}
+        <div>${causes}</div>
+        <div><h4>Next checks</h4><ol class="steps">${steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol></div>
+        <div class="driving"><b>Driving:</b> ${esc(d.driving)}</div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+// ---------- AI ----------
+async function explain() {
+  if (S.explaining) return;
+  S.explaining = true;
+  $('explainBtn').disabled = true;
+  $('aiStatus').innerHTML = '<span class="spinner"></span> Analyzing codes, readings and your notes…';
+  try {
+    S.expl = await api('/api/explain', { symptoms: $('symptoms').value });
+    renderExplanation();
+  } catch (e) {
+    $('aiStatus').textContent = 'Could not reach the server: ' + e.message;
+  } finally {
+    S.explaining = false; $('explainBtn').disabled = false; S.findingsKey = '';
+  }
+}
+
+function renderExplanation() {
+  const ex = S.expl;
+  if (!ex || !ex.headline) { $('aiOut').innerHTML = ''; $('aiStatus').textContent = ''; return; }
+  const src = ex.source === 'ai' ? `AI-assisted · ${esc(ex.model)}` : 'Offline reference';
+  $('aiStatus').innerHTML = `${src}${ex.note ? ` — ${esc(ex.note)}` : ''}`;
+  const outdated = S.snap?.explanation?.outdated ? '<div class="outdated">Codes changed since this analysis — run it again.</div>' : '';
+  const qs = (ex.questions_for_mechanic || []).map((q) => `<li>${esc(q)}</li>`).join('');
+  $('aiOut').innerHTML = `<div class="ai-summary">
+      ${outdated}
+      <div class="headline">${esc(ex.headline)}</div>
+      ${qs ? `<div><h4 class="muted" style="margin:0 0 4px;font-size:11px;letter-spacing:.09em;text-transform:uppercase">Ask your mechanic</h4><ul>${qs}</ul></div>` : ''}
+      <div class="muted" style="font-size:12px">${esc(ex.caveat || '')}</div>
+    </div>`;
+}
+
+async function syncExplanation(snap) {
+  if (snap.explanation.version === S.explVersion) return;
+  S.explVersion = snap.explanation.version;
+  if (S.explaining) return;
+  S.expl = snap.explanation.available ? await api('/api/explanation') : null;
+  renderExplanation(); S.findingsKey = '';
+}
+
+// ---------- main loop ----------
+function onSnapshot(snap) {
+  S.snap = snap;
+  updateChrome(snap);
+  updateReadings(snap);
+  renderFindings(snap);
+  syncExplanation(snap).catch(() => {});
+  if (snap.explanation.running && !S.explaining) $('aiStatus').innerHTML = '<span class="spinner"></span> Analysis requested from FREE-WILi…';
+}
+
+function connect() {
+  const ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`);
+  ws.onopen = () => { $('wsState').textContent = 'Dashboard connected'; };
+  ws.onmessage = (e) => onSnapshot(JSON.parse(e.data));
+  ws.onclose = () => {
+    $('wsState').textContent = 'Dashboard reconnecting…';
+    $('connDot').className = 'dot disconnected'; $('connText').textContent = 'Server offline';
+    setTimeout(connect, 1000);
+  };
+}
+
+async function backfill() {
+  const h = await api('/api/history?seconds=' + WINDOW_S);
+  for (const k in KEYS) if (h[k]) S.buf[k] = h[k];
+}
+
+function bindControls() {
+  $('captureBtn').onclick = () => api('/api/capture', { action: 'toggle' });
+  $('explainBtn').onclick = explain;
+  $('markerForm').onsubmit = (e) => {
+    e.preventDefault();
+    api('/api/marker', { note: $('markerNote').value }).then(() => { $('markerNote').value = ''; });
+  };
+  S.vsearch = initVehicleSearch($('vehicle'), $('vehicleList'), (name) => api('/api/vehicle', { name }));
+  $('dataBtn').onclick = () => {
+    const v = (S.snap?.vehicle || 'vehicle').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '');
+    $('dataBtn').download = `otto-${v}-${new Date().toISOString().slice(0, 10)}.json`;
+  };
+  for (const b of $('unitSeg').children) {
+    b.classList.toggle('on', b.dataset.units === S.units);
+    b.onclick = () => {
+      S.units = b.dataset.units; save('units', S.units);
+      for (const x of $('unitSeg').children) x.classList.toggle('on', x === b);
+      S.findingsKey = '';
+      if (S.snap) onSnapshot(S.snap);
+    };
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.target.closest('input,textarea,select') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.code === 'Space') { e.preventDefault(); $('captureBtn').click(); }
+    else if (e.key === 'm' || e.key === 'M') api('/api/marker', { note: 'Marked from keyboard' });
+    else if (e.key === 'e' || e.key === 'E') explain();
+    else if (/^[1-9]$/.test(e.key)) {
+      const id = Object.keys(S.meta.scenarios)[+e.key - 1];
+      if (id) setSource('simulator', { scenario: id });
+    }
+  });
+  window.addEventListener('resize', () => S.snap && updateReadings(S.snap));
+}
+
+(async function init() {
+  buildGauges();
+  S.meta = await api('/api/meta');
+  buildSourceBar();
+  bindControls();
+  const b = $('aiBadge');
+  b.textContent = S.meta.ai.available ? `AI · ${S.meta.ai.detail}` : 'Offline mode';
+  b.className = 'badge' + (S.meta.ai.available ? ' on' : '');
+  b.title = S.meta.ai.available ? 'Claude API key detected' : S.meta.ai.detail;
+  await backfill().catch(() => {});
+  onSnapshot(await api('/api/state'));
+  connect();
+})();

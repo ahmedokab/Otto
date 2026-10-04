@@ -1,0 +1,3 @@
+[submodule "wiliOGbsp"]
+	path = wiliOGbsp
+	url = https://github.com/ahmedokab/otto-firmware.git
