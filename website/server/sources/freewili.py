@@ -37,6 +37,7 @@ Env:
   OTTO_VIN_LOOKUP       0 = decode the VIN offline only (never send it to NHTSA)
 """
 import collections
+from pathlib import Path
 import os
 import queue
 import threading
@@ -45,7 +46,7 @@ import time
 from .base import Source
 from .bench_ecu import BenchEcu
 from .replay import RECORDINGS_DIR
-from .. import obd, vin as vin_decoder
+from .. import device_screen, obd, vin as vin_decoder
 
 NO_DATA_AFTER_S = 2.0
 CAN_CHANNEL = int(os.getenv("FREEWILI_CAN_CHANNEL", "0"))
@@ -91,6 +92,12 @@ class FreeWiliSource(Source):
         self.device_view = None               # callable -> {"text": str, "leds": [(r, g, b)] * 7}
         self._buttons_down = set()
         self._shown_text, self._shown_leds, self._view_at = None, [None] * 7, 0.0
+        self._screen_sig, self._screen_at, self._screen_ok = None, 0.0, True
+        self._screens = None                       # reload the stored-screens list for this device
+        self._screen_busy = threading.Event()      # an image upload owns the screen chip's port
+        self._screen_thread = None
+        self.screen_error, self.screen_uploads, self._screen_failures = None, 0, 0
+        self.screen_shows, self._screens = 0, None
         self.bench = BenchEcu(BENCH_SCENARIO) if BENCH_SCENARIO else None
         self._bench_tx = collections.deque()
         self._raw = None
@@ -194,6 +201,9 @@ class FreeWiliSource(Source):
         fw.set_event_callback(self._on_event)
         self._streaming = False
         self._shown_text, self._shown_leds = None, [None] * 7
+        self._screen_sig, self._screen_at, self._screen_ok = None, 0.0, True
+        self._screen_busy = threading.Event()      # an image upload owns the screen chip's port
+        self._screen_thread = None
         try:
             fw.enable_button_events(True, 100)    # sample buttons every 100 ms
         except Exception:
@@ -231,12 +241,15 @@ class FreeWiliSource(Source):
 
     def _update_device(self):
         """Mirror Otto's status on the FREE-WILi screen and LEDs (only what changed, ~1/s)."""
-        if self.device_view is None or time.monotonic() - self._view_at < 1.0:
+        if self.device_view is None or self._screen_busy.is_set() or time.monotonic() - self._view_at < 1.0:
             return
         self._view_at = time.monotonic()
         try:
             view = self.device_view()
-            if view["text"] != self._shown_text:
+            screen = view.get("screen")
+            if screen and self._screen_ok:
+                self._update_screen(screen)
+            elif view["text"] != self._shown_text:
                 self._fw.show_text_display(view["text"])
                 self._shown_text = view["text"]
             for i, rgb in enumerate(view["leds"][:7]):
@@ -246,11 +259,169 @@ class FreeWiliSource(Source):
         except Exception:
             pass                               # the screen is a nice-to-have; never stop reading the car for it
 
+    SCREEN_GAP_S = 3.0            # pause between screen uploads (each takes ~5 s: the device writes it to flash)
+    SCREEN_GAP_CAPTURE_S = 3.0    # connection / health / codes changed
+    SCREEN_VALUES_GAP_S = 30.0    # only battery or temperature changed (buttons pause during an upload)
+    SCREEN_FILE = "otto.fwi"
+
+    def _update_screen(self, screen):
+        """Redraw the FREE-WILi status screen when something visible changed.
+
+        Every screen the device has already stored is remembered by a name made from its
+        contents, so showing it again is one quick command (~0.1 s). Only screens the device
+        has never seen are uploaded (~5 s, the device writes them to its flash)."""
+        sig = device_screen.signature(screen)
+        if sig == self._screen_sig:
+            return
+        image = device_screen.render(screen)
+        name = device_screen.file_name(image)
+        if name in self._screen_cache():
+            if self._fw.show_gui_image(name).is_ok():
+                self._screen_sig = sig
+                self._screen_remember(name)          # most recently used
+                self.screen_shows += 1
+                return
+            self._screen_forget(name)                # gone from the device: upload it again below
+        important = self._screen_sig is None or sig[0] != self._screen_sig[0]
+        gap = (self.SCREEN_GAP_CAPTURE_S if self.capturing.is_set() else self.SCREEN_GAP_S) if important else self.SCREEN_VALUES_GAP_S
+        if time.monotonic() - self._screen_at < gap:
+            return
+        self._screen_busy.set()
+
+        def job():
+            # Runs beside the CAN loop: the upload only uses the screen chip's port.
+            next_try = time.monotonic()
+            try:
+                self._make_room()
+                self._push_screen(image, name)
+                self._screen_remember(name)
+                self._screen_sig = sig
+                self.screen_uploads += 1
+                self._screen_failures = 0
+            except Exception as e:
+                self.screen_error = f"{type(e).__name__}: {e}"
+                self._screen_failures += 1
+                if self._screen_failures >= 3:
+                    self._screen_ok = False    # this device can't show images: use the one-line text instead
+                next_try = time.monotonic() + 10 - self.SCREEN_GAP_S                # retry in ~10 s
+            finally:
+                self._screen_at = max(next_try, time.monotonic())
+                self._screen_busy.clear()
+
+        self._screen_thread = threading.Thread(target=job, name="freewili-screen", daemon=True)
+        self._screen_thread.start()
+
+    # ---- which screens the device already has (kept across server restarts) -------------
+    SCREEN_CACHE_MAX = 40          # oldest stored screens are deleted from the device beyond this
+
+    screen_manifest = None         # tests point this at a temporary file
+
+    def _screen_manifest_path(self):
+        if self.screen_manifest:
+            return Path(self.screen_manifest)
+        import tempfile
+        folder = Path(tempfile.gettempdir()) / "otto-freewili"
+        folder.mkdir(exist_ok=True)
+        return folder / "screens.json"
+
+    def _screen_cache(self):
+        if self._screens is None:
+            import json
+            try:
+                data = json.loads(self._screen_manifest_path().read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                data = {}
+            self._screens = data.get(str(self._fw), [])
+        return self._screens
+
+    def _screen_save(self):
+        import json
+        path = self._screen_manifest_path()
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            data = {}
+        data[str(self._fw)] = self._screens
+        try:
+            path.write_text(json.dumps(data), encoding="utf-8")
+        except OSError:
+            pass
+
+    def _screen_remember(self, name):
+        cache = self._screen_cache()
+        if name in cache:
+            cache.remove(name)
+        cache.append(name)
+        self._screen_save()
+
+    def _screen_forget(self, name):
+        cache = self._screen_cache()
+        if name in cache:
+            cache.remove(name)
+            self._screen_save()
+
+    def _make_room(self):
+        from freewili.types import FreeWiliProcessorType
+        cache = self._screen_cache()
+        while len(cache) >= self.SCREEN_CACHE_MAX:
+            old = cache.pop(0)
+            if hasattr(self._fw, "remove_directory_or_file"):
+                self._fw.remove_directory_or_file(f"/images/{old}", FreeWiliProcessorType.Display)
+        self._screen_save()
+
+    def device_status(self):
+        """For /api/hw/status: is the FREE-WILi linked, and is its screen updating?"""
+        return {"linked": self._thread is not None and self._thread.is_alive(), "connected": self._fw is not None,
+                "error": self.error, "capturing": self.capturing.is_set(), "screen_images": self._screen_ok,
+                "screen_uploads": getattr(self, "screen_uploads", 0), "screen_instant": getattr(self, "screen_shows", 0),
+                "screens_stored": len(self._screens or []), "screen_error": getattr(self, "screen_error", None),
+                "screen_busy": self._screen_busy.is_set()}
+
+    def _process_events(self):
+        """While a screen upload owns the screen chip, only read the main chip (CAN)."""
+        main = getattr(self._fw, "main_serial", None)
+        if self._screen_busy.is_set() and main is not None:
+            main.process_events()
+        else:
+            self._fw.process_events()
+
+    def _push_screen(self, image, name=None):
+        import contextlib
+        import io
+        import tempfile
+        from freewili.image import convert
+        from freewili.types import FreeWiliProcessorType
+        folder = Path(tempfile.gettempdir()) / "otto-freewili"
+        folder.mkdir(exist_ok=True)
+        name = name or self.SCREEN_FILE
+        png, fwi = folder / "otto.png", folder / name
+        image.save(png)
+        with contextlib.redirect_stdout(io.StringIO()):          # the converter prints progress
+            result = convert(png, fwi)
+        if result.is_err():
+            raise RuntimeError(result.unwrap_err())
+        # Button reports arrive every 100 ms on the same port, and the upload waits for the port to go
+        # quiet before finishing, so pause them for the few seconds the upload takes.
+        pause_buttons = hasattr(self._fw, "enable_button_events")
+        if pause_buttons:
+            self._fw.enable_button_events(False)
+        try:
+            result = self._fw.send_file(fwi, f"/images/{name}", FreeWiliProcessorType.Display)
+            # The file is written even when the device's final "saved" reply gets lost; try showing it anyway.
+            if result.is_err() and "finalizing" not in str(result.unwrap_err()):
+                raise RuntimeError(result.unwrap_err())
+            result = self._fw.show_gui_image(name)
+            if result.is_err():
+                raise RuntimeError(result.unwrap_err())
+        finally:
+            if pause_buttons:
+                self._fw.enable_button_events(True, 100)
+
     def _poll_loop(self):
         requests = None
         sent_at = 0.0
         while not self._stop.is_set():
-            self._fw.process_events()          # runs _on_event for each received frame / button press
+            self._process_events()             # runs _on_event for each received frame / button press
             while self._bench_tx:              # fake car's replies, bench channel only
                 can_id, data = self._bench_tx.popleft()
                 self._fw.can_transmit(BENCH_CHANNEL, can_id, data, False, False)

@@ -25,7 +25,7 @@ try:
 except ImportError:
     pass
 
-from . import ai, health, obd, report                                    # noqa: E402
+from . import ai, device_screen, health, obd, report                                    # noqa: E402
 from .dtc_db import SEVERITY_ORDER, details_for                                  # noqa: E402
 from .sources.freewili import FreeWiliSource                     # noqa: E402
 from .sources.replay import Recorder, ReplaySource, list_recordings  # noqa: E402
@@ -221,24 +221,26 @@ class Controller:
             s = self.state
             stats = s.stats(time.time())
             h = self.health(self.code_details(stats), stats)
-            mode = {"live": "LIVE", "simulator": "SIMULATOR", "replay": "HISTORY"}[s.mode]
             if not s.capturing:
-                status = "Ready: GREEN to start"
+                status = "Press GREEN to start"
             else:
                 status = {"connected": "Car connected", "waiting": "Waiting for car"}.get(s.connection, "Car not answering")
             score = h["score"]
-            health_line = "Health --" if score is None else f"Health {score}/100"
-            if s.codes:
-                codes_line = s.codes[0] + (f" +{len(s.codes) - 1} more" if len(s.codes) > 1 else "")
-            else:
-                codes_line = "No codes" if s.capturing and s.frames else ""
-            hint = "RED stop  GREY mark" if s.capturing else ""
-            text = "\n".join(line for line in (f"OTTO  {mode}", status, health_line, codes_line, hint) if line)
+            level = ("ok" if s.connection == "connected" else "warn" if s.connection == "waiting" else "bad") if s.capturing else "idle"
+            screen = {
+                "mode": s.mode, "status": status, "status_level": level,
+                "score": score, "label": h["label"], "volts": s.readings.get("ecu_voltage_v"),
+                "running": (s.readings.get("rpm") or 0) > 500, "coolant_c": s.readings.get("coolant_c"),
+                "codes": list(s.codes), "capturing": s.capturing,
+            }
+            if not s.capturing:          # same image every time, so the device shows it instantly
+                screen.update(score=None, label="Ready", volts=None, coolant_c=None, codes=[], running=False)
+            text = device_screen.text_fallback(screen)
             off = (0, 0, 0)
             conn = {"connected": (0, 60, 0), "idle": (0, 20, 70), "waiting": (70, 35, 0)}.get(s.connection, (70, 0, 0))
             health_led = off if score is None else (0, 60, 0) if score >= 75 else (70, 40, 0) if score >= 50 else (70, 0, 0)
             leds = [conn, (80, 24, 0) if s.capturing else off, health_led, (70, 35, 0) if s.mil else off, off, off, off]
-            return {"text": text, "leds": leds}
+            return {"text": text, "leds": leds, "screen": screen}
 
     def hw_display(self, now):
         """What the FREE-WILi screen + 7 LEDs should show. The device polls this."""
@@ -451,6 +453,11 @@ async def hw_button(req: ButtonReq):
     if action is None:
         return {"ok": False, "reason": f"button '{req.button}' has no action in mode {ctl.state.mode}"}
     return {"ok": True, "action": action}
+
+
+@app.get("/api/hw/status")
+def hw_status():
+    return ctl.live.device_status()
 
 
 @app.get("/api/hw/display")

@@ -66,7 +66,7 @@ from types import SimpleNamespace
 import threading
 import time
 
-from result import Ok
+from result import Err, Ok
 
 FF_3_CODES = bytes.fromhex("1008430301710300")   # first frame: 8-byte Mode 03 reply
 CF_3_CODES = bytes.fromhex("2104200000000000")   # consecutive frame: rest of it
@@ -447,3 +447,93 @@ def test_live_loop_collects_deeper_diagnostics(monkeypatch):
     assert [t["name"] for t in d["readiness"] if not t["ready"]] == ["Fuel vapor (EVAP)"]
     assert d["freeze_frame"]["code"] == "P0300" and d["freeze_frame"]["readings"]["rpm"] == 1726
     assert d["misfires"]["3"] == {"recent": 150, "last_drive": 12}
+
+
+# ---- FREE-WILi status screen --------------------------------------------------------
+from server import device_screen
+
+SCREEN = {"mode": "live", "status": "Car connected", "status_level": "ok", "score": 92, "label": "Excellent",
+          "volts": 14.1, "running": True, "coolant_c": 89, "codes": ["P0171"], "capturing": True}
+
+def test_screen_renders_at_device_size():
+    im = device_screen.render(SCREEN)
+    assert im.size == (320, 240)
+    assert device_screen.render(dict(SCREEN, score=None, volts=None, coolant_c=None, codes=[], capturing=False)).size == (320, 240)
+
+def test_screen_only_uploads_when_something_visible_changes():
+    a = device_screen.signature(SCREEN)
+    assert device_screen.signature(dict(SCREEN, volts=14.12, coolant_c=89.3)) == a      # tiny drift: no upload
+    hotter = device_screen.signature(dict(SCREEN, coolant_c=95))
+    assert hotter != a and hotter[0] == a[0]                                           # a value, not important
+    assert device_screen.signature(dict(SCREEN, codes=["P0300"]))[0] != a[0]           # a new code is important
+
+class ScreenFreeWili(FakeFreeWili):
+    def __init__(self, fail=False):
+        super().__init__()
+        self.files, self.shown, self.texts, self.fail = [], [], [], fail
+    def send_file(self, src, target, processor):
+        self.files.append(target)
+        return Err("no space") if self.fail else Ok("Ok")
+    def show_gui_image(self, path):
+        self.shown.append(path)
+        return Ok("Ok")
+    def show_text_display(self, text):
+        self.texts.append(text)
+        return Ok("Ok")
+    def set_board_leds(self, *a):
+        return Ok("Ok")
+
+def test_screen_upload_then_instant_reuse_then_text_fallback(tmp_path):
+    src, fake = FreeWiliSource(), ScreenFreeWili()
+    src._fw, src.screen_manifest = fake, tmp_path / "screens.json"
+    view = {"text": "Otto | Car connected", "leds": [(0, 0, 0)] * 7, "screen": SCREEN}
+    src.device_view = lambda: view
+    src._update_device()
+    src._screen_thread.join(2)                   # a new screen: uploaded beside the CAN loop
+    name = device_screen.file_name(device_screen.render(SCREEN))
+    assert fake.files == [f"/images/{name}"] and fake.shown == [name]
+    src._view_at = src._screen_at = 0
+    src._update_device()                         # nothing changed: nothing sent
+    assert len(fake.files) == 1 and len(fake.shown) == 1
+    view["screen"] = dict(SCREEN, status="Waiting for car")
+    src._view_at = src._screen_at = 0
+    src._update_device()
+    src._screen_thread.join(2)
+    view["screen"] = SCREEN                      # back to a screen the device already has
+    src._view_at = 0
+    src._update_device()
+    assert len(fake.files) == 2 and fake.shown[-1] == name     # shown instantly, no upload
+    again = FreeWiliSource()                     # a restarted server remembers what the device stores
+    again._fw, again.screen_manifest = fake, src.screen_manifest
+    assert name in again._screen_cache()
+
+    broken, fake2 = FreeWiliSource(), ScreenFreeWili(fail=True)
+    broken._fw, broken.screen_manifest = fake2, tmp_path / "other.json"
+    broken.device_view = lambda: {"text": "Otto | Car connected", "leds": [(0, 0, 0)] * 7, "screen": SCREEN}
+    for _ in range(3):                           # three failed uploads in a row -> one-line text instead
+        broken._view_at = broken._screen_at = 0
+        broken._update_device()
+        broken._screen_thread.join(2)
+    assert broken._screen_ok is False and fake2.texts == []
+    broken._view_at = 0
+    broken._update_device()
+    assert fake2.texts == ["Otto | Car connected"]
+
+def test_screen_upload_does_not_block_reading_the_car(tmp_path):
+    src, fake = FreeWiliSource(), ScreenFreeWili()
+    src.screen_manifest = tmp_path / "screens.json"
+    slow = threading.Event()
+    fake.send_file = lambda *a: (slow.wait(1), Ok("Ok"))[1]          # a slow device write
+    fake.cb, src._fw = src._on_event, fake
+    src.device_view = lambda: {"text": "", "leds": [(0, 0, 0)] * 7, "screen": SCREEN}
+    src.capturing.set()
+    t = threading.Thread(target=src._poll_loop, daemon=True)
+    t.start()
+    time.sleep(0.6)
+    sent_during_upload = len(fake.sent)
+    slow.set()
+    src._stop.set()
+    t.join(2)
+    src._screen_thread.join(2)
+    assert src._screen_busy.is_set() is False
+    assert sent_during_upload > 3                                    # kept polling the car meanwhile
